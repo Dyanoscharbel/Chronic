@@ -7,6 +7,7 @@ export const roleEnum = pgEnum('role', ['patient', 'medecin', 'admin']);
 export const genderEnum = pgEnum('gender', ['M', 'F', 'Autre']);
 export const appointmentStatusEnum = pgEnum('appointment_status', ['pending', 'confirmed', 'cancelled', 'completed']);
 export const ckdStageEnum = pgEnum('ckd_stage', ['Stage 1', 'Stage 2', 'Stage 3A', 'Stage 3B', 'Stage 4', 'Stage 5']);
+export const proteinuriaLevelEnum = pgEnum('proteinuria_level', ['A1', 'A2', 'A3']);
 
 // Users table
 export const users = pgTable("users", {
@@ -27,7 +28,10 @@ export const patients = pgTable("patients", {
   gender: text("gender", { enum: ['M', 'F', 'Autre'] }).notNull(),
   address: text("address"),
   phone: text("phone"),
-  ckdStage: text("ckd_stage", { enum: ['Stage 1', 'Stage 2', 'Stage 3A', 'Stage 3B', 'Stage 4', 'Stage 5'] }).notNull()
+  ckdStage: text("ckd_stage", { enum: ['Stage 1', 'Stage 2', 'Stage 3A', 'Stage 3B', 'Stage 4', 'Stage 5'] }).notNull(),
+  proteinuriaLevel: text("proteinuria_level", { enum: ['A1', 'A2', 'A3'] }).default('A1'),
+  lastEgfrValue: decimal("last_egfr_value", { precision: 10, scale: 2 }),
+  lastProteinuriaValue: decimal("last_proteinuria_value", { precision: 10, scale: 2 })
 });
 
 // Doctors table

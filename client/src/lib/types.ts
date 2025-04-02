@@ -52,6 +52,9 @@ export interface Patient {
   address?: string;
   phone?: string;
   ckdStage: 'Stage 1' | 'Stage 2' | 'Stage 3A' | 'Stage 3B' | 'Stage 4' | 'Stage 5';
+  proteinuriaLevel?: 'A1' | 'A2' | 'A3';
+  lastEgfrValue?: number | null;
+  lastProteinuriaValue?: number | null;
   age?: number;
   latestEGFR?: number | null;
   lastVisit?: string | null;
@@ -158,6 +161,9 @@ export interface PatientFormData {
   address?: string;
   phone?: string;
   ckdStage: string;
+  proteinuriaLevel?: 'A1' | 'A2' | 'A3';
+  lastEgfrValue?: number;
+  lastProteinuriaValue?: number;
 }
 
 export interface AppointmentFormData {
