@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -20,7 +21,13 @@ import { AppLayout } from "@/components/layout/app-layout";
 
 function ProtectedRoute({ component: Component, ...rest }: any) {
   const { isAuthenticated, loading } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      setLocation("/login");
+    }
+  }, [loading, isAuthenticated, setLocation]);
   
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
@@ -29,7 +36,6 @@ function ProtectedRoute({ component: Component, ...rest }: any) {
   }
   
   if (!isAuthenticated) {
-    setLocation("/login");
     return null;
   }
   
@@ -38,7 +44,13 @@ function ProtectedRoute({ component: Component, ...rest }: any) {
 
 function AuthRoute({ component: Component, ...rest }: any) {
   const { isAuthenticated, loading } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      setLocation("/");
+    }
+  }, [loading, isAuthenticated, setLocation]);
   
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
@@ -47,7 +59,6 @@ function AuthRoute({ component: Component, ...rest }: any) {
   }
   
   if (isAuthenticated) {
-    setLocation("/");
     return null;
   }
   
@@ -73,22 +84,6 @@ function Router() {
           </AppLayout>
         )} />
       </Route>
-      <Route path="/patients">
-        <ProtectedRoute component={() => (
-          <AppLayout>
-            <PatientsPage />
-          </AppLayout>
-        )} />
-      </Route>
-      <Route path="/patients/:id">
-        {(params) => (
-          <ProtectedRoute component={() => (
-            <AppLayout>
-              <PatientView id={params.id} />
-            </AppLayout>
-          )} />
-        )}
-      </Route>
       <Route path="/patients/add">
         <ProtectedRoute component={() => (
           <AppLayout>
@@ -105,10 +100,19 @@ function Router() {
           )} />
         )}
       </Route>
-      <Route path="/lab-results">
+      <Route path="/patients/:id">
+        {(params) => (
+          <ProtectedRoute component={() => (
+            <AppLayout>
+              <PatientView id={params.id} />
+            </AppLayout>
+          )} />
+        )}
+      </Route>
+      <Route path="/patients">
         <ProtectedRoute component={() => (
           <AppLayout>
-            <LabResultsPage />
+            <PatientsPage />
           </AppLayout>
         )} />
       </Route>
@@ -119,10 +123,10 @@ function Router() {
           </AppLayout>
         )} />
       </Route>
-      <Route path="/appointments">
+      <Route path="/lab-results">
         <ProtectedRoute component={() => (
           <AppLayout>
-            <AppointmentsPage />
+            <LabResultsPage />
           </AppLayout>
         )} />
       </Route>
@@ -130,6 +134,13 @@ function Router() {
         <ProtectedRoute component={() => (
           <AppLayout>
             <AppointmentAdd />
+          </AppLayout>
+        )} />
+      </Route>
+      <Route path="/appointments">
+        <ProtectedRoute component={() => (
+          <AppLayout>
+            <AppointmentsPage />
           </AppLayout>
         )} />
       </Route>

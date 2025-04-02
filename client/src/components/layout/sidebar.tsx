@@ -55,7 +55,7 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
   
   return (
     <div className={cn(
-      "flex flex-col w-64 bg-primary-dark",
+      "flex flex-col w-64 bg-[var(--primary-dark)]",
       isMobile && "fixed inset-y-0 left-0 z-50"
     )}>
       {isMobile && (
@@ -83,8 +83,8 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
               className={cn(
                 "group flex items-center px-2 py-2 text-sm font-medium rounded-md text-white",
                 location === item.href 
-                  ? "bg-primary-light" 
-                  : "hover:bg-primary-light"
+                  ? "bg-[var(--primary-light)]" 
+                  : "hover:bg-[var(--primary-light)]"
               )}
             >
               {item.icon}
