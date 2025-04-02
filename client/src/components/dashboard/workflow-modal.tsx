@@ -299,9 +299,8 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
                           <Select 
                             value={req.alertThresholdType}
                             onValueChange={(value) => updateRequirement(index, 'alertThresholdType', value)}
-                            className="w-20"
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="w-20">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>

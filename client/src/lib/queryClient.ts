@@ -12,9 +12,20 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  // Récupère le token d'authentification depuis le localStorage
+  const storedAuth = localStorage.getItem('auth');
+  const authData = storedAuth ? JSON.parse(storedAuth) : null;
+  const token = authData?.token;
+  
+  // Prépare les en-têtes avec l'autorisation si un jeton est disponible
+  const headers: Record<string, string> = {
+    ...(data ? { "Content-Type": "application/json" } : {}),
+    ...(token ? { "Authorization": `Bearer ${token}` } : {})
+  };
+  
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
@@ -29,8 +40,19 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    // Récupère le token d'authentification depuis le localStorage
+    const storedAuth = localStorage.getItem('auth');
+    const authData = storedAuth ? JSON.parse(storedAuth) : null;
+    const token = authData?.token;
+    
+    // Prépare les en-têtes avec l'autorisation si un jeton est disponible
+    const headers: Record<string, string> = token 
+      ? { "Authorization": `Bearer ${token}` } 
+      : {};
+    
     const res = await fetch(queryKey[0] as string, {
       credentials: "include",
+      headers
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {

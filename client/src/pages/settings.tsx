@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
-import { Save, User, Lock, Building, Bell } from 'lucide-react';
+import { Save, User, Lock, Building, Bell, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -60,6 +60,13 @@ const notificationSchema = z.object({
   criticalAlertsOnly: z.boolean(),
   appointmentReminders: z.boolean(),
   labResultAlerts: z.boolean(),
+});
+
+const themeSchema = z.object({
+  primaryColor: z.string(),
+  variant: z.enum(['professional', 'tint', 'vibrant']),
+  appearance: z.enum(['light', 'dark', 'system']),
+  radius: z.number(),
 });
 
 export default function SettingsPage() {
@@ -190,6 +197,58 @@ export default function SettingsPage() {
     updateNotificationsMutation.mutate(data);
   };
   
+  // Theme form
+  const themeForm = useForm<z.infer<typeof themeSchema>>({
+    resolver: zodResolver(themeSchema),
+    defaultValues: {
+      primaryColor: 'hsl(173 74% 18%)',
+      variant: 'professional',
+      appearance: 'light',
+      radius: 0.5,
+    },
+  });
+  
+  // Theme update mutation
+  const updateThemeMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof themeSchema>) => {
+      // Mettre à jour le theme.json
+      return apiRequest('POST', '/api/user/theme', data);
+    },
+    onSuccess: (_, variables) => {
+      // Modifier directement le DOM pour mettre à jour le thème sans rechargement
+      const themeSettings = {
+        primary: variables.primaryColor,
+        variant: variables.variant,
+        appearance: variables.appearance,
+        radius: variables.radius
+      };
+      
+      // Dans une application réelle, on mettrait à jour le fichier theme.json
+      localStorage.setItem('theme', JSON.stringify(themeSettings));
+      
+      toast({
+        title: 'Theme updated',
+        description: 'Your theme preferences have been updated',
+      });
+      
+      // Rechargement de la page pour appliquer le nouveau thème
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to update theme',
+        variant: 'destructive',
+      });
+    }
+  });
+  
+  const onThemeSubmit = (data: z.infer<typeof themeSchema>) => {
+    updateThemeMutation.mutate(data);
+  };
+  
   if (!user) {
     return (
       <div className="h-60 flex items-center justify-center">
@@ -251,6 +310,14 @@ export default function SettingsPage() {
                 >
                   <Bell className="mr-2 h-4 w-4" />
                   Notifications
+                </Button>
+                <Button
+                  variant={selectedTab === 'theme' ? 'secondary' : 'ghost'}
+                  className="w-full justify-start"
+                  onClick={() => setSelectedTab('theme')}
+                >
+                  <Palette className="mr-2 h-4 w-4" />
+                  Theme
                 </Button>
               </nav>
             </CardContent>
@@ -572,6 +639,189 @@ export default function SettingsPage() {
                             <>
                               <Save className="mr-2 h-4 w-4" />
                               Save Preferences
+                            </>
+                          )}
+                        </Button>
+                      </CardFooter>
+                    </form>
+                  </Form>
+                </CardContent>
+              </>
+            )}
+            
+            {selectedTab === 'theme' && (
+              <>
+                <CardHeader>
+                  <CardTitle>Application Theme</CardTitle>
+                  <CardDescription>
+                    Customize the application appearance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Form {...themeForm}>
+                    <form onSubmit={themeForm.handleSubmit(onThemeSubmit)} className="space-y-6">
+                      <div className="space-y-4">
+                        <FormField
+                          control={themeForm.control}
+                          name="primaryColor"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Primary Color</FormLabel>
+                              <div className="grid grid-cols-5 gap-3">
+                                {['hsl(173 74% 18%)', 'hsl(221 83% 53%)', 'hsl(142 76% 36%)', 'hsl(346 84% 61%)', 'hsl(270 67% 47%)'].map((color) => (
+                                  <div 
+                                    key={color} 
+                                    className={`h-12 rounded-md border-2 cursor-pointer transition-all ${field.value === color ? 'ring-2 ring-offset-2 border-primary' : 'border-muted'}`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={() => field.onChange(color)}
+                                  />
+                                ))}
+                              </div>
+                              <FormDescription>
+                                Choose a primary color for the application
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={themeForm.control}
+                          name="variant"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Color Variant</FormLabel>
+                              <div className="grid grid-cols-3 gap-4">
+                                {[
+                                  { value: 'professional', label: 'Professional' },
+                                  { value: 'tint', label: 'Tint' },
+                                  { value: 'vibrant', label: 'Vibrant' },
+                                ].map((variant) => (
+                                  <div
+                                    key={variant.value}
+                                    className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary ${field.value === variant.value ? 'bg-muted border-primary' : ''}`}
+                                    onClick={() => field.onChange(variant.value)}
+                                  >
+                                    {variant.label}
+                                  </div>
+                                ))}
+                              </div>
+                              <FormDescription>
+                                Set how intense the color should appear
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={themeForm.control}
+                          name="appearance"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Appearance</FormLabel>
+                              <div className="grid grid-cols-3 gap-4">
+                                {[
+                                  { value: 'light', label: 'Light' },
+                                  { value: 'dark', label: 'Dark' },
+                                  { value: 'system', label: 'System' },
+                                ].map((appearance) => (
+                                  <div
+                                    key={appearance.value}
+                                    className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary ${field.value === appearance.value ? 'bg-muted border-primary' : ''}`}
+                                    onClick={() => field.onChange(appearance.value)}
+                                  >
+                                    {appearance.label}
+                                  </div>
+                                ))}
+                              </div>
+                              <FormDescription>
+                                Choose light or dark mode, or follow system settings
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={themeForm.control}
+                          name="radius"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Border Radius: {field.value}</FormLabel>
+                              <FormControl>
+                                <input
+                                  type="range"
+                                  min="0"
+                                  max="1"
+                                  step="0.1"
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  className="w-full"
+                                />
+                              </FormControl>
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>Square</span>
+                                <span>Round</span>
+                              </div>
+                              <FormDescription>
+                                Adjust the roundness of UI elements
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        {/* Theme Preview */}
+                        <div className="bg-muted p-4 rounded-md mt-6">
+                          <h3 className="text-md font-medium mb-2">Theme Preview</h3>
+                          <div className="flex gap-2 flex-wrap">
+                            <Button 
+                              size="sm" 
+                              style={{
+                                backgroundColor: themeForm.watch('primaryColor'),
+                                borderRadius: `${themeForm.watch('radius') * 0.5}rem`
+                              }}
+                            >
+                              Primary Button
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="secondary"
+                              style={{
+                                borderRadius: `${themeForm.watch('radius') * 0.5}rem`
+                              }}
+                            >
+                              Secondary Button
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="destructive"
+                              style={{
+                                borderRadius: `${themeForm.watch('radius') * 0.5}rem`
+                              }}
+                            >
+                              Destructive Button
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <CardFooter className="px-0 pt-4 pb-0">
+                        <Button
+                          type="submit"
+                          className="ml-auto"
+                          disabled={updateThemeMutation.isPending}
+                        >
+                          {updateThemeMutation.isPending ? (
+                            <>
+                              <Loader size="sm" color="white" className="mr-2" />
+                              Applying Theme...
+                            </>
+                          ) : (
+                            <>
+                              <Save className="mr-2 h-4 w-4" />
+                              Apply Theme
                             </>
                           )}
                         </Button>
