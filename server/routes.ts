@@ -10,6 +10,7 @@ import {
 import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import MemoryStore from 'memorystore';
+import { User, Doctor } from './models';
 
 const MemoryStoreSession = MemoryStore(session);
 
