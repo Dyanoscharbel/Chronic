@@ -211,11 +211,16 @@ export default function SettingsPage() {
   // Theme update mutation
   const updateThemeMutation = useMutation({
     mutationFn: async (data: z.infer<typeof themeSchema>) => {
-      // Mettre à jour le theme.json
-      return apiRequest('POST', '/api/user/theme', data);
+      // Envoyer les données au serveur pour mettre à jour theme.json
+      return apiRequest('POST', '/api/user/theme', {
+        primaryColor: data.primaryColor,
+        variant: data.variant,
+        appearance: data.appearance,
+        radius: data.radius
+      });
     },
     onSuccess: (_, variables) => {
-      // Modifier directement le DOM pour mettre à jour le thème sans rechargement
+      // Créer un objet avec les paramètres du thème
       const themeSettings = {
         primary: variables.primaryColor,
         variant: variables.variant,
@@ -223,23 +228,26 @@ export default function SettingsPage() {
         radius: variables.radius
       };
       
-      // Dans une application réelle, on mettrait à jour le fichier theme.json
+      // Stocker les paramètres dans localStorage pour les réutiliser au chargement
       localStorage.setItem('theme', JSON.stringify(themeSettings));
       
       toast({
-        title: 'Theme updated',
-        description: 'Your theme preferences have been updated',
+        title: 'Thème mis à jour',
+        description: 'Vos préférences de thème ont été enregistrées. Rechargement de la page...',
       });
       
-      // Rechargement de la page pour appliquer le nouveau thème
+      // Appliquer les CSS variables au document root
+      document.documentElement.style.setProperty('--primary', variables.primaryColor);
+      
+      // Rechargement de la page après délai pour permettre à l'utilisateur de voir le toast
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
+      }, 1500);
     },
     onError: (error) => {
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to update theme',
+        title: 'Erreur',
+        description: error instanceof Error ? error.message : 'Échec de la mise à jour du thème',
         variant: 'destructive',
       });
     }

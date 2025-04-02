@@ -24,3 +24,40 @@
     --sidebar-ring: 173 70% 30%;
   }
 }
+
+/* Appliquer le thème aux éléments personnalisés */
+.sidebar {
+  background-color: hsl(var(--sidebar-background));
+  color: hsl(var(--sidebar-foreground));
+  border-color: hsl(var(--sidebar-border));
+}
+
+.sidebar-item {
+  color: hsl(var(--sidebar-foreground));
+}
+
+.sidebar-item:hover {
+  background-color: hsl(var(--sidebar-primary));
+}
+
+.sidebar-item.active {
+  background-color: hsl(var(--sidebar-primary));
+  border-color: hsl(var(--sidebar-accent));
+}
+
+/* Assurez-vous que tous les boutons et les éléments interactifs utilisent la couleur primaire */
+.btn-primary,
+.bg-primary,
+.text-primary,
+.border-primary,
+.hover:bg-primary,
+.hover:text-primary,
+.hover:border-primary {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Correction pour les badges et autres indicateurs */
+.badge-primary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}

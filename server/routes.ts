@@ -15,6 +15,69 @@ const MemoryStoreSession = MemoryStore(session);
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
+// Services de notification
+import nodemailer from 'nodemailer';
+import twilio from 'twilio';
+import fs from 'fs';
+import path from 'path';
+
+// Configuration des services de notification
+const emailTransporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || '',
+    pass: process.env.EMAIL_PASS || ''
+  }
+});
+
+const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
+  ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+  : null;
+
+const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER || '';
+
+// Services de notification
+export const notificationService = {
+  async sendEmail(to: string, subject: string, html: string): Promise<boolean> {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log('Email credentials not configured');
+      return false;
+    }
+    
+    try {
+      await emailTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        html
+      });
+      return true;
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      return false;
+    }
+  },
+  
+  async sendSMS(to: string, body: string): Promise<boolean> {
+    if (!twilioClient || !twilioPhoneNumber) {
+      console.log('Twilio credentials not configured');
+      return false;
+    }
+    
+    try {
+      await twilioClient.messages.create({
+        body,
+        from: twilioPhoneNumber,
+        to
+      });
+      return true;
+    } catch (error) {
+      console.error('Failed to send SMS:', error);
+      return false;
+    }
+  }
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session setup
   app.use(session({
@@ -407,15 +470,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const appointment = await storage.createAppointment(req.body);
       
-      // Create notification for patient
-      await storage.createNotification({
-        userId: (await storage.getPatientById(appointment.patientId))!.userId,
-        message: `New appointment scheduled for ${new Date(appointment.appointmentDate).toLocaleDateString()}`,
-        isRead: false
-      });
+      // Récupérer les informations du patient et du médecin
+      const patient = await storage.getPatientById(appointment.patientId);
+      const doctor = await storage.getDoctorById(appointment.doctorId);
+      
+      if (patient && doctor) {
+        // Créer notification en base de données
+        await storage.createNotification({
+          userId: patient.userId,
+          message: `New appointment scheduled for ${new Date(appointment.appointmentDate).toLocaleDateString()} with Dr. ${doctor.user.lastName}`,
+          isRead: false
+        });
+        
+        // Envoyer email au patient
+        const emailSubject = "Nouveau rendez-vous médical";
+        const emailHtml = `
+          <h2>Bonjour ${patient.user.firstName} ${patient.user.lastName},</h2>
+          <p>Un nouveau rendez-vous a été programmé pour vous:</p>
+          <ul>
+            <li><strong>Date:</strong> ${new Date(appointment.appointmentDate).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}</li>
+            <li><strong>Médecin:</strong> Dr. ${doctor.user.firstName} ${doctor.user.lastName} (${doctor.specialty})</li>
+            <li><strong>Lieu:</strong> ${doctor.hospital || 'Non précisé'}</li>
+            <li><strong>Motif:</strong> ${appointment.purpose || 'Consultation générale'}</li>
+          </ul>
+          <p>Pour annuler ou reporter ce rendez-vous, veuillez contacter le secrétariat médical.</p>
+          <p>Bien cordialement,<br>L'équipe médicale</p>
+        `;
+        
+        // Envoyer SMS au patient si un numéro de téléphone est disponible
+        if (patient.phone) {
+          const smsBody = `Bonjour ${patient.user.firstName}, un RDV médical est programmé le ${new Date(appointment.appointmentDate).toLocaleDateString('fr-FR')} avec Dr. ${doctor.user.lastName}. Pour plus d'infos, vérifiez votre email.`;
+          await notificationService.sendSMS(patient.phone, smsBody);
+        }
+        
+        // Envoyer l'email si une adresse email est disponible
+        await notificationService.sendEmail(patient.user.email, emailSubject, emailHtml);
+      }
       
       res.status(201).json(appointment);
     } catch (error) {
+      console.error('Error creating appointment:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
@@ -754,6 +848,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(alerts);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
+  // Routes pour la gestion du thème
+  apiRouter.post('/user/theme', authenticate, async (req, res) => {
+    try {
+      const { primaryColor, variant, appearance, radius } = req.body;
+      
+      // Mettre à jour le fichier theme.json
+      const themePath = path.resolve(process.cwd(), 'theme.json');
+      const themeData = {
+        primary: primaryColor,
+        variant,
+        appearance,
+        radius
+      };
+      
+      fs.writeFileSync(themePath, JSON.stringify(themeData, null, 2));
+      
+      res.json({ success: true, message: 'Theme updated successfully' });
+    } catch (error) {
+      console.error('Error updating theme:', error);
+      res.status(500).json({ message: 'Failed to update theme' });
     }
   });
 
