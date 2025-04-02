@@ -51,18 +51,6 @@ export const notificationService = {
         subject,
         html
       });
-
-      // Test route to view MongoDB data
-      apiRouter.get('/test/doctors', async (req, res) => {
-        try {
-          const { Doctor } = require('./models');
-          const doctors = await Doctor.find().populate('user');
-          res.json(doctors);
-        } catch (error) {
-          res.status(500).json({ message: 'Server error', error: error.message });
-        }
-      });
-      });
       return true;
     } catch (error) {
       console.error('Failed to send email:', error);
