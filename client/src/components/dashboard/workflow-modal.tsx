@@ -188,7 +188,7 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-5xl">
+      <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Customize Patient Workflow</DialogTitle>
           <DialogDescription>
