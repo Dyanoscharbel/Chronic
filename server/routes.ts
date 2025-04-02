@@ -43,7 +43,7 @@ export const notificationService = {
       console.log('Email credentials not configured');
       return false;
     }
-    
+
     try {
       await emailTransporter.sendMail({
         from: process.env.EMAIL_USER,
@@ -57,13 +57,13 @@ export const notificationService = {
       return false;
     }
   },
-  
+
   async sendSMS(to: string, body: string): Promise<boolean> {
     if (!twilioClient || !twilioPhoneNumber) {
       console.log('Twilio credentials not configured');
       return false;
     }
-    
+
     try {
       await twilioClient.messages.create({
         body,
@@ -98,12 +98,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (req.session.user) {
       return next();
     }
-    
+
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ message: 'Authentication required' });
     }
-    
+
     const token = authHeader.split(' ')[1];
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
@@ -125,22 +125,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
       }
-      
+
       const user = await storage.verifyUserCredentials(email, password);
       if (!user) {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
-      
+
       // Set user in session
       req.session.user = { id: user.id, email: user.email, role: user.role };
-      
+
       // Generate JWT token
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
         JWT_SECRET,
         { expiresIn: '24h' }
       );
-      
+
       // Get additional user info based on role
       let userDetails = null;
       if (user.role === 'medecin') {
@@ -148,7 +148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (user.role === 'patient') {
         userDetails = await storage.getPatientByUserId(user.id);
       }
-      
+
       res.json({ token, user: { ...user, passwordHash: undefined }, userDetails });
     } catch (error) {
       console.error('Login error:', error);
@@ -159,33 +159,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post('/auth/register', async (req, res) => {
     try {
       const { role, ...userData } = req.body;
-      
+
       // Check if user already exists
       const existingUser = await storage.getUserByEmail(userData.email);
       if (existingUser) {
         return res.status(400).json({ message: 'User with this email already exists' });
       }
-      
+
       // Create appropriate user type based on role
-      if (role === 'medecin') {
-        const { specialty, hospital, ...userFields } = userData;
-        const doctor = await storage.createDoctor(
-          { specialty, hospital, userId: 0 }, // userId will be set by storage
-          { ...userFields, role, passwordHash: userData.password }
-        );
-        res.status(201).json({ ...doctor, user: { ...doctor.user, passwordHash: undefined } });
-      } else if (role === 'patient') {
-        const { birthDate, gender, address, phone, ckdStage, ...userFields } = userData;
-        const patient = await storage.createPatient(
-          { birthDate, gender, address, phone, ckdStage, userId: 0 },
-          { ...userFields, role, passwordHash: userData.password }
-        );
-        res.status(201).json({ ...patient, user: { ...patient.user, passwordHash: undefined } });
-      } else {
-        // Admin or other roles
-        const user = await storage.createUser({ ...userData, role, passwordHash: userData.password });
-        res.status(201).json({ ...user, passwordHash: undefined });
+      if (role !== 'medecin') {
+        return res.status(403).json({ message: 'Seuls les médecins peuvent s\'enregistrer' });
       }
+
+      const { specialty, hospital, ...userFields } = userData;
+      const doctor = await storage.createDoctor(
+        { specialty, hospital, userId: 0 }, // userId will be set by storage
+        { ...userFields, role, passwordHash: userData.password }
+      );
+      res.status(201).json({ ...doctor, user: { ...doctor.user, passwordHash: undefined } });
     } catch (error) {
       console.error('Registration error:', error);
       res.status(500).json({ message: 'Server error during registration' });
@@ -228,11 +219,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const patientId = parseInt(req.params.id, 10);
       const patient = await storage.getPatientById(patientId);
-      
+
       if (!patient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
-      
+
       res.json({
         ...patient,
         user: { ...patient.user, passwordHash: undefined }
@@ -245,7 +236,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post('/patients', authenticate, async (req, res) => {
     try {
       const { firstName, lastName, email, password, birthDate, gender, address, phone, ckdStage } = req.body;
-      
+
       // Validate data
       const userData = {
         firstName,
@@ -254,7 +245,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         passwordHash: password,
         role: 'patient'
       };
-      
+
       const patientData = {
         birthDate,
         gender,
@@ -263,13 +254,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ckdStage,
         userId: 0 // Will be set by the storage implementation
       };
-      
+
       // Check if user already exists
       const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({ message: 'User with this email already exists' });
       }
-      
+
       const patient = await storage.createPatient(patientData, userData);
       res.status(201).json({
         ...patient,
@@ -285,7 +276,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const patientId = parseInt(req.params.id, 10);
       const { birthDate, gender, address, phone, ckdStage } = req.body;
-      
+
       const updatedPatient = await storage.updatePatient(patientId, {
         birthDate,
         gender,
@@ -293,11 +284,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         phone,
         ckdStage
       });
-      
+
       if (!updatedPatient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
-      
+
       const patientWithUser = await storage.getPatientById(patientId);
       res.json({
         ...patientWithUser,
@@ -312,11 +303,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const patientId = parseInt(req.params.id, 10);
       const success = await storage.deletePatient(patientId);
-      
+
       if (!success) {
         return res.status(404).json({ message: 'Patient not found' });
       }
-      
+
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
@@ -340,11 +331,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const doctorId = parseInt(req.params.id, 10);
       const doctor = await storage.getDoctorById(doctorId);
-      
+
       if (!doctor) {
         return res.status(404).json({ message: 'Doctor not found' });
       }
-      
+
       res.json({
         ...doctor,
         user: { ...doctor.user, passwordHash: undefined }
@@ -357,7 +348,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post('/doctors', authenticate, async (req, res) => {
     try {
       const { firstName, lastName, email, password, specialty, hospital } = req.body;
-      
+
       const userData = {
         firstName,
         lastName,
@@ -365,19 +356,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         passwordHash: password,
         role: 'medecin'
       };
-      
+
       const doctorData = {
         specialty,
         hospital,
         userId: 0 // Will be set by the storage implementation
       };
-      
+
       // Check if user already exists
       const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({ message: 'User with this email already exists' });
       }
-      
+
       const doctor = await storage.createDoctor(doctorData, userData);
       res.status(201).json({
         ...doctor,
@@ -469,11 +460,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post('/appointments', authenticate, async (req, res) => {
     try {
       const appointment = await storage.createAppointment(req.body);
-      
+
       // Récupérer les informations du patient et du médecin
       const patient = await storage.getPatientById(appointment.patientId);
       const doctor = await storage.getDoctorById(appointment.doctorId);
-      
+
       if (patient && doctor) {
         // Créer notification en base de données
         await storage.createNotification({
@@ -481,7 +472,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           message: `New appointment scheduled for ${new Date(appointment.appointmentDate).toLocaleDateString()} with Dr. ${doctor.user.lastName}`,
           isRead: false
         });
-        
+
         // Envoyer email au patient
         const emailSubject = "Nouveau rendez-vous médical";
         const emailHtml = `
@@ -496,17 +487,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           <p>Pour annuler ou reporter ce rendez-vous, veuillez contacter le secrétariat médical.</p>
           <p>Bien cordialement,<br>L'équipe médicale</p>
         `;
-        
+
         // Envoyer SMS au patient si un numéro de téléphone est disponible
         if (patient.phone) {
           const smsBody = `Bonjour ${patient.user.firstName}, un RDV médical est programmé le ${new Date(appointment.appointmentDate).toLocaleDateString('fr-FR')} avec Dr. ${doctor.user.lastName}. Pour plus d'infos, vérifiez votre email.`;
           await notificationService.sendSMS(patient.phone, smsBody);
         }
-        
+
         // Envoyer l'email si une adresse email est disponible
         await notificationService.sendEmail(patient.user.email, emailSubject, emailHtml);
       }
-      
+
       res.status(201).json(appointment);
     } catch (error) {
       console.error('Error creating appointment:', error);
@@ -518,13 +509,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const appointmentId = parseInt(req.params.id, 10);
       const { status } = req.body;
-      
+
       const updatedAppointment = await storage.updateAppointmentStatus(appointmentId, status);
-      
+
       if (!updatedAppointment) {
         return res.status(404).json({ message: 'Appointment not found' });
       }
-      
+
       // Create notification about status change
       const patient = await storage.getPatientById(updatedAppointment.patientId);
       if (patient) {
@@ -534,7 +525,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           isRead: false
         });
       }
-      
+
       res.json(updatedAppointment);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
@@ -557,11 +548,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const notificationId = parseInt(req.params.id, 10);
       const updatedNotification = await storage.markNotificationAsRead(notificationId);
-      
+
       if (!updatedNotification) {
         return res.status(404).json({ message: 'Notification not found' });
       }
-      
+
       res.json(updatedNotification);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
@@ -591,11 +582,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const workflowId = parseInt(req.params.id, 10);
       const workflow = await storage.getWorkflowById(workflowId);
-      
+
       if (!workflow) {
         return res.status(404).json({ message: 'Workflow not found' });
       }
-      
+
       const requirements = await storage.getWorkflowRequirements(workflowId);
       res.json({ ...workflow, requirements });
     } catch (error) {
@@ -606,22 +597,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post('/workflows', authenticate, async (req, res) => {
     try {
       const { name, description, ckdStage, requirements } = req.body;
-      
+
       // Get doctor ID (assuming the authenticated user is a doctor)
       const userId = (req as any).session.user?.id || (req as any).user.id;
       const doctor = await storage.getDoctorByUserId(userId);
-      
+
       if (!doctor) {
         return res.status(403).json({ message: 'Only doctors can create workflows' });
       }
-      
+
       const workflow = await storage.createWorkflow({
         name,
         description,
         ckdStage,
         createdBy: doctor.id
       });
-      
+
       // Add requirements if provided
       const createdRequirements = [];
       if (requirements && Array.isArray(requirements)) {
@@ -633,7 +624,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           createdRequirements.push(requirement);
         }
       }
-      
+
       res.status(201).json({ ...workflow, requirements: createdRequirements });
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
@@ -643,18 +634,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post('/workflows/:id/requirements', authenticate, async (req, res) => {
     try {
       const workflowId = parseInt(req.params.id, 10);
-      
+
       // Verify the workflow exists
       const workflow = await storage.getWorkflowById(workflowId);
       if (!workflow) {
         return res.status(404).json({ message: 'Workflow not found' });
       }
-      
+
       const requirement = await storage.addWorkflowRequirement({
         ...req.body,
         workflowId
       });
-      
+
       res.status(201).json(requirement);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
@@ -667,19 +658,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const patients = await storage.getPatients();
       const appointments = await storage.getAppointments();
       const results = await storage.getPatientLabResults();
-      
+
       // Count upcoming appointments (future dates that are not cancelled)
       const now = new Date();
       const upcomingAppointments = appointments.filter(apt => 
         new Date(apt.appointmentDate) > now && apt.status !== 'cancelled'
       );
-      
+
       // Simulate some critical alerts for demo
       const criticalAlerts = 3;
-      
+
       // Pending lab results - same approach
       const pendingLabResults = 8;
-      
+
       // Calculate CKD stage distribution
       const stageDistribution = {
         'Stage 1': 0,
@@ -689,20 +680,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'Stage 4': 0,
         'Stage 5': 0
       };
-      
+
       patients.forEach(patient => {
         if (patient.ckdStage && stageDistribution.hasOwnProperty(patient.ckdStage)) {
           (stageDistribution as any)[patient.ckdStage]++;
         }
       });
-      
+
       // eGFR trend data (mock for demo)
       const months = ['January', 'February', 'March', 'April', 'May', 'June'];
       const egfrTrend = months.map((month, index) => ({
         month,
         value: 52 - index
       }));
-      
+
       res.json({
         totalPatients: patients.length,
         upcomingAppointments: upcomingAppointments.length,
@@ -721,41 +712,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const patients = await storage.getPatients();
       const results = await storage.getPatientLabResults();
-      
+
       // Simulate "recently added" patients by returning a subset
       const recentPatients = patients.slice(0, Math.min(patients.length, 4));
-      
+
       // Augment with latest eGFR value where available
       const enhancedPatients = await Promise.all(recentPatients.map(async patient => {
         // Get patient lab results
         const patientResults = await storage.getPatientLabResultsByPatientId(patient.id);
-        
+
         // Find eGFR test results
         const eGFRResults = patientResults.filter(r => 
           r.labTestId === 1 // Assuming eGFR test ID is 1
         );
-        
+
         // Sort by date to get latest
         eGFRResults.sort((a, b) => 
           new Date(b.resultDate).getTime() - new Date(a.resultDate).getTime()
         );
-        
+
         const latestEGFR = eGFRResults.length > 0 ? eGFRResults[0].resultValue : null;
-        
+
         // Get last appointment as "last visit" date
         const appointments = await storage.getAppointmentsByPatientId(patient.id);
         appointments.sort((a, b) => 
           new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime()
         );
-        
+
         const lastVisit = appointments.length > 0 ? appointments[0].appointmentDate : null;
-        
+
         // Calculate age from birth date
         const birthDate = new Date(patient.birthDate);
         const ageDifMs = Date.now() - birthDate.getTime();
         const ageDate = new Date(ageDifMs);
         const age = Math.abs(ageDate.getUTCFullYear() - 1970);
-        
+
         return {
           ...patient,
           user: { ...patient.user, passwordHash: undefined },
@@ -764,7 +755,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastVisit
         };
       }));
-      
+
       res.json(enhancedPatients);
     } catch (error) {
       console.error('Dashboard recent patients error:', error);
@@ -776,19 +767,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.get('/dashboard/upcoming-appointments', authenticate, async (req, res) => {
     try {
       const appointments = await storage.getAppointments();
-      
+
       // Get future appointments that aren't cancelled
       const now = new Date();
       const upcomingAppointments = appointments
         .filter(apt => new Date(apt.appointmentDate) > now && apt.status !== 'cancelled')
         .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
         .slice(0, 3); // Get the next 3
-      
+
       // Augment with patient and doctor details
       const enhancedAppointments = await Promise.all(upcomingAppointments.map(async apt => {
         const patient = await storage.getPatientById(apt.patientId);
         const doctor = await storage.getDoctorById(apt.doctorId);
-        
+
         return {
           ...apt,
           patient: patient ? {
@@ -804,7 +795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } : null
         };
       }));
-      
+
       res.json(enhancedAppointments);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
@@ -844,18 +835,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           time: 'Yesterday'
         }
       ];
-      
+
       res.json(alerts);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
     }
   });
-  
+
   // Routes pour la gestion du thème
   apiRouter.post('/user/theme', authenticate, async (req, res) => {
     try {
       const { primaryColor, variant, appearance, radius } = req.body;
-      
+
       // Mettre à jour le fichier theme.json
       const themePath = path.resolve(process.cwd(), 'theme.json');
       const themeData = {
@@ -864,9 +855,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         appearance,
         radius
       };
-      
+
       fs.writeFileSync(themePath, JSON.stringify(themeData, null, 2));
-      
+
       res.json({ success: true, message: 'Theme updated successfully' });
     } catch (error) {
       console.error('Error updating theme:', error);

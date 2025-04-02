@@ -23,9 +23,7 @@ const registerSchema = z.object({
   lastName: z.string().min(2, { message: 'Last name must be at least 2 characters' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-  role: z.enum(['medecin', 'admin'], { 
-    required_error: 'Please select a role' 
-  }),
+  role: z.literal('medecin'),
   specialty: z.string().optional(),
   hospital: z.string().optional(),
 });
