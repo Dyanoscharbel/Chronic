@@ -140,15 +140,19 @@ export function calculateAge(birthDate: string): number {
 export function getAvatarColor(initials: string): string {
   // Generate a deterministic color based on initials
   const hash = initials.charCodeAt(0) + (initials.length > 1 ? initials.charCodeAt(1) : 0);
+  
+  // Palette plus colorée et plus visible, avec contraste texte optimisé pour tous les modes
   const colors = [
-    'bg-primary-light',
-    'bg-indigo-100 text-indigo-600',
-    'bg-green-100 text-green-600',
-    'bg-purple-100 text-purple-600',
-    'bg-red-100 text-red-600',
-    'bg-yellow-100 text-yellow-600',
-    'bg-blue-100 text-blue-600',
-    'bg-pink-100 text-pink-600'
+    'bg-primary text-primary-foreground',
+    'bg-indigo-500 text-white',
+    'bg-green-500 text-white',
+    'bg-purple-500 text-white',
+    'bg-rose-500 text-white',
+    'bg-amber-500 text-white',
+    'bg-sky-500 text-white',
+    'bg-emerald-500 text-white',
+    'bg-teal-500 text-white',
+    'bg-blue-500 text-white'
   ];
   
   return colors[hash % colors.length];

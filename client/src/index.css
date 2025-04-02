@@ -23,6 +23,32 @@
     --sidebar-border: 173 60% 25%;
     --sidebar-ring: 173 70% 30%;
   }
+  
+  /* Amélioration du thème sombre */
+  .dark {
+    --background: 0 0% 8%;  /* Mélange de noir et de cendre */
+    --foreground: 0 0% 98%; /* Texte blanc */
+    
+    --card: 0 0% 11%;       /* Carte légèrement plus claire que l'arrière-plan */
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 0 0% 13%;
+    --popover-foreground: 0 0% 98%;
+    
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 75%;
+    
+    --accent: 0 0% 18%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    
+    --ring: var(--primary);
+  }
 }
 
 /* Appliquer le thème aux éléments personnalisés */
@@ -60,4 +86,38 @@
 .badge-primary {
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
+}
+
+/* Amélioration des contrastes en mode sombre */
+.dark .bg-muted {
+  background-color: hsl(0 0% 11%);
+}
+
+.dark .border-border {
+  border-color: hsl(0 0% 25%);
+}
+
+/* Amélioration de la visibilité des textes en mode sombre */
+.dark .text-gray-900 {
+  color: white !important;
+}
+
+.dark .text-gray-800 {
+  color: hsl(0 0% 98%) !important;
+}
+
+.dark .text-gray-700 {
+  color: hsl(0 0% 95%) !important;
+}
+
+.dark .text-gray-600 {
+  color: hsl(0 0% 90%) !important;
+}
+
+.dark .text-gray-500 {
+  color: hsl(0 0% 80%) !important;
+}
+
+.dark .text-gray-400 {
+  color: hsl(0 0% 70%) !important;
 }

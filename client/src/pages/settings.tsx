@@ -820,6 +820,11 @@ export default function SettingsPage() {
                           type="submit"
                           className="ml-auto"
                           disabled={updateThemeMutation.isPending}
+                          style={{
+                            backgroundColor: themeForm.watch('primaryColor'),
+                            color: 'white',
+                            borderRadius: `${themeForm.watch('radius') * 0.5}rem`
+                          }}
                         >
                           {updateThemeMutation.isPending ? (
                             <>
