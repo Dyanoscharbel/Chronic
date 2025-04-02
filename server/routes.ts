@@ -146,8 +146,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Email et mot de passe requis' });
       }
 
-      // Recherche l'utilisateur avec son email
-      const user = await User.findOne({ email });
+      // Recherche l'utilisateur avec son email et inclut le passwordHash
+      const user = await User.findOne({ email }).select('+passwordHash');
       if (!user) {
         return res.status(401).json({ message: 'Utilisateur non trouvé' });
       }
@@ -157,6 +157,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!isValid) {
         return res.status(401).json({ message: 'Mot de passe incorrect' });
       }
+
+      console.log('Utilisateur trouvé:', { id: user._id, email: user.email, role: user.role });
 
       // Set user in session
       req.session.user = { id: user.id, email: user.email, role: user.role };
