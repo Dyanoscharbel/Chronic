@@ -28,12 +28,12 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   const { data: notifications } = useQuery<Notification[]>({
     queryKey: ['/api/notifications'],
     enabled: !!user,
   });
-  
+
   const unreadNotifications = notifications?.filter(n => !n.isRead).length || 0;
 
   const handleLogout = async () => {
@@ -70,7 +70,7 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
       >
         <Menu className="h-6 w-6" />
       </button>
-      
+
       <div className="flex-1 px-4 flex justify-between">
         <div className="flex-1 flex">
           <form className="w-full flex md:ml-0" onSubmit={handleSearch}>
@@ -90,7 +90,7 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
             </div>
           </form>
         </div>
-        
+
         <div className="ml-4 flex items-center md:ml-6">
           {/* Notification Dropdown */}
           <div className="relative">
@@ -120,7 +120,7 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
                   <span className="sr-only">Open user menu</span>
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-primary text-white">
-                      {user ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
+                      {user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
