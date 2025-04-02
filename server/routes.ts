@@ -147,7 +147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Recherche l'utilisateur avec son email et inclut le passwordHash
-      const user = await User.findOne({ email }).select('+passwordHash');
+      const user = await User.findOne({ email });
       if (!user) {
         return res.status(401).json({ message: 'Utilisateur non trouvé' });
       }
@@ -158,10 +158,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: 'Mot de passe incorrect' });
       }
 
-      console.log('Utilisateur trouvé:', { id: user._id, email: user.email, role: user.role });
-
       // Set user in session
-      req.session.user = { id: user.id, email: user.email, role: user.role };
+      req.session.user = { 
+        id: user._id.toString(),
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName
+      };
 
       // Generate JWT token
       const token = jwt.sign(

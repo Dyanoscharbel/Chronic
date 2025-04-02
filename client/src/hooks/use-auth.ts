@@ -57,13 +57,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.message || 'Erreur de connexion');
       }
 
-      if (!data.token || !data.user) {
-        console.error('Données invalides reçues:', data);
-        throw new Error('Réponse du serveur invalide');
-      }
-
       const newAuthState: AuthState = {
-        user: data.user,
+        user: {
+          id: data.user?.id || req.session?.user?.id,
+          email: data.user?.email || req.session?.user?.email,
+          firstName: data.user?.firstName || req.session?.user?.firstName,
+          lastName: data.user?.lastName || req.session?.user?.lastName,
+          role: data.user?.role || req.session?.user?.role
+        },
         token: data.token,
         isAuthenticated: true,
         userDetails: data.userDetails
