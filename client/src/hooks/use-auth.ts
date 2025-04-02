@@ -48,7 +48,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const response = await apiRequest('POST', '/api/auth/login', { email, password });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Invalid credentials');
+      }
+      
       const data = await response.json();
+      
+      if (!data.token || !data.user) {
+        throw new Error('Invalid server response');
+      }
       
       const newAuthState: AuthState = {
         user: data.user,
@@ -63,8 +73,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Login error:", error);
       toast({
-        title: "Login failed",
-        description: error instanceof Error ? error.message : "Invalid credentials",
+        title: "Erreur de connexion",
+        description: error instanceof Error ? error.message : "Identifiants invalides ou serveur indisponible",
         variant: "destructive",
       });
       return false;
