@@ -161,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { role, ...userData } = req.body;
 
       // Check if user already exists
-      const existingUser = await storage.getUserByEmail(userData.email);
+      const existingUser = await User.findOne({ email: userData.email });
       if (existingUser) {
         return res.status(400).json({ message: 'User with this email already exists' });
       }
@@ -172,11 +172,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { specialty, hospital, ...userFields } = userData;
-      const doctor = await storage.createDoctor(
-        { specialty, hospital, userId: 0 }, // userId will be set by storage
-        { ...userFields, role, passwordHash: userData.password }
-      );
-      res.status(201).json({ ...doctor, user: { ...doctor.user, passwordHash: undefined } });
+      
+      // Create user
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const newUser = new User({
+        ...userFields,
+        role,
+        passwordHash: hashedPassword
+      });
+      await newUser.save();
+
+      // Create doctor
+      const newDoctor = new Doctor({
+        user: newUser._id,
+        specialty,
+        hospital
+      });
+      await newDoctor.save();
+
+      const doctor = await Doctor.findById(newDoctor._id).populate('user');
+      res.status(201).json({ ...doctor.toObject(), user: { ...doctor.user.toObject(), passwordHash: undefined } });
     } catch (error) {
       console.error('Registration error:', error);
       res.status(500).json({ message: 'Server error during registration' });
