@@ -23,7 +23,8 @@ export function AvatarName({
   showEmail = false,
   email,
 }: AvatarNameProps) {
-  const displayInitials = initials || `${firstName[0]}${lastName[0]}`;
+  const displayInitials = initials || 
+    (firstName && lastName ? `${firstName[0]}${lastName[0]}` : 'U');
   const avatarColor = getAvatarColor(displayInitials);
   
   const sizeClasses = {
