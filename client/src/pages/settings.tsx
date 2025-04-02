@@ -74,13 +74,13 @@ export default function SettingsPage() {
   const queryClient = useQueryClient();
   const { user, userDetails } = useAuth();
   const [selectedTab, setSelectedTab] = useState('profile');
-  
+
   // Get user details if doctor
   const { data: doctorDetails, isLoading: doctorLoading } = useQuery<Doctor>({
     queryKey: [`/api/doctors/${userDetails?.id}`],
     enabled: !!user && user.role === 'medecin' && !!userDetails,
   });
-  
+
   // Profile form
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -92,7 +92,7 @@ export default function SettingsPage() {
       hospital: userDetails?.hospital || '',
     },
   });
-  
+
   // Password form
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
@@ -102,7 +102,7 @@ export default function SettingsPage() {
       confirmPassword: '',
     },
   });
-  
+
   // Notification preferences form
   const notificationForm = useForm<z.infer<typeof notificationSchema>>({
     resolver: zodResolver(notificationSchema),
@@ -113,7 +113,7 @@ export default function SettingsPage() {
       labResultAlerts: true,
     },
   });
-  
+
   // Profile update mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: z.infer<typeof profileSchema>) => {
@@ -136,7 +136,7 @@ export default function SettingsPage() {
       });
     }
   });
-  
+
   // Password change mutation
   const changePasswordMutation = useMutation({
     mutationFn: async (data: z.infer<typeof passwordSchema>) => {
@@ -162,7 +162,7 @@ export default function SettingsPage() {
       });
     }
   });
-  
+
   // Notification preferences mutation
   const updateNotificationsMutation = useMutation({
     mutationFn: async (data: z.infer<typeof notificationSchema>) => {
@@ -183,20 +183,20 @@ export default function SettingsPage() {
       });
     }
   });
-  
+
   // Form submissions
   const onProfileSubmit = (data: z.infer<typeof profileSchema>) => {
     updateProfileMutation.mutate(data);
   };
-  
+
   const onPasswordSubmit = (data: z.infer<typeof passwordSchema>) => {
     changePasswordMutation.mutate(data);
   };
-  
+
   const onNotificationsSubmit = (data: z.infer<typeof notificationSchema>) => {
     updateNotificationsMutation.mutate(data);
   };
-  
+
   // Theme form
   const themeForm = useForm<z.infer<typeof themeSchema>>({
     resolver: zodResolver(themeSchema),
@@ -207,7 +207,7 @@ export default function SettingsPage() {
       radius: 0.5,
     },
   });
-  
+
   // Theme update mutation
   const updateThemeMutation = useMutation({
     mutationFn: async (data: z.infer<typeof themeSchema>) => {
@@ -227,18 +227,18 @@ export default function SettingsPage() {
         appearance: variables.appearance,
         radius: variables.radius
       };
-      
+
       // Stocker les paramètres dans localStorage pour les réutiliser au chargement
       localStorage.setItem('theme', JSON.stringify(themeSettings));
-      
+
       toast({
         title: 'Thème mis à jour',
         description: 'Vos préférences de thème ont été enregistrées. Rechargement de la page...',
       });
-      
+
       // Appliquer les CSS variables au document root
       document.documentElement.style.setProperty('--primary', variables.primaryColor);
-      
+
       // Rechargement de la page après délai pour permettre à l'utilisateur de voir le toast
       setTimeout(() => {
         window.location.reload();
@@ -252,11 +252,11 @@ export default function SettingsPage() {
       });
     }
   });
-  
+
   const onThemeSubmit = (data: z.infer<typeof themeSchema>) => {
     updateThemeMutation.mutate(data);
   };
-  
+
   if (!user) {
     return (
       <div className="h-60 flex items-center justify-center">
@@ -264,11 +264,11 @@ export default function SettingsPage() {
       </div>
     );
   }
-  
+
   return (
     <div className="flex flex-col space-y-6">
       <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Left column - User info */}
         <div className="md:col-span-1">
@@ -287,13 +287,13 @@ export default function SettingsPage() {
                   </h2>
                   <p className="text-sm text-gray-500">{user.email}</p>
                   <p className="text-xs text-gray-500 mt-1">
-                    Role: {user.role === 'medecin' ? 'Medical Professional' : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    Role: {user.role && user.role === 'medecin' ? 'Medical Professional' : user?.role?.charAt(0)?.toUpperCase() + user?.role?.slice(1) || ''}
                   </p>
                 </div>
               </div>
-              
+
               <Separator className="my-6" />
-              
+
               <nav className="space-y-1">
                 <Button
                   variant={selectedTab === 'profile' ? 'secondary' : 'ghost'}
@@ -331,7 +331,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Right column - Settings tabs */}
         <div className="md:col-span-3">
           <Card className="h-full">
@@ -361,7 +361,7 @@ export default function SettingsPage() {
                               </FormItem>
                             )}
                           />
-                          
+
                           <FormField
                             control={profileForm.control}
                             name="lastName"
@@ -376,7 +376,7 @@ export default function SettingsPage() {
                             )}
                           />
                         </div>
-                        
+
                         <FormField
                           control={profileForm.control}
                           name="email"
@@ -393,7 +393,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         {user.role === 'medecin' && (
                           <>
                             <FormField
@@ -409,7 +409,7 @@ export default function SettingsPage() {
                                 </FormItem>
                               )}
                             />
-                            
+
                             <FormField
                               control={profileForm.control}
                               name="hospital"
@@ -426,7 +426,7 @@ export default function SettingsPage() {
                           </>
                         )}
                       </div>
-                      
+
                       <CardFooter className="px-0 pt-4 pb-0">
                         <Button
                           type="submit"
@@ -451,7 +451,7 @@ export default function SettingsPage() {
                 </CardContent>
               </>
             )}
-            
+
             {selectedTab === 'password' && (
               <>
                 <CardHeader>
@@ -477,7 +477,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={passwordForm.control}
                           name="newPassword"
@@ -494,7 +494,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={passwordForm.control}
                           name="confirmPassword"
@@ -509,7 +509,7 @@ export default function SettingsPage() {
                           )}
                         />
                       </div>
-                      
+
                       <CardFooter className="px-0 pt-4 pb-0">
                         <Button
                           type="submit"
@@ -534,7 +534,7 @@ export default function SettingsPage() {
                 </CardContent>
               </>
             )}
-            
+
             {selectedTab === 'notifications' && (
               <>
                 <CardHeader>
@@ -567,7 +567,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={notificationForm.control}
                           name="criticalAlertsOnly"
@@ -588,7 +588,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={notificationForm.control}
                           name="appointmentReminders"
@@ -609,7 +609,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={notificationForm.control}
                           name="labResultAlerts"
@@ -631,7 +631,7 @@ export default function SettingsPage() {
                           )}
                         />
                       </div>
-                      
+
                       <CardFooter className="px-0 pt-4 pb-0">
                         <Button
                           type="submit"
@@ -656,7 +656,7 @@ export default function SettingsPage() {
                 </CardContent>
               </>
             )}
-            
+
             {selectedTab === 'theme' && (
               <>
                 <CardHeader>
@@ -692,7 +692,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={themeForm.control}
                           name="variant"
@@ -721,7 +721,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={themeForm.control}
                           name="appearance"
@@ -750,7 +750,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={themeForm.control}
                           name="radius"
@@ -779,7 +779,7 @@ export default function SettingsPage() {
                             </FormItem>
                           )}
                         />
-                        
+
                         {/* Theme Preview */}
                         <div className="bg-muted p-4 rounded-md mt-6">
                           <h3 className="text-md font-medium mb-2">Theme Preview</h3>
@@ -814,7 +814,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <CardFooter className="px-0 pt-4 pb-0">
                         <Button
                           type="submit"
