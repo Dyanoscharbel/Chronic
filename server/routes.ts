@@ -108,7 +108,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     const token = authHeader.split(' ')[1];
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
+      const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string, role: string };
       req.user = decoded;
       next();
     } catch (error) {
@@ -116,9 +116,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
+  // Doctor auth middleware
+  const requireDoctor = (req: any, res: any, next: any) => {
+    const user = req.session.user || req.user;
+    
+    if (!user) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    if (user.role !== 'medecin') {
+      return res.status(403).json({ message: 'Access restricted to doctors only' });
+    }
+
+    next();
+  };
+
   // API routes
   const apiRouter = Router();
   app.use('/api', apiRouter);
+
+  // Public routes
+  apiRouter.post('/auth/login', async (req, res) => {
 
   // Auth routes
   apiRouter.post('/auth/login', async (req, res) => {
@@ -215,7 +233,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Users routes
-  apiRouter.get('/users', authenticate, async (req, res) => {
+  apiRouter.get('/users', authenticate, requireDoctor, async (req, res) => {
     try {
       const users = await storage.getUsers();
       res.json(users.map(user => ({ ...user, passwordHash: undefined })));
