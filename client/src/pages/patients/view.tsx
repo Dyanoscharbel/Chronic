@@ -62,7 +62,8 @@ export default function PatientView({ id }: PatientViewProps) {
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
   
-  // Form states
+  // Dialog states
+  const [patientDetailsDialogOpen, setPatientDetailsDialogOpen] = useState(false);
   const [labTestId, setLabTestId] = useState('');
   const [resultValue, setResultValue] = useState('');
   const [resultDate, setResultDate] = useState(new Date().toISOString().split('T')[0]);
@@ -247,11 +248,13 @@ export default function PatientView({ id }: PatientViewProps) {
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
                 <div className="text-xs font-semibold text-gray-500">PATIENT ID: P-{patient.id.toString().padStart(5, '0')}</div>
-                <Link href={`/patients/edit/${patient.id}`}>
-                  <Button variant="ghost" size="icon">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                </Link>
+                <div className="flex gap-2">
+                  <Link href={`/patients/edit/${patient.id}`}>
+                    <Button variant="ghost" size="icon">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
               <div className="flex flex-col items-center space-y-2 pt-2">
                 <AvatarName
@@ -266,9 +269,19 @@ export default function PatientView({ id }: PatientViewProps) {
                   </h2>
                   <p className="text-sm text-gray-500">{patient.user.email}</p>
                 </div>
-                <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text} px-3 py-1`}>
-                  {patient.ckdStage}
-                </Badge>
+                <div className="flex flex-col items-center gap-2">
+                  <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text} px-3 py-1`}>
+                    {patient.ckdStage}
+                  </Badge>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-2"
+                    onClick={() => setPatientDetailsDialogOpen(true)}
+                  >
+                    Voir plus
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="pb-6">
@@ -287,6 +300,45 @@ export default function PatientView({ id }: PatientViewProps) {
                   <div className="grid grid-cols-2 gap-3 text-sm py-1">
                     <div className="text-gray-500">Birth Date</div>
                     <div className="font-medium text-right">{formatDate(patient.birthDate)}</div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">CKD Information</h3>
+                  <Separator className="my-2" />
+                  <div className="grid grid-cols-2 gap-3 text-sm py-1">
+                    <div className="text-gray-500">CKD Stage</div>
+                    <div className="font-medium text-right">
+                      <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text}`}>
+                        {patient.ckdStage}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm py-1">
+                    <div className="text-gray-500">eGFR Value</div>
+                    <div className="font-medium text-right">
+                      {patient.lastEgfrValue ? `${patient.lastEgfrValue} mL/min/1.73m²` : 'Not measured'}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm py-1">
+                    <div className="text-gray-500">Proteinuria Level</div>
+                    <div className="font-medium text-right">
+                      {patient.proteinuriaLevel ? (
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                          {patient.proteinuriaLevel}
+                        </Badge>
+                      ) : 'Not assessed'}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm py-1">
+                    <div className="text-gray-500">ACR Value</div>
+                    <div className="font-medium text-right">
+                      {patient.lastProteinuriaValue ? `${patient.lastProteinuriaValue} mg/g` : 'Not measured'}
+                    </div>
+                  </div>
+                  <div className="mt-3 text-xs text-gray-500">
+                    <p><strong>CKD Staging:</strong> Stage 1 (≥90), Stage 2 (60-89), Stage 3A (45-59), Stage 3B (30-44), Stage 4 (15-29), Stage 5 (&lt;15)</p>
+                    <p className="mt-1"><strong>Proteinuria:</strong> A1 (&lt;30 mg/g), A2 (30-300 mg/g), A3 (&gt;300 mg/g)</p>
                   </div>
                 </div>
                 
@@ -785,6 +837,180 @@ export default function PatientView({ id }: PatientViewProps) {
                 'Schedule Appointment'
               )}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Patient Details Dialog */}
+      <Dialog open={patientDetailsDialogOpen} onOpenChange={setPatientDetailsDialogOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Informations détaillées du patient</DialogTitle>
+            <DialogDescription>
+              Dossier complet de {patient.user.firstName} {patient.user.lastName}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-lg">Informations personnelles</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Nom complet</div>
+                  <div>{patient.user.firstName} {patient.user.lastName}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Email</div>
+                  <div>{patient.user.email}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Âge</div>
+                  <div>{age} ans</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Genre</div>
+                  <div>{patient.gender}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Date de naissance</div>
+                  <div>{formatDate(patient.birthDate)}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Téléphone</div>
+                  <div>{patient.phone || 'Non fourni'}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Adresse</div>
+                  <div>{patient.address || 'Non fournie'}</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-lg">Information médicale MRC</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Stade MRC</div>
+                  <div>
+                    <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text}`}>
+                      {patient.ckdStage}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Valeur DFGe</div>
+                  <div>{patient.lastEgfrValue ? `${patient.lastEgfrValue} mL/min/1.73m²` : 'Non mesurée'}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Niveau de protéinurie</div>
+                  <div>
+                    {patient.proteinuriaLevel ? (
+                      <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                        {patient.proteinuriaLevel}
+                      </Badge>
+                    ) : 'Non évaluée'}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="font-medium">Valeur ACR</div>
+                  <div>{patient.lastProteinuriaValue ? `${patient.lastProteinuriaValue} mg/g` : 'Non mesurée'}</div>
+                </div>
+
+                <Separator className="my-2" />
+
+                <div>
+                  <h3 className="text-sm font-medium mb-2">Classification des stades MRC par DFGe</h3>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Stade</TableHead>
+                        <TableHead>DFGe (mL/min/1.73m²)</TableHead>
+                        <TableHead>Description</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Stade 1</TableCell>
+                        <TableCell>≥ 90</TableCell>
+                        <TableCell>Fonction rénale normale avec anomalies</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Stade 2</TableCell>
+                        <TableCell>60-89</TableCell>
+                        <TableCell>Léger déclin de la fonction rénale</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Stade 3A</TableCell>
+                        <TableCell>45-59</TableCell>
+                        <TableCell>Déclin modéré</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Stade 3B</TableCell>
+                        <TableCell>30-44</TableCell>
+                        <TableCell>Déclin plus avancé</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Stade 4</TableCell>
+                        <TableCell>15-29</TableCell>
+                        <TableCell>Insuffisance rénale avancée</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Stade 5</TableCell>
+                        <TableCell>&lt; 15</TableCell>
+                        <TableCell>Insuffisance rénale terminale</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+
+                <Separator className="my-2" />
+
+                <div>
+                  <h3 className="text-sm font-medium mb-2">Classification de la protéinurie (albuminurie)</h3>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Catégorie</TableHead>
+                        <TableHead>ACR (mg/g)</TableHead>
+                        <TableHead>Niveau</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>A1</TableCell>
+                        <TableCell>&lt; 30</TableCell>
+                        <TableCell>Faible</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>A2</TableCell>
+                        <TableCell>30-300</TableCell>
+                        <TableCell>Modérée</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>A3</TableCell>
+                        <TableCell>&gt; 300</TableCell>
+                        <TableCell>Élevée</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <DialogFooter className="flex justify-between">
+            <Button variant="outline" onClick={() => setPatientDetailsDialogOpen(false)}>
+              Fermer
+            </Button>
+            <GenerateReport patient={patient} />
           </DialogFooter>
         </DialogContent>
       </Dialog>
