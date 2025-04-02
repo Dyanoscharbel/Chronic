@@ -49,13 +49,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await apiRequest('POST', '/api/auth/login', { email, password });
       
+      const data = await response.json();
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Identifiants invalides');
+        throw new Error(data.message || 'Erreur de connexion');
       }
 
-      const data = await response.json().catch(() => null);
-      if (!data || !data.token || !data.user) {
+      if (!data.token || !data.user) {
         throw new Error('Réponse du serveur invalide');
       }
 

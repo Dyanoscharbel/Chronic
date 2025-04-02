@@ -143,17 +143,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
       if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
+        return res.status(400).json({ message: 'Email et mot de passe requis' });
       }
 
-      const user = await User.findOne({ email }).select('+passwordHash');
+      // Recherche l'utilisateur avec son email
+      const user = await User.findOne({ email });
       if (!user) {
-        return res.status(401).json({ message: 'Invalid credentials' });
+        return res.status(401).json({ message: 'Utilisateur non trouvé' });
       }
 
+      // Vérifie le mot de passe
       const isValid = await bcrypt.compare(password, user.passwordHash);
       if (!isValid) {
-        return res.status(401).json({ message: 'Invalid credentials' });
+        return res.status(401).json({ message: 'Mot de passe incorrect' });
       }
 
       // Set user in session
