@@ -96,11 +96,14 @@ export class MemStorage implements IStorage {
     this.workflows = new Map<number, Workflow>();
     this.workflowRequirements = new Map<number, WorkflowRequirement>();
     
-    // Seed some initial data
-    this.seedInitialData();
+    // Seed some initial data - this is async but we can't make constructor async
+    // so we'll just call it and handle any errors internally
+    this.seedInitialData().catch(err => {
+      console.error("Error seeding initial data:", err);
+    });
   }
 
-  private seedInitialData() {
+  private async seedInitialData() {
     // Create sample lab tests
     this.createLabTest({
       testName: "eGFR",
@@ -132,6 +135,50 @@ export class MemStorage implements IStorage {
       unit: "mmHg",
       normalMin: 90,
       normalMax: 120
+    });
+
+    // Create sample doctor
+    await this.createDoctor(
+      { 
+        specialty: "Néphrologie",
+        hospital: "Hôpital Universitaire",
+        userId: 0 // Will be set by createUser
+      },
+      {
+        firstName: "Dr. Martin",
+        lastName: "Dubois",
+        email: "dr.martin@example.com",
+        passwordHash: "password123",
+        role: "medecin"
+      }
+    );
+
+    // Create sample patient
+    await this.createPatient(
+      {
+        birthDate: "1975-05-15",
+        gender: "M",
+        address: "123 Rue Principale",
+        phone: "+33123456789",
+        ckdStage: "Stage 3A",
+        userId: 0 // Will be set by createUser
+      },
+      {
+        firstName: "Jean",
+        lastName: "Dupont",
+        email: "jean.dupont@example.com",
+        passwordHash: "password123",
+        role: "patient"
+      }
+    );
+
+    // Create sample admin
+    await this.createUser({
+      firstName: "Admin",
+      lastName: "User",
+      email: "admin@example.com",
+      passwordHash: "admin123",
+      role: "admin"
     });
   }
 
