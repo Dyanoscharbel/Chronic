@@ -881,7 +881,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Server error' });
     }
   });
-  });
 
   // Routes pour la gestion du thème
   apiRouter.post('/user/theme', authenticate, async (req, res) => {
