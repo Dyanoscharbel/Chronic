@@ -174,7 +174,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userDetails = await storage.getPatientByUserId(user.id);
       }
 
-      res.json({ token, user: { ...user, passwordHash: undefined }, userDetails });
+      // Format the response properly
+      res.json({ 
+        token, 
+        user: { 
+          id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+        }, 
+        userDetails 
+      });
     } catch (error) {
       console.error('Login error:', error);
       res.status(500).json({ message: 'Server error during login' });

@@ -26,7 +26,7 @@ export function AvatarName({
   const displayInitials = initials || 
     (firstName && lastName ? `${firstName[0]}${lastName[0]}` : 'U');
   const avatarColor = getAvatarColor(displayInitials);
-  
+
   const sizeClasses = {
     sm: 'h-8 w-8 text-sm',
     md: 'h-10 w-10 text-lg',
@@ -40,7 +40,7 @@ export function AvatarName({
           {displayInitials}
         </AvatarFallback>
       </Avatar>
-      
+
       {showName && (
         <div className="ml-4">
           <div className="text-sm font-medium text-gray-900">
