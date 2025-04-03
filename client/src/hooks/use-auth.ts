@@ -76,8 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         userDetails: data.userDetails
       };
       
-      setAuthState(newAuthState);
-      localStorage.setItem('auth', JSON.stringify(newAuthState));
+      setAuthState(prev => ({...prev, ...newAuthState}));
+      localStorage.setItem('auth', JSON.stringify({...authState, ...newAuthState}));
       return true;
     } catch (error) {
       console.error("Login error:", error);
