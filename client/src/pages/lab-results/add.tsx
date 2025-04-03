@@ -42,23 +42,23 @@ export default function LabResultAdd() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  
+
   // Load data for dropdowns
   const { data: patients, isLoading: patientsLoading } = useQuery<Patient[]>({
     queryKey: ['/api/patients'],
   });
-  
+
   const { data: doctors, isLoading: doctorsLoading } = useQuery<Doctor[]>({
     queryKey: ['/api/doctors'],
   });
-  
+
   const { data: labTests, isLoading: labTestsLoading } = useQuery<LabTest[]>({
     queryKey: ['/api/lab-tests'],
   });
-  
+
   // Selected test details for showing units and normal range
   const [selectedTest, setSelectedTest] = useState<LabTest | null>(null);
-  
+
   // Define form
   const form = useForm<LabResultFormData>({
     resolver: zodResolver(formSchema),
@@ -70,10 +70,10 @@ export default function LabResultAdd() {
       resultDate: new Date().toISOString().split('T')[0],
     },
   });
-  
+
   // Watch lab test ID to update selected test
   const watchLabTestId = form.watch('labTestId');
-  
+
   // Update selected test when lab test ID changes
   if (watchLabTestId && labTests && (!selectedTest || selectedTest.id.toString() !== watchLabTestId)) {
     const test = labTests.find(t => t.id.toString() === watchLabTestId);
@@ -81,7 +81,7 @@ export default function LabResultAdd() {
       setSelectedTest(test);
     }
   }
-  
+
   // Create lab result mutation
   const createLabResultMutation = useMutation({
     mutationFn: async (data: LabResultFormData) => {
@@ -109,14 +109,14 @@ export default function LabResultAdd() {
       });
     }
   });
-  
+
   // Form submission
   const onSubmit = (data: LabResultFormData) => {
     createLabResultMutation.mutate(data);
   };
-  
+
   const isLoading = patientsLoading || doctorsLoading || labTestsLoading;
-  
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center gap-4">
@@ -129,7 +129,7 @@ export default function LabResultAdd() {
         </Button>
         <h1 className="text-2xl font-semibold text-gray-900">Add Lab Result</h1>
       </div>
-      
+
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>New Lab Result Entry</CardTitle>
@@ -162,7 +162,7 @@ export default function LabResultAdd() {
                         </FormControl>
                         <SelectContent>
                           {patients?.map((patient) => (
-                            <SelectItem key={patient.id} value={patient.id.toString()}>
+                            <SelectItem key={patient._id} value={patient._id}>
                               {patient.user.firstName} {patient.user.lastName}
                             </SelectItem>
                           ))}
@@ -172,7 +172,7 @@ export default function LabResultAdd() {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="doctorId"
@@ -200,7 +200,7 @@ export default function LabResultAdd() {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="labTestId"
@@ -233,7 +233,7 @@ export default function LabResultAdd() {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="resultValue"
@@ -263,7 +263,7 @@ export default function LabResultAdd() {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="resultDate"
@@ -277,7 +277,7 @@ export default function LabResultAdd() {
                     </FormItem>
                   )}
                 />
-              
+
                 <CardFooter className="flex justify-between px-0 pb-0">
                   <Button
                     type="button"
