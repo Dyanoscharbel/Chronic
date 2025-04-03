@@ -318,12 +318,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Patients routes
   apiRouter.get('/patients', authenticate, async (req, res) => {
     try {
-      const patients = await storage.getPatients();
+      const patients = await Patient.find().populate('user');
       res.json(patients.map(patient => ({
-        ...patient,
-        user: { ...patient.user, passwordHash: undefined }
+        ...patient.toObject(),
+        user: { ...patient.user.toObject(), passwordHash: undefined }
       })));
     } catch (error) {
+      console.error('Error fetching patients:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
