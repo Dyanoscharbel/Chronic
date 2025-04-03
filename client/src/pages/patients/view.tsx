@@ -310,6 +310,14 @@ export default function PatientView({ id }: PatientViewProps) {
                   <h3 className="text-sm font-medium text-gray-500">Personal Information</h3>
                   <Separator className="my-2" />
                   <div className="grid grid-cols-2 gap-3 text-sm py-1">
+                    <div className="text-gray-500">Name</div>
+                    <div className="font-medium text-right">{patient.user?.firstName} {patient.user?.lastName}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm py-1">
+                    <div className="text-gray-500">Email</div>
+                    <div className="font-medium text-right">{patient.user?.email}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm py-1">
                     <div className="text-gray-500">Age</div>
                     <div className="font-medium text-right">{age} years</div>
                   </div>
