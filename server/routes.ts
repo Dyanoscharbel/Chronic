@@ -349,17 +349,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.get('/patients/:id', authenticate, async (req, res) => {
     try {
       const patientId = req.params.id;
+      console.log('Fetching patient with ID:', patientId);
       
       // Recherche le patient avec une population de l'utilisateur
-      const patient = await Patient.findById(patientId).populate({
-        path: 'user',
-        select: '-passwordHash' // Exclure le hash du mot de passe
-      });
+      const patient = await Patient.findById(patientId)
+        .populate({
+          path: 'user',
+          select: 'firstName lastName email role -_id' // Sélectionner les champs nécessaires
+        })
+        .populate({
+          path: 'doctor',
+          select: 'specialty hospital -_id'
+        });
 
       if (!patient) {
+        console.log('Patient not found for ID:', patientId);
         return res.status(404).json({ message: 'Patient not found' });
       }
 
+      console.log('Found patient:', patient);
       res.json(patient);
     } catch (error) {
       console.error('Error fetching patient:', error);
