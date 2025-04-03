@@ -58,7 +58,7 @@ export default function PatientView({ id }: PatientViewProps) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const patientId = parseInt(id);
+  const patientId = id;
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
 
@@ -212,7 +212,7 @@ export default function PatientView({ id }: PatientViewProps) {
   };
 
   // Loading state
-  if (patientLoading || isNaN(patientId)) {
+  if (patientLoading || !patientId) {
     return <PageLoader />;
   }
 
