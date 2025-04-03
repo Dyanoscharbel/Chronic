@@ -41,7 +41,6 @@ const formSchema = z.object({
   firstName: z.string().min(2, { message: 'First name must be at least 2 characters' }),
   lastName: z.string().min(2, { message: 'Last name must be at least 2 characters' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' }).optional(),
   birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Please enter a valid date (YYYY-MM-DD)' }),
   gender: z.enum(['M', 'F', 'Autre'], { required_error: 'Please select a gender' }),
   address: z.string().optional(),
@@ -63,7 +62,6 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
       firstName: '',
       lastName: '',
       email: '',
-      password: '',
       birthDate: new Date().toISOString().split('T')[0],
       gender: 'M',
       address: '',
@@ -244,25 +242,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                     )}
                   />
                   
-                  {!isEditing && (
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="password" 
-                              placeholder="Enter password" 
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
+                  
                   
                   <FormField
                     control={form.control}
