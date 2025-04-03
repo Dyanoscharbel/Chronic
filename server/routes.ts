@@ -260,10 +260,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Session user:', req.session.user);
       const { firstName, lastName, specialty, hospital } = req.body;
 
-      // Convertir l'ID en ObjectId MongoDB
+      // Mettre à jour l'utilisateur
       const user = await User.findOneAndUpdate(
         { _id: userId },
-        userId,
         { firstName, lastName },
         { new: true }
       ).select('-passwordHash');
