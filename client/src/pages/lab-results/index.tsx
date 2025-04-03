@@ -33,13 +33,17 @@ export default function LabResultsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 10;
 
+  const { user } = useAuth();
+  
   const { data: labResults = [], isLoading: resultsLoading } = useQuery<PatientLabResult[]>({
     queryKey: ['/api/patient-lab-results'],
-    select: (data) => data.map(result => ({
-      ...result,
-      patient: result.patient._id ? result.patient : result.patientId,
-      labTest: result.labTest._id ? result.labTest : result.labTestId
-    }))
+    select: (data) => data
+      .filter(result => result.doctor._id === user?.id)
+      .map(result => ({
+        ...result,
+        patient: result.patient._id ? result.patient : result.patientId,
+        labTest: result.labTest._id ? result.labTest : result.labTestId
+      }))
   });
 
   const { data: patients = [] } = useQuery<Patient[]>({
