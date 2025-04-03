@@ -121,23 +121,18 @@ export default function SettingsPage() {
       return response;
     },
     onSuccess: async (data) => {
-      const newAuth = {
-        user: data.user,
-        userDetails: data.userDetails,
-        isAuthenticated: true,
-        token: JSON.parse(localStorage.getItem('auth') || '{}').token
-      };
-      
-      localStorage.setItem('auth', JSON.stringify(newAuth));
-      queryClient.setQueryData(['auth'], newAuth);
-      
-      // Force update auth context
-      setAuthState(newAuth);
-      
       toast({
         title: 'Profile updated',
-        description: 'Your profile has been updated successfully',
+        description: 'Please login again to continue',
       });
+
+      // Clear auth and redirect to login
+      localStorage.removeItem('auth');
+      queryClient.clear();
+
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 1500);
     },
     onError: (error) => {
       toast({
