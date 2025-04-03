@@ -893,17 +893,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
       
-      // Find patients created in the last 6 months for this doctor
+      // Find most recently added patients for this doctor
       const recentPatients = await Patient.find({
         doctor: doctorId,
-        createdAt: { $gte: sixMonthsAgo },
         'user': { $ne: null },  // Ensure user exists
-        'birthDate': { $exists: true }, // Ensure birthDate exists
-        'gender': { $exists: true }  // Ensure gender exists
       })
       .populate('user')
-      .sort({ createdAt: -1 })
-      .limit(4);
+      .sort({ createdAt: -1 }) // Tri par date de création décroissante
+      .limit(4); // Limite aux 4 derniers patients
 
       // Augment with latest eGFR value where available
       const enhancedPatients = await Promise.all(recentPatients.map(async patient => {
