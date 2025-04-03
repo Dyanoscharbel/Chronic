@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
+import { apiRequest } from '@/lib/queryClient';
 import {
   ArrowLeft, Edit, Calendar, FileText, AlertCircle,
   PlusCircle, Download, ChevronUp, ChevronDown
@@ -190,22 +191,25 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
+  const { user } = useAuth();
+
   // Set doctor if missing
   useEffect(() => {
-    if (patient && !patient.doctor && user) {
-      const updatePatient = async () => {
+    const updateDoctor = async () => {
+      if (patient && !patient.doctor && user) {
         try {
           await apiRequest('PUT', `/api/patients/${patient._id}`, {
             ...patient,
             doctor: user.id
           });
+          queryClient.invalidateQueries({ queryKey: [`/api/patients/${id}`] });
         } catch (error) {
           console.error('Failed to update doctor:', error);
         }
-      };
-      updatePatient();
-    }
-  }, [patient, user]);
+      }
+    };
+    updateDoctor();
+  }, [patient, user, id, queryClient]);
 
   // Handle patient not found or invalid data
   if (!patient) {
