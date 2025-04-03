@@ -75,21 +75,23 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${id}`],
     enabled: isEditing,
-    onSuccess: (data) => {
-      if (data && data.user) {
-        form.reset({
-          firstName: data.user.firstName,
-          lastName: data.user.lastName,
-          email: data.user.email,
-          birthDate: new Date(data.birthDate).toISOString().split('T')[0],
-          gender: data.gender,
-          address: data.address || '',
-          phone: data.phone || '',
-          ckdStage: data.ckdStage
-        });
-      }
-    }
   });
+
+  // Update form when patient data is loaded
+  useEffect(() => {
+    if (patient && patient.user) {
+      form.reset({
+        firstName: patient.user.firstName,
+        lastName: patient.user.lastName,
+        email: patient.user.email,
+        birthDate: new Date(patient.birthDate).toISOString().split('T')[0],
+        gender: patient.gender,
+        address: patient.address || '',
+        phone: patient.phone || '',
+        ckdStage: patient.ckdStage
+      });
+    }
+  }, [patient, form]);
 
   // Update patient mutation
   const updatePatientMutation = useMutation({
