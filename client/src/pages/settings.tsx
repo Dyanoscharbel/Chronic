@@ -424,11 +424,8 @@ export default function SettingsPage() {
                             <FormItem>
                               <FormLabel>Email</FormLabel>
                               <FormControl>
-                                <Input {...field} readOnly />
+                                <Input {...field} />
                               </FormControl>
-                              <FormDescription>
-                                Email cannot be changed
-                              </FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
