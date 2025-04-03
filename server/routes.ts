@@ -589,11 +589,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
       const doctorId = req.session.user?.id;
-      const results = await PatientLabResult.find({ doctor: doctorId })
-        .populate('patient')
-        .populate('doctor')
-        .populate('labTest')
-        .sort({ resultDate: -1 });
+      console.log('Fetching lab results for doctor:', doctorId);
+      
+      // Find patients for this doctor first
+      const doctorPatients = await Patient.find({ doctor: doctorId }).select('_id');
+      const patientIds = doctorPatients.map(p => p._id);
+      
+      // Then find lab results for these patients
+      const results = await PatientLabResult.find({
+        patient: { $in: patientIds }
+      })
+      .populate('patient')
+      .populate('doctor')
+      .populate('labTest')
+      .sort({ resultDate: -1 });
+      
+      console.log('Found results:', results.length);
       res.json(results);
     } catch (error) {
       console.error('Error fetching lab results:', error);
