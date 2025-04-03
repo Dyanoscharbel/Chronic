@@ -691,7 +691,7 @@ export default function PatientView({ id }: PatientViewProps) {
                   </SelectTrigger>
                   <SelectContent>
                     {labTests?.map((test) => (
-                      <SelectItem key={test.id} value={test.id.toString()}>
+                      <SelectItem key={test._id} value={test._id.toString()}>
                         {test.testName}
                       </SelectItem>
                     ))}
@@ -864,8 +864,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-lg">Informations personnelles</CardTitle>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
+              </CardHeader<CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="font-medium">Nom complet</div>
                   <div>{patient.user.firstName} {patient.user.lastName}</div>
