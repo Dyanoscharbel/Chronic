@@ -1,0 +1,148 @@
+ [{"_id":"67ee6011cfb2816417d213a9","user":{"_…
+2:38:05 PM [express] GET /api/patient-lab-results 304 in 1ms :: []
+2:38:05 PM [express] GET /api/doctors 200 in 1ms :: [{"specialty":"Néphrologie","hospital":"Hôpital …
+2:38:05 PM [express] GET /api/lab-tests 200 in 105ms :: [{"_id":"67ee9d0a6e544c0a6df9af74","testName…
+Error creating lab result: Error: PatientLabResult validation failed: patient: Cast to ObjectId failed for value "67" (type number) at path "patient" because of "BSONError", labTest: Cast to ObjectId failed for value "67" (type number) at path "labTest" because of "BSONError"
+    at ValidationError.inspect (/home/runner/workspace/node_modules/mongoose/lib/error/validation.js:52:26)
+    at formatValue (node:internal/util/inspect:809:19)
+    at inspect (node:internal/util/inspect:368:10)
+    at formatWithOptionsInternal (node:internal/util/inspect:2307:40)
+    at formatWithOptions (node:internal/util/inspect:2169:10)
+    at console.value (node:internal/console/constructor:350:14)
+    at console.warn (node:internal/console/constructor:383:61)
+    at <anonymous> (/home/runner/workspace/server/routes.ts:624:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  errors: {
+    patient: CastError: Cast to ObjectId failed for value "67" (type number) at path "patient" because of "BSONError"
+        at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:251:11)
+        at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+        at model.$set (/home/runner/workspace/node_modules/mongoose/lib/document.js:1438:22)
+        at model.$set (/home/runner/workspace/node_modules/mongoose/lib/document.js:1132:16)
+        at model.Document (/home/runner/workspace/node_modules/mongoose/lib/document.js:178:12)
+        at model.Model (/home/runner/workspace/node_modules/mongoose/lib/model.js:128:12)
+        at new model (/home/runner/workspace/node_modules/mongoose/lib/model.js:4800:15)
+        at <anonymous> (/home/runner/workspace/server/routes.ts:613:25)
+        at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+        at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+        at authenticate (/home/runner/workspace/server/routes.ts:102:14)
+        at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+        at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+        at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+        at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+        at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+        at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+        at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+        at Function.handle (/home/runner/workspace/node_modules/express/lib/router/index.js:175:3)
+        at router (/home/runner/workspace/node_modules/express/lib/router/index.js:47:12)
+        at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+        at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+        at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+        at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+        at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+        at Immediate.<anonymous> (/home/runner/workspace/node_modules/express-session/index.js:514:7)
+        at process.processImmediate (node:internal/timers:485:21) {
+      stringValue: '"67"',
+      messageFormat: undefined,
+      kind: 'ObjectId',
+      value: 67,
+      path: 'patient',
+      reason: BSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer
+          at new ObjectId (/home/runner/workspace/node_modules/bson/src/objectid.ts:120:15)
+          at castObjectId (/home/runner/workspace/node_modules/mongoose/lib/cast/objectid.js:25:12)
+          at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:249:12)
+          at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+          at model.$set (/home/runner/workspace/node_modules/mongoose/lib/document.js:1438:22)
+          at model.$set (/home/runner/workspace/node_modules/mongoose/lib/document.js:1132:16)
+          at model.Document (/home/runner/workspace/node_modules/mongoose/lib/document.js:178:12)
+          at model.Model (/home/runner/workspace/node_modules/mongoose/lib/model.js:128:12)
+          at new model (/home/runner/workspace/node_modules/mongoose/lib/model.js:4800:15)
+          at <anonymous> (/home/runner/workspace/server/routes.ts:613:25)
+          at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+          at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+          at authenticate (/home/runner/workspace/server/routes.ts:102:14)
+          at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+          at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+          at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+          at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+          at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+          at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+          at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+          at Function.handle (/home/runner/workspace/node_modules/express/lib/router/index.js:175:3)
+          at router (/home/runner/workspace/node_modules/express/lib/router/index.js:47:12)
+          at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+          at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+          at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+          at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+          at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+          at Immediate.<anonymous> (/home/runner/workspace/node_modules/express-session/index.js:514:7)
+          at process.processImmediate (node:internal/timers:485:21),
+      valueType: 'number'
+    },
+    labTest: CastError: Cast to ObjectId failed for value "67" (type number) at path "labTest" because of "BSONError"
+        at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:251:11)
+        at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+        at model.$set (/home/runner/workspace/node_modules/mongoose/lib/document.js:1438:22)
+        at model.$set (/home/runner/workspace/node_modules/mongoose/lib/document.js:1132:16)
+        at model.Document (/home/runner/workspace/node_modules/mongoose/lib/document.js:178:12)
+        at model.Model (/home/runner/workspace/node_modules/mongoose/lib/model.js:128:12)
+        at new model (/home/runner/workspace/node_modules/mongoose/lib/model.js:4800:15)
+        at <anonymous> (/home/runner/workspace/server/routes.ts:613:25)
+        at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+        at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+        at authenticate (/home/runner/workspace/server/routes.ts:102:14)
+        at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+        at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+        at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+        at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+        at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+        at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+        at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+        at Function.handle (/home/runner/workspace/node_modules/express/lib/router/index.js:175:3)
+        at router (/home/runner/workspace/node_modules/express/lib/router/index.js:47:12)
+        at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+        at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+        at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+        at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+        at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+        at Immediate.<anonymous> (/home/runner/workspace/node_modules/express-session/index.js:514:7)
+        at process.processImmediate (node:internal/timers:485:21) {
+      stringValue: '"67"',
+      messageFormat: undefined,
+      kind: 'ObjectId',
+      value: 67,
+      path: 'labTest',
+      reason: BSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer
+          at new ObjectId (/home/runner/workspace/node_modules/bson/src/objectid.ts:120:15)
+          at castObjectId (/home/runner/workspace/node_modules/mongoose/lib/cast/objectid.js:25:12)
+          at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:249:12)
+          at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+          at model.$set (/home/runner/workspace/node_modules/mongoose/lib/document.js:1438:22)
+          at model.$set (/home/runner/workspace/node_modules/mongoose/lib/document.js:1132:16)
+          at model.Document (/home/runner/workspace/node_modules/mongoose/lib/document.js:178:12)
+          at model.Model (/home/runner/workspace/node_modules/mongoose/lib/model.js:128:12)
+          at new model (/home/runner/workspace/node_modules/mongoose/lib/model.js:4800:15)
+          at <anonymous> (/home/runner/workspace/server/routes.ts:613:25)
+          at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+          at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+          at authenticate (/home/runner/workspace/server/routes.ts:102:14)
+          at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+          at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+          at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+          at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+          at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+          at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+          at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+          at Function.handle (/home/runner/workspace/node_modules/express/lib/router/index.js:175:3)
+          at router (/home/runner/workspace/node_modules/express/lib/router/index.js:47:12)
+          at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+          at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+          at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+          at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+          at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+          at Immediate.<anonymous> (/home/runner/workspace/node_modules/express-session/index.js:514:7)
+          at process.processImmediate (node:internal/timers:485:21),
+      valueType: 'number'
+    }
+  },
+  _message: 'PatientLabResult validation failed'
+}
