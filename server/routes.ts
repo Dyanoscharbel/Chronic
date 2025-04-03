@@ -359,11 +359,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Validate data
+      // Générer un mot de passe aléatoire pour le patient
+      const tempPassword = Math.random().toString(36).slice(-8);
+      const passwordHash = await bcrypt.hash(tempPassword, 10);
+
       const userData = {
         firstName,
         lastName,
         email,
-        passwordHash: password,
+        passwordHash,
         role: 'patient'
       };
 
