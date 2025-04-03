@@ -434,19 +434,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const patientId = req.params.id;
       
-      // Find and delete the patient
+      // Find the patient first
       const patient = await Patient.findById(patientId);
       if (!patient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
 
-      // Delete associated user
-      await User.findByIdAndDelete(patient.user);
-      
-      // Delete the patient
-      await Patient.findByIdAndDelete(patientId);
+      // Delete the patient and user in a transaction
+      const session = await mongoose.startSession();
+      session.startTransaction();
 
-      res.json({ success: true });
+      try {
+        // Delete the patient
+        await Patient.findByIdAndDelete(patientId).session(session);
+        
+        // Delete the associated user
+        await User.findByIdAndDelete(patient.user).session(session);
+        
+        // Commit the transaction
+        await session.commitTransaction();
+        res.json({ success: true });
+      } catch (error) {
+        // If there's an error, abort the transaction
+        await session.abortTransaction();
+        throw error;
+      } finally {
+        session.endSession();
+      }
     } catch (error) {
       console.error('Delete patient error:', error);
       res.status(500).json({ message: 'Server error' });

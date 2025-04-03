@@ -64,7 +64,7 @@ export default function PatientsPage() {
     setCurrentPage(1);
   };
   
-  const handleDeletePatient = async (id: string) => {
+  const handleDeletePatient = async (patient: Patient) => {
     if (window.confirm('Are you sure you want to delete this patient?')) {
       try {
         await apiRequest('DELETE', `/api/patients/${patient._id}`, {});
@@ -74,6 +74,7 @@ export default function PatientsPage() {
         });
         refetch();
       } catch (error) {
+        console.error('Delete error:', error);
         toast({
           title: 'Error',
           description: 'Failed to delete patient',
