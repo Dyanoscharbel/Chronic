@@ -283,12 +283,6 @@ class MemStorage implements IStorage {
     // Tests sanguins
     // Les tests sont maintenant stockés dans MongoDB
     // Vous pouvez les ajouter via l'interface d'administration
-      testName: "Urée sanguine",
-      description: "Mesure de la fonction rénale",
-      unit: "mg/dL",
-      normalMin: 7,
-      normalMax: 20
-    });
 
     this.createLabTest({
       testName: "Sodium",
