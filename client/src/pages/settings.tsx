@@ -78,7 +78,7 @@ export default function SettingsPage() {
   // Get doctor details from userDetails directly
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
-    defaultValues: {
+    values: {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
@@ -86,6 +86,19 @@ export default function SettingsPage() {
       hospital: userDetails?.hospital || '',
     },
   });
+
+  // Update form values when userDetails changes
+  useEffect(() => {
+    if (userDetails) {
+      profileForm.reset({
+        firstName: user?.firstName || '',
+        lastName: user?.lastName || '',
+        email: user?.email || '',
+        specialty: userDetails.specialty || '',
+        hospital: userDetails.hospital || '',
+      });
+    }
+  }, [userDetails, user]);
 
   // Password form
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
