@@ -12,7 +12,7 @@ import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import MemoryStore from 'memorystore';
 import bcrypt from 'bcrypt';
-import { User, Doctor, Patient, LabTest } from './models';
+import { User, Doctor, Patient, LabTest, PatientLabResult } from './models';
 
 const MemoryStoreSession = MemoryStore(session);
 
