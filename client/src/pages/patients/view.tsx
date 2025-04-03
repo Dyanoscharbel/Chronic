@@ -256,9 +256,9 @@ export default function PatientView({ id }: PatientViewProps) {
           <Card>
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
-                <div className="text-xs font-semibold text-gray-500">PATIENT ID: P-{patient.id.toString().padStart(5, '0')}</div>
+                <div className="text-xs font-semibold text-gray-500">PATIENT ID: P-{patient._id.toString().padStart(5, '0')}</div>
                 <div className="flex gap-2">
-                  <Link href={`/patients/edit/${patient.id}`}>
+                  <Link href={`/patients/edit/${patient._id}`}>
                     <Button variant="ghost" size="icon">
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -856,7 +856,7 @@ export default function PatientView({ id }: PatientViewProps) {
                   <div>{patient.user.email}</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div className="font-medium">Âge</div>
+                  <div className="font-medium<div className="font-medium">Âge</div>
                   <div>{age} ans</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
