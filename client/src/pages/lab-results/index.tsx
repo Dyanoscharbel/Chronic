@@ -54,8 +54,8 @@ export default function LabResultsPage() {
     return patient ? `${patient.user.firstName} ${patient.user.lastName}` : 'Unknown Patient';
   };
 
-  const getPatient = (patientId: number) => {
-    return patients?.find(p => p.id === patientId);
+  const getPatient = (patientId: string) => {
+    return patients?.find(p => p._id === patientId);
   };
 
   const getTestName = (testId: string) => {
@@ -205,10 +205,10 @@ export default function LabResultsPage() {
                       }
 
                       return (
-                        <TableRow key={result.id}>
+                        <TableRow key={result._id}>
                           <TableCell>
                             {patient ? (
-                              <Link href={`/patients/${patient.id}`}>
+                              <Link href={`/patients/${patient._id}`}>
                                 <AvatarName
                                   firstName={patient.user.firstName}
                                   lastName={patient.user.lastName}
@@ -231,7 +231,7 @@ export default function LabResultsPage() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            {getDoctorName(result.doctorId)}
+                            {getDoctorName(result.doctor)}
                           </TableCell>
                           <TableCell>
                             {formatDate(result.resultDate)}
