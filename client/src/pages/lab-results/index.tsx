@@ -41,7 +41,7 @@ export default function LabResultsPage() {
     queryKey: ['/api/patients'],
   });
 
-  const { data: labTests } = useQuery<LabTest[]>({
+  const { data: labTests, isLoading: labTestsLoading } = useQuery<LabTest[]>({
     queryKey: ['/api/lab-tests'],
   });
 
