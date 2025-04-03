@@ -144,7 +144,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     login,
     register,
-    logout
+    logout,
+    setAuthState
   };
   
   return React.createElement(
@@ -159,5 +160,5 @@ export function useAuth() {
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
-  return { ...context, setAuthState };
+  return context;
 }
