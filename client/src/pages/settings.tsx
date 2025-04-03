@@ -165,8 +165,13 @@ export default function SettingsPage() {
         description: 'Vos informations ont été mises à jour avec succès',
       });
 
-      // Rediriger vers la page de connexion
-      window.location.href = '/login';
+      // Déconnecter l'utilisateur
+      await logout();
+      
+      // Rediriger vers la page de connexion après un court délai
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 1000);
     },
     onError: (error) => {
       toast({
