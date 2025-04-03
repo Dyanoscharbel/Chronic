@@ -32,7 +32,6 @@ import { apiRequest } from '@/lib/queryClient';
 
 const formSchema = z.object({
   patientId: z.string().min(1, { message: 'Please select a patient' }),
-  doctorId: z.string().min(1, { message: 'Please select a doctor' }),
   labTestId: z.string().min(1, { message: 'Please select a test' }),
   resultValue: z.string().min(1, { message: 'Please enter a result value' }),
   resultDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Please enter a valid date (YYYY-MM-DD)' }),
@@ -43,18 +42,15 @@ export default function LabResultAdd() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Load data for dropdowns
   const { data: patients, isLoading: patientsLoading } = useQuery<Patient[]>({
     queryKey: ['/api/patients'],
-  });
-
-  const { data: doctors, isLoading: doctorsLoading } = useQuery<Doctor[]>({
-    queryKey: ['/api/doctors'],
   });
 
   const { data: labTests, isLoading: labTestsLoading } = useQuery<LabTest[]>({
     queryKey: ['/api/lab-tests'],
   });
+
+  const { user } = useAuth();
 
   // Selected test details for showing units and normal range
   const [selectedTest, setSelectedTest] = useState<LabTest | null>(null);
@@ -64,7 +60,6 @@ export default function LabResultAdd() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       patientId: '',
-      doctorId: '',
       labTestId: '',
       resultValue: '',
       resultDate: new Date().toISOString().split('T')[0],
@@ -87,7 +82,7 @@ export default function LabResultAdd() {
     mutationFn: async (data: LabResultFormData) => {
       return apiRequest('POST', '/api/patient-lab-results', {
         patientId: parseInt(data.patientId),
-        doctorId: parseInt(data.doctorId),
+        doctorId: user?.id,
         labTestId: parseInt(data.labTestId),
         resultValue: parseFloat(data.resultValue),
         resultDate: data.resultDate
@@ -173,33 +168,7 @@ export default function LabResultAdd() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="doctorId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Doctor</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a doctor" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {doctors?.map((doctor) => (
-                            <SelectItem key={doctor.id} value={doctor.id.toString()}>
-                              Dr. {doctor.user.firstName} {doctor.user.lastName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                
 
                 <FormField
                   control={form.control}
