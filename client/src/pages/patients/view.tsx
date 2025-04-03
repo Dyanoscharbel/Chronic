@@ -47,8 +47,8 @@ import {
   formatDate,
   formatTime,
   getStatusColor,
-  determineProgressionRisk
 } from '@/lib/utils';
+import { determineProgressionRisk } from '@/lib/ckd-utils';
 import { apiRequest } from '@/lib/queryClient';
 
 interface PatientViewProps {
