@@ -111,7 +111,7 @@ export default function LabResultAdd() {
     createLabResultMutation.mutate(data);
   };
 
-  const isLoading = patientsLoading || doctorsLoading || labTestsLoading;
+  const isLoading = patientsLoading || labTestsLoading;
 
   return (
     <div className="flex flex-col space-y-6">
