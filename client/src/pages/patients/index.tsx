@@ -201,7 +201,7 @@ export default function PatientsPage() {
                               <Link href={`/patients/${patient.id}`}>
                                 <Button variant="ghost" size="sm">View</Button>
                               </Link>
-                              <Link href={`/patients/edit/${patient.id}`}>
+                              <Link href={`/patients/add-edit/${patient._id}`}>
                                 <Button variant="outline" size="sm">Edit</Button>
                               </Link>
                               <Button 
