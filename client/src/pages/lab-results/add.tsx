@@ -52,6 +52,19 @@ export default function LabResultAdd() {
     enabled: true
   });
 
+  const { user } = useAuth();
+
+  // Define form
+  const form = useForm<LabResultFormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      patientId: '',
+      labTestId: '',
+      resultValue: '',
+      resultDate: new Date().toISOString().split('T')[0],
+    },
+  });
+
   const filteredTests = labTests?.filter(test => {
     const patientGender = patients?.find(p => p._id === form.watch('patientId'))?.gender;
     if (patientGender === 'M') {
@@ -61,8 +74,6 @@ export default function LabResultAdd() {
     }
     return true;
   });
-
-  const { user } = useAuth();
 
   // Selected test details for showing units and normal range
   const [selectedTest, setSelectedTest] = useState<LabTest | null>(null);
