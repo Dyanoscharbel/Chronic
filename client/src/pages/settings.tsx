@@ -126,13 +126,13 @@ export default function SettingsPage() {
       const newAuth = {
         ...currentAuth,
         user: data.user,
-        userDetails: data.userDetails
+        userDetails: data.userDetails,
+        isAuthenticated: true
       };
       localStorage.setItem('auth', JSON.stringify(newAuth));
       
-      // Mettre à jour le cache React Query
-      queryClient.setQueryData(['/api/user/profile'], data);
-      queryClient.invalidateQueries();
+      // Forcer le rechargement de la page pour mettre à jour l'interface
+      window.location.reload();
       
       toast({
         title: 'Profile updated',
