@@ -361,8 +361,6 @@ console.error('----------------------------------------');
       }
 
       // Recherche le patient avec toutes les informations associées
-      // First find and update the patient with the current doctor if missing
-      const doctorId = req.session.user?.id;
       // Get the current doctor's ID from the session
       const doctorId = req.session.user?.id;
       if (!doctorId) {
