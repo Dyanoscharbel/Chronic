@@ -64,10 +64,10 @@ export default function PatientsPage() {
     setCurrentPage(1);
   };
   
-  const handleDeletePatient = async (id: number) => {
+  const handleDeletePatient = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this patient?')) {
       try {
-        await apiRequest('DELETE', `/api/patients/${id}`, {});
+        await apiRequest('DELETE', `/api/patients/${patient._id}`, {});
         toast({
           title: 'Patient deleted',
           description: 'The patient has been successfully deleted',
