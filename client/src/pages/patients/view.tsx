@@ -76,14 +76,15 @@ export default function PatientView({ id }: PatientViewProps) {
   // Fetch patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${id}`],
+    enabled: !!id && id !== 'undefined',
     queryFn: async () => {
-      if (!id) {
-        throw new Error('Patient ID is required');
+      if (!id || id === 'undefined') {
+        setLocation('/patients');
+        throw new Error('Invalid patient ID');
       }
       const response = await apiRequest('GET', `/api/patients/${id}`);
       return response;
     },
-    enabled: !!id
   });
 
   // Fetch lab results
