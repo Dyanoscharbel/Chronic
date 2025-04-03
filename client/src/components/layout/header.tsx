@@ -41,15 +41,16 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
       await apiRequest('POST', '/api/auth/logout', {});
       localStorage.removeItem('auth');
       queryClient.clear();
-      setLocation('/login');
       toast({
-        title: "Logged out successfully",
-        description: "You have been logged out of your account"
+        title: "Déconnexion réussie",
       });
+      // Force la redirection et le rechargement
+      window.location.href = '/login';
+      window.location.reload();
     } catch (error) {
       toast({
-        title: "Error logging out",
-        description: "Please try again",
+        title: "Erreur lors de la déconnexion",
+        description: "Veuillez réessayer",
         variant: "destructive"
       });
     }
