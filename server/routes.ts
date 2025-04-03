@@ -1,6 +1,7 @@
 import { Router, type Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import mongoose from "mongoose";
 import { z } from "zod";
 import { 
   insertUserSchema, insertPatientSchema, insertDoctorSchema, 
