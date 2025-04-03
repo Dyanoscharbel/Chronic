@@ -431,15 +431,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   apiRouter.delete('/patients/:id', authenticate, async (req, res) => {
     try {
-      const patientId = parseInt(req.params.id, 10);
-      const success = await storage.deletePatient(patientId);
-
-      if (!success) {
+      const patientId = req.params.id;
+      
+      // Find and delete the patient
+      const patient = await Patient.findById(patientId);
+      if (!patient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
 
+      // Delete associated user
+      await User.findByIdAndDelete(patient.user);
+      
+      // Delete the patient
+      await Patient.findByIdAndDelete(patientId);
+
       res.json({ success: true });
     } catch (error) {
+      console.error('Delete patient error:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
