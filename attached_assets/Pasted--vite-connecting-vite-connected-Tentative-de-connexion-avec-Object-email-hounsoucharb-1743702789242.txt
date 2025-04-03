@@ -1,0 +1,57 @@
+[vite] connecting...
+[vite] connected.
+Tentative de connexion avec: 
+Object {email: "hounsoucharbo@gmail.com"}
+Envoi de la requête au serveur...
+Envoi requête POST vers /api/auth/login 
+Object {headers: {…}, data: {…}}
+Réponse reçue de /api/auth/login: 
+Object {status: 200, ok: true, statusText: "OK", headers: {…}}
+Statut de la réponse: 200
+Réponse complète du serveur: 
+Object {status: 200, data: {…}, headers: {…}}
+Warning: Each child in a list should have a unique &quot;key&quot; prop.
+
+Check the render method of `PatientsPage`. See https://reactjs.org/link/warning-keys for more information.
+    at _c9 (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/components/ui/table.tsx:102:12)
+    at PatientsPage (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/pages/patients/index.tsx:49:27)
+    at div
+    at div
+    at main
+    at div
+    at div
+    at AppLayout (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/components/layout/app-layout.tsx:24:29)
+    at component
+    at ProtectedRoute (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/App.tsx?v=5Qf8aDEMXAWzIwKdREwcS:39:38)
+    at Route (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=11364c5a:323:16)
+    at Switch (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=11364c5a:379:17)
+    at Router
+    at AuthProvider (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/hooks/use-auth.ts:6:32)
+    at QueryClientProvider (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=11364c5a:2805:3)
+    at App
+
+Check the render method of &#x60;PatientsPage&#x60;. See https://reactjs.org/link/warning-keys for more information.
+at _c9 (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/components/ui/table.tsx:102:12)
+at PatientsPage (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/pages/patients/index.tsx:49:27)
+at div
+at div
+at main
+at div
+at div
+at AppLayout (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/components/layout/app-layout.tsx:24:29)
+at component
+at ProtectedRoute (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/App.tsx?v=5Qf8aDEMXAWzIwKdREwcS:39:38)
+at Route (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=11364c5a:323:16)
+at Switch (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=11364c5a:379:17)
+at Router
+at AuthProvider (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/src/hooks/use-auth.ts:6:32)
+at QueryClientProvider (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=11364c5a:2805:3)
+at App
+at t.value (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://5efd78d3-0ec0-4bc9-81b4-130eac13e23d-00-1fpjrrlxkp3qe.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Envoi requête GET vers /api/patients/67ee662c4133b9e57a946110 
+Object {headers: {…}, data: "Pas de données"}
+Réponse reçue de /api/patients/67ee662c4133b9e57a946110: 
+Object {status: 200, ok: true, statusText: "OK", headers: {…}}
