@@ -67,15 +67,14 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                     <AvatarName
                       firstName={patient.user.firstName}
                       lastName={patient.user.lastName}
-                      showEmail
-                      email={patient.user.email}
+                      showEmail={false} // Assuming email shouldn't be shown here. Adjust if needed.
                     />
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">P-{patient._id}</div>
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{patient.age || '--'} / {patient.gender}</div>
+                    <div className="text-sm text-gray-900">{patient.age || '--'} / {patient.gender || '--'}</div>
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
                     <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text} px-2 py-1 text-xs`}>
