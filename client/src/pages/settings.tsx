@@ -72,22 +72,27 @@ const themeSchema = z.object({
 export default function SettingsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { user, userDetails, setAuthState } = useAuth();
+  const { user, setAuthState } = useAuth();
   const [selectedTab, setSelectedTab] = useState('profile');
+  
+  // Get doctor details
+  const { data: doctorDetails } = useQuery({
+    queryKey: ['doctor', user?.id],
+    queryFn: () => apiRequest.get(`/api/doctors/user/${user?.id}`).then(res => res.data),
+    enabled: !!user && user.role === 'medecin'
+  });
 
-  // Get doctor details from userDetails directly
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     values: {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      specialty: userDetails?.specialty || '',
-      hospital: userDetails?.hospital || '',
+      specialty: doctorDetails?.specialty || '',
+      hospital: doctorDetails?.hospital || '',
     },
   });
 
-  // Update form values when userDetails changes
   useEffect(() => {
     if (userDetails) {
       profileForm.reset({
