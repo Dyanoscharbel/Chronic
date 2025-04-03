@@ -18,6 +18,34 @@ import { AvatarName } from '@/components/ui/avatar-name';
 import { Loader, PageLoader } from '@/components/ui/loader';
 import { 
   Dialog,
+
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editForm] = useState({
+    firstName: patient?.user?.firstName || '',
+    lastName: patient?.user?.lastName || '',
+    email: patient?.user?.email || '',
+    phone: patient?.phone || ''
+  });
+
+  const editPatientMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return apiRequest('PUT', `/api/patients/${patient.id}`, data);
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Patient updated successfully',
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/patients/${patient.id}`] });
+      setEditDialogOpen(false);
+    }
+  });
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    editPatientMutation.mutate(editForm);
+  };
+
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -249,11 +277,9 @@ export default function PatientView({ id }: PatientViewProps) {
               <div className="flex justify-between items-center">
                 <div className="text-xs font-semibold text-gray-500">PATIENT ID: P-{patient.id.toString().padStart(5, '0')}</div>
                 <div className="flex gap-2">
-                  <Link href={`/patients/edit/${patient.id}`}>
-                    <Button variant="ghost" size="icon">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                  <Button variant="ghost" size="icon" onClick={() => setEditDialogOpen(true)}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
               <div className="flex flex-col items-center space-y-2 pt-2">
@@ -371,6 +397,70 @@ export default function PatientView({ id }: PatientViewProps) {
                 <Accordion type="single" collapsible className="w-full">
                   {workflows
                     .filter(wf => wf.ckdStage === patient.ckdStage || !wf.ckdStage)
+
+      {/* Edit Patient Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Modifier le patient</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="firstName" className="text-right">
+                  Prénom
+                </Label>
+                <Input
+                  id="firstName"
+                  defaultValue={editForm.firstName}
+                  onChange={(e) => editForm.firstName = e.target.value}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="lastName" className="text-right">
+                  Nom
+                </Label>
+                <Input
+                  id="lastName"
+                  defaultValue={editForm.lastName}
+                  onChange={(e) => editForm.lastName = e.target.value}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  defaultValue={editForm.email}
+                  onChange={(e) => editForm.email = e.target.value}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="phone" className="text-right">
+                  Téléphone
+                </Label>
+                <Input
+                  id="phone"
+                  defaultValue={editForm.phone}
+                  onChange={(e) => editForm.phone = e.target.value}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" disabled={editPatientMutation.isPending}>
+                {editPatientMutation.isPending && <Loader className="mr-2" />}
+                Enregistrer
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
                     .map((workflow) => (
                       <AccordionItem key={workflow.id} value={`workflow-${workflow.id}`}>
                         <AccordionTrigger className="text-sm font-medium">
