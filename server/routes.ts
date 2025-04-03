@@ -351,15 +351,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const patientId = req.params.id;
       console.log('Fetching patient with ID:', patientId);
       
-      // Recherche le patient avec une population de l'utilisateur
+      // Recherche le patient avec toutes les informations associées
       const patient = await Patient.findById(patientId)
         .populate({
           path: 'user',
-          select: 'firstName lastName email role -_id' // Sélectionner les champs nécessaires
+          select: 'firstName lastName email role' // Include _id
         })
         .populate({
           path: 'doctor',
-          select: 'specialty hospital -_id'
+          populate: {
+            path: 'user',
+            select: 'firstName lastName specialty'
+          }
         });
 
       if (!patient) {
@@ -368,7 +371,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log('Found patient:', patient);
-      res.json(patient);
+      res.json({
+        ...patient.toObject(),
+        id: patient._id // Ensure ID is included
+      });
     } catch (error) {
       console.error('Error fetching patient:', error);
       res.status(500).json({ message: 'Server error' });
