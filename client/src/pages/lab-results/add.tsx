@@ -78,17 +78,6 @@ export default function LabResultAdd() {
   // Selected test details for showing units and normal range
   const [selectedTest, setSelectedTest] = useState<LabTest | null>(null);
 
-  // Define form
-  const form = useForm<LabResultFormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      patientId: '',
-      labTestId: '',
-      resultValue: '',
-      resultDate: new Date().toISOString().split('T')[0],
-    },
-  });
-
   // Watch lab test ID to update selected test
   const watchLabTestId = form.watch('labTestId');
 
