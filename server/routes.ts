@@ -341,7 +341,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(formattedPatients);
     } catch (error) {
-      console.error('Error fetching patients:', error);
+      console.error('\x1b[31m%s\x1b[0m', '🔴 Error fetching patients:');
+console.error('  Details:', error);
+console.error('  Stack:', error.stack);
+console.error('  Time:', new Date().toISOString());
+console.error('----------------------------------------');
       res.status(500).json({ message: 'Server error' });
     }
   });
