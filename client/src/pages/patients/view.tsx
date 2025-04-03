@@ -179,19 +179,24 @@ export default function PatientView({ id }: PatientViewProps) {
   };
 
   // Loading state for initial data fetch
-  if (patientLoading || !patientId) {
-    return <PageLoader />;
+  if (patientLoading || !patientId || (!patient && !patient?.user)) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <Loader size="lg" />
+        <p className="mt-4 text-gray-600">Chargement des données patient...</p>
+      </div>
+    );
   }
 
   // Handle patient not found or invalid data
-  if (!patient?.user) {
+  if (!patient?.user?.firstName) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Patient Not Found</h1>
-        <p className="text-gray-600 mb-4">The patient you're looking for doesn't exist or has been removed.</p>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Patient introuvable</h1>
+        <p className="text-gray-600 mb-4">Le patient que vous recherchez n'existe pas ou a été supprimé.</p>
         <Button onClick={() => setLocation('/patients')}>
-          Return to Patient List
+          Retour à la liste des patients
         </Button>
       </div>
     );
@@ -199,7 +204,12 @@ export default function PatientView({ id }: PatientViewProps) {
 
   // Wait for additional data to load
   if (!labTests || !doctors) {
-    return <PageLoader />;
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <Loader size="lg" />
+        <p className="mt-4 text-gray-600">Chargement des données complémentaires...</p>
+      </div>
+    );
   }
 
   const stageColors = getCKDStageColor(patient.ckdStage);
