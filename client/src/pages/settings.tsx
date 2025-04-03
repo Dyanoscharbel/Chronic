@@ -84,26 +84,26 @@ export default function SettingsPage() {
 
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
-    values: {
+    defaultValues: {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      specialty: doctorDetails?.specialty || '',
-      hospital: doctorDetails?.hospital || '',
+      specialty: '',
+      hospital: '',
     },
   });
 
   useEffect(() => {
-    if (doctorDetails) {
+    if (user && doctorDetails) {
       profileForm.reset({
-        firstName: user?.firstName || '',
-        lastName: user?.lastName || '',
-        email: user?.email || '',
-        specialty: doctorDetails?.specialty || '',
-        hospital: doctorDetails?.hospital || '',
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        specialty: doctorDetails.specialty || '',
+        hospital: doctorDetails.hospital || '',
       });
     }
-  }, [doctorDetails, user, profileForm]);
+  }, [user, doctorDetails]);
 
   // Password form
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
