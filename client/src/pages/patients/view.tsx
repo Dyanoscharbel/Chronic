@@ -267,11 +267,15 @@ export default function PatientView({ id }: PatientViewProps) {
                   size="lg"
                 />
                 <div className="text-center">
-                  <h2 className="text-xl font-semibold">
-                    {patient.user.firstName} {patient.user.lastName}
-                  </h2>
-                  <p className="text-sm text-gray-500">{patient.user.email}</p>
-                  <p className="text-sm text-gray-500">ID: P-{patient._id?.toString() || 'N/A'}</p>
+                  {patient && patient.user && (
+                    <>
+                      <h2 className="text-xl font-semibold">
+                        {patient.user.firstName} {patient.user.lastName}
+                      </h2>
+                      <p className="text-sm text-gray-500">{patient.user.email}</p>
+                      <p className="text-sm text-gray-500">ID: P-{patient._id?.toString()}</p>
+                    </>
+                  )}
                 </div>
                 <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text}`}>
                   {patient.ckdStage || 'Stage not set'}
