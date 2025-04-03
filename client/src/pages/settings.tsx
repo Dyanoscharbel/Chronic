@@ -121,25 +121,27 @@ export default function SettingsPage() {
       return response;
     },
     onSuccess: async (data) => {
-      toast({
-        title: 'Profile updated',
-        description: 'Your profile has been updated successfully',
-      });
-
       // Update auth state with new user data
       const newAuth = {
         ...JSON.parse(localStorage.getItem('auth') || '{}'),
         user: data.user,
-        userDetails: data.userDetails
+        userDetails: data.userDetails,
+        isAuthenticated: true
       };
       
       localStorage.setItem('auth', JSON.stringify(newAuth));
       setAuthState(newAuth);
       
-      // Refresh queries to update UI
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/recent-patients'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/upcoming-appointments'] });
+      // Refresh queries
+      queryClient.invalidateQueries();
+      
+      toast({
+        title: 'Profile updated',
+        description: 'Your profile has been updated successfully',
+      });
+
+      // Redirect to dashboard
+      window.location.href = '/';
     },
     onError: (error) => {
       toast({
