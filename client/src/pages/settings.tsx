@@ -88,8 +88,8 @@ export default function SettingsPage() {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      specialty: doctorDetails?.specialty || '',
-      hospital: doctorDetails?.hospital || '',
+      specialty: '',
+      hospital: '',
     },
   });
 
@@ -99,11 +99,11 @@ export default function SettingsPage() {
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         email: user.email || '',
-        specialty: doctorDetails.specialty || '',
-        hospital: doctorDetails.hospital || '',
+        specialty: doctorDetails?.specialty || '',
+        hospital: doctorDetails?.hospital || '',
       });
     }
-  }, [user, doctorDetails, profileForm]);
+  }, [user, doctorDetails]);
 
   // Password form
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
