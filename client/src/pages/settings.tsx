@@ -72,7 +72,7 @@ const themeSchema = z.object({
 export default function SettingsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { user, setAuthState } = useAuth();
+  const { user, setAuthState, logout } = useAuth();
   const [selectedTab, setSelectedTab] = useState('profile');
 
   // Get doctor details
