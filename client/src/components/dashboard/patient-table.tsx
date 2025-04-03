@@ -15,12 +15,12 @@ interface PatientTableProps {
 export function PatientTable({ patients, totalPatients }: PatientTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const patientsPerPage = 4;
-  
+
   // Calculate pagination info
   const totalPages = Math.ceil(totalPatients / patientsPerPage);
   const startItem = (currentPage - 1) * patientsPerPage + 1;
   const endItem = Math.min(startItem + patientsPerPage - 1, totalPatients);
-  
+
   return (
     <div className="bg-white shadow rounded-lg">
       <div className="flex items-center justify-between py-4 px-6 border-b border-gray-200">
@@ -29,7 +29,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
           View all
         </Link>
       </div>
-      
+
       <div className="overflow-x-auto">
         <Table>
           <TableHeader className="bg-gray-50">
@@ -60,7 +60,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
           <TableBody className="bg-white divide-y divide-gray-200">
             {patients.map(patient => {
               const stageColors = getCKDStageColor(patient.ckdStage);
-              
+
               return (
                 <TableRow key={patient.id} className="hover:bg-gray-50">
                   <TableCell className="px-6 py-4 whitespace-nowrap">
@@ -72,7 +72,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                     />
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">P-{patient._id.toString().padStart(5, '0')}</div>
+                    <div className="text-sm text-gray-900">P-{patient.id.toString().padStart(5, '0')}</div>
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{patient.age || '--'} / {patient.gender}</div>
@@ -99,7 +99,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
           </TableBody>
         </Table>
       </div>
-      
+
       <div className="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-200">
         <div className="flex-1 flex justify-between sm:hidden">
           <button
@@ -117,7 +117,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
             Next
           </button>
         </div>
-        
+
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div>
             <p className="text-sm text-gray-700">
@@ -125,7 +125,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
               <span className="font-medium">{totalPatients}</span> patients
             </p>
           </div>
-          
+
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -134,7 +134,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                   className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                 />
               </PaginationItem>
-              
+
               {Array.from({ length: Math.min(totalPages, 5) }).map((_, index) => {
                 // Logic to show appropriate page numbers
                 let pageNum = index + 1;
@@ -144,7 +144,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                     return null;
                   }
                 }
-                
+
                 return (
                   <PaginationItem key={pageNum}>
                     <PaginationLink
@@ -156,7 +156,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                   </PaginationItem>
                 );
               })}
-              
+
               {totalPages > 5 && currentPage < totalPages - 2 && (
                 <>
                   <PaginationItem>
@@ -172,7 +172,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                   </PaginationItem>
                 </>
               )}
-              
+
               <PaginationItem>
                 <PaginationNext 
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
