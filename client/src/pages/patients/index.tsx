@@ -179,6 +179,7 @@ export default function PatientsPage() {
                               lastName={patient.user.lastName}
                               showEmail
                               email={patient.user.email}
+                              gender={patient.gender}
                             />
                           </TableCell>
                           <TableCell>

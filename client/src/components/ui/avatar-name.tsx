@@ -11,6 +11,7 @@ interface AvatarNameProps {
   showName?: boolean;
   showEmail?: boolean;
   email?: string;
+  gender?: 'M' | 'F' | 'Autre';
 }
 
 export function AvatarName({
@@ -22,6 +23,7 @@ export function AvatarName({
   showName = true,
   showEmail = false,
   email,
+  gender,
 }: AvatarNameProps) {
   const displayInitials = initials || 
     (firstName && lastName ? `${firstName[0]}${lastName[0]}` : 'U');
@@ -35,6 +37,11 @@ export function AvatarName({
 
   return (
     <div className={cn('flex items-center', className)}>
+      {gender && (
+        <span className="text-gray-500 mr-1">
+          {gender === 'M' ? '♂' : gender === 'F' ? '♀' : '⚧'}
+        </span>
+      )}
       <Avatar className={cn('flex-shrink-0', sizeClasses[size])}>
         <AvatarFallback className={cn('font-medium', avatarColor)}>
           {displayInitials}

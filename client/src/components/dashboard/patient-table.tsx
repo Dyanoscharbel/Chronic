@@ -67,7 +67,8 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                     <AvatarName
                       firstName={patient.user.firstName}
                       lastName={patient.user.lastName}
-                      showEmail={false} // Assuming email shouldn't be shown here. Adjust if needed.
+                      showEmail={false}
+                      gender={patient.gender}
                     />
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
