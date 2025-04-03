@@ -262,16 +262,16 @@ export default function PatientView({ id }: PatientViewProps) {
             <CardHeader className="pb-4">
               <div className="flex flex-col items-center space-y-4">
                 <AvatarName
-                  firstName={patient.user?.firstName}
-                  lastName={patient.user?.lastName}
+                  firstName={patient.user.firstName}
+                  lastName={patient.user.lastName}
                   size="lg"
                 />
                 <div className="text-center">
                   <h2 className="text-xl font-semibold">
-                    {patient.user?.firstName} {patient.user?.lastName}
+                    {patient.user.firstName} {patient.user.lastName}
                   </h2>
-                  <p className="text-sm text-gray-500">{patient.user?.email}</p>
-                  <p className="text-sm text-gray-500">ID: P-{patient?._id?.toString() || 'N/A'}</p>
+                  <p className="text-sm text-gray-500">{patient.user.email}</p>
+                  <p className="text-sm text-gray-500">ID: P-{patient._id?.toString() || 'N/A'}</p>
                 </div>
                 <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text}`}>
                   {patient.ckdStage || 'Stage not set'}
@@ -470,7 +470,7 @@ export default function PatientView({ id }: PatientViewProps) {
                                     {formatDate(result.resultDate)}
                                   </TableCell>
                                   <TableCell>
-                                    {doctor ? `Dr. ${doctor.user?.firstName} ${doctor.user?.lastName}` : 'N/A'}
+                                    {doctor ? `Dr. ${doctor.user.firstName} ${doctor.user.lastName}` : 'N/A'}
                                   </TableCell>
                                 </TableRow>
                               );
@@ -587,7 +587,7 @@ export default function PatientView({ id }: PatientViewProps) {
                                       </div>
                                       {doctor && (
                                         <div className="text-sm mt-2">
-                                          With Dr. {doctor.user?.firstName} {doctor.user?.lastName}
+                                          With Dr. {doctor.user.firstName} {doctor.user.lastName}
                                           <span className="text-xs text-gray-500 ml-2">
                                             ({doctor.specialty})
                                           </span>
@@ -631,7 +631,7 @@ export default function PatientView({ id }: PatientViewProps) {
                                       </div>
                                       {doctor && (
                                         <div className="text-sm mt-2">
-                                          With Dr. {doctor.user?.firstName} {doctor.user?.lastName}
+                                          With Dr. {doctor.user.firstName} {doctor.user.lastName}
                                           <span className="text-xs text-gray-500 ml-2">
                                             ({doctor.specialty})
                                           </span>
@@ -662,7 +662,7 @@ export default function PatientView({ id }: PatientViewProps) {
           <DialogHeader>
             <DialogTitle>Add Lab Result</DialogTitle>
             <DialogDescription>
-              Record a new lab test result for {patient.user?.firstName} {patient.user?.lastName}
+              Record a new lab test result for {patient.user.firstName} {patient.user.lastName}
             </DialogDescription>
           </DialogHeader>
 
@@ -742,7 +742,7 @@ export default function PatientView({ id }: PatientViewProps) {
           <DialogHeader>
             <DialogTitle>Schedule Appointment</DialogTitle>
             <DialogDescription>
-              Schedule a new appointment for {patient.user?.firstName} {patient.user?.lastName}
+              Schedule a new appointment for {patient.user.firstName} {patient.user.lastName}
             </DialogDescription>
           </DialogHeader>
 
@@ -788,7 +788,7 @@ export default function PatientView({ id }: PatientViewProps) {
                   <SelectContent>
                     {doctors?.map((doctor) => (
                       <SelectItem key={doctor._id} value={doctor._id}>
-                        Dr. {doctor.user?.firstName} {doctor.user?.lastName} ({doctor.specialty})
+                        Dr. {doctor.user.firstName} {doctor.user.lastName} ({doctor.specialty})
                       </SelectItem>
                     ))}
                   </SelectContent>
