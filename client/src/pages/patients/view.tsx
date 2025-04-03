@@ -746,7 +746,7 @@ export default function PatientView({ id }: PatientViewProps) {
           <DialogHeader>
             <DialogTitle>Schedule Appointment</DialogTitle>
             <DialogDescription>
-              Schedule a new appointment for {patient.user.firstName} {patient.user.lastName}
+              Schedule a new appointment for {patient?.user?.firstName} {patient?.user?.lastName}
             </DialogDescription>
           </DialogHeader>
 
