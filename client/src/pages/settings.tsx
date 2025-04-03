@@ -123,28 +123,23 @@ export default function SettingsPage() {
     onSuccess: async (data) => {
       toast({
         title: 'Profile updated',
-        description: 'Reconnexion en cours...',
+        description: 'Your profile has been updated successfully',
       });
 
-      // Récupérer les identifiants pour la reconnexion
-      const storedAuth = JSON.parse(localStorage.getItem('auth') || '{}');
-      const userEmail = storedAuth.user?.email;
-
-      // Clear auth state
-      localStorage.removeItem('auth');
-      queryClient.clear();
-
-      // Rediriger vers login et reconnecter automatiquement
-      const savedPassword = storedAuth.password;
+      // Update auth state with new user data
+      const newAuth = {
+        ...JSON.parse(localStorage.getItem('auth') || '{}'),
+        user: data.user,
+        userDetails: data.userDetails
+      };
       
-      setTimeout(async () => {
-        window.location.href = '/login';
-        setTimeout(async () => {
-          if (userEmail && savedPassword) {
-            await login(userEmail, savedPassword);
-          }
-        }, 1000);
-      }, 1500);
+      localStorage.setItem('auth', JSON.stringify(newAuth));
+      setAuthState(newAuth);
+      
+      // Refresh queries to update UI
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/recent-patients'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/upcoming-appointments'] });
     },
     onError: (error) => {
       toast({
