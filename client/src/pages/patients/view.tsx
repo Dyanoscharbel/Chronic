@@ -77,6 +77,9 @@ export default function PatientView({ id }: PatientViewProps) {
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${id}`],
     queryFn: async () => {
+      if (!id) {
+        throw new Error('Patient ID is required');
+      }
       const response = await apiRequest('GET', `/api/patients/${id}`);
       return response;
     },
