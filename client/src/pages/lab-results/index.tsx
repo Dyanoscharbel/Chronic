@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/use-auth';
 import { Link } from 'wouter';
 import { Plus, Search, Filter, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
