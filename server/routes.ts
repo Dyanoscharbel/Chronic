@@ -263,7 +263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Mettre à jour l'utilisateur
       const user = await User.findOneAndUpdate(
         { _id: userId },
-        { firstName, lastName },
+        { firstName, lastName, email },
         { new: true }
       ).select('-passwordHash');
 
