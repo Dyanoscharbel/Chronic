@@ -72,7 +72,7 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                     />
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">P-{patient._id.toString().padStart(5, '0')}</div>
+                    <div className="text-sm text-gray-900">P-{patient._id}</div>
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{patient.age || '--'} / {patient.gender}</div>
