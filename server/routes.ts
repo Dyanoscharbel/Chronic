@@ -323,11 +323,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const doctorId = req.session.user?.id;
       
       // Find only patients where doctor field matches the connected doctor's ID
-      const patients = await Patient.find({ doctor: doctorId }).populate('user');
-      res.json(patients.map(patient => ({
-        ...patient.toObject(),
-        user: { ...patient.user.toObject(), passwordHash: undefined }
-      })));
+      // and populate the complete user information
+      const patients = await Patient.find({ doctor: doctorId })
+        .populate({
+          path: 'user',
+          select: '-passwordHash' // Exclude password hash
+        });
+
+      // Format response
+      const formattedPatients = patients.map(patient => {
+        const patientObj = patient.toObject();
+        return {
+          ...patientObj,
+          user: patientObj.user
+        };
+      });
+
+      res.json(formattedPatients);
     } catch (error) {
       console.error('Error fetching patients:', error);
       res.status(500).json({ message: 'Server error' });
