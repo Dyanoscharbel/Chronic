@@ -64,7 +64,7 @@ export interface IStorage {
   addWorkflowRequirement(requirement: InsertWorkflowRequirement): Promise<WorkflowRequirement>;
 }
 
-export import { LabTest } from './models';
+import { LabTest } from './models';
 
 class MemStorage implements IStorage {
   private users: Map<number, User>;
