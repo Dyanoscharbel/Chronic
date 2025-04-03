@@ -73,8 +73,31 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
   
   // Fetch patient data if editing
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
-    queryKey: [`/api/patients/${patientId}`],
-    enabled: isEditing && !!patientId,
+    queryKey: [`/api/patients/${id}`],
+    enabled: isEditing,
+  });
+
+  // Update patient mutation
+  const updatePatientMutation = useMutation({
+    mutationFn: async (data: PatientFormData) => {
+      return apiRequest('PUT', `/api/patients/${id}`, data);
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Patient updated successfully',
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/patients/${id}`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/patients'] });
+      setLocation('/patients');
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to update patient',
+        variant: 'destructive',
+      });
+    }
   });
   
   // Update form when patient data is loaded
@@ -84,8 +107,6 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
         firstName: patient.user.firstName,
         lastName: patient.user.lastName,
         email: patient.user.email,
-        // Don't set password when editing
-        password: '',
         birthDate: new Date(patient.birthDate).toISOString().split('T')[0],
         gender: patient.gender as 'M' | 'F' | 'Autre',
         address: patient.address || '',

@@ -406,27 +406,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   apiRouter.put('/patients/:id', authenticate, async (req, res) => {
     try {
-      const patientId = parseInt(req.params.id, 10);
-      const { birthDate, gender, address, phone, ckdStage } = req.body;
+      const patientId = req.params.id;
+      const { firstName, lastName, email, birthDate, gender, address, phone, ckdStage } = req.body;
 
-      const updatedPatient = await storage.updatePatient(patientId, {
-        birthDate,
-        gender,
-        address,
-        phone,
-        ckdStage
-      });
-
-      if (!updatedPatient) {
+      // Update patient
+      const patient = await Patient.findById(patientId);
+      if (!patient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
 
-      const patientWithUser = await storage.getPatientById(patientId);
+      // Update patient data
+      patient.birthDate = birthDate;
+      patient.gender = gender;
+      patient.address = address;
+      patient.phone = phone;
+      patient.ckdStage = ckdStage;
+      await patient.save();
+
+      // Update user data
+      await User.findByIdAndUpdate(patient.user, {
+        firstName,
+        lastName,
+        email
+      });
+
+      // Get updated patient with user data
+      const updatedPatient = await Patient.findById(patientId).populate('user');
+      
       res.json({
-        ...patientWithUser,
-        user: { ...patientWithUser!.user, passwordHash: undefined }
+        ...updatedPatient.toObject(),
+        user: { ...updatedPatient.user.toObject(), passwordHash: undefined }
       });
     } catch (error) {
+      console.error('Update patient error:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
