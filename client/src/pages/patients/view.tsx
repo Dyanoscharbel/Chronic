@@ -190,8 +190,6 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  const { user } = useAuth();
-
   // Set doctor if missing
   useEffect(() => {
     const updateDoctor = async () => {
@@ -210,7 +208,6 @@ export default function PatientView({ id }: PatientViewProps) {
     updateDoctor();
   }, [patient, user, id, queryClient]);
 
-  // Handle patient not found or invalid data
   if (!patient) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
