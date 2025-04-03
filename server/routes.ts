@@ -357,19 +357,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Recherche le patient avec toutes les informations associées
-      const patient = await Patient.findById(patientId)
-        .populate({
+      // First find and update the patient with the current doctor if missing
+      const doctorId = req.session.user?.id;
+      const patient = await Patient.findByIdAndUpdate(
+        patientId,
+        { $set: { doctor: doctorId } },
+        { new: true }
+      ).populate({
+        path: 'user',
+        select: 'firstName lastName email role'
+      }).populate({
+        path: 'doctor',
+        select: '_id',
+        populate: {
           path: 'user',
-          select: 'firstName lastName email role' // Include _id
-        })
-        .populate({
-          path: 'doctor',
-          select: '_id',
-          populate: {
-            path: 'user',
-            select: 'firstName lastName specialty'
-          }
-        });
+          select: 'firstName lastName specialty'
+        }
+      });
 
       if (!patient) {
         console.log('Patient not found for ID:', patientId);
