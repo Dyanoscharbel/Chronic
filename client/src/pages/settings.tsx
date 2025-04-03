@@ -121,13 +121,23 @@ export default function SettingsPage() {
       return response;
     },
     onSuccess: (data) => {
-      // Mettre à jour les informations de l'utilisateur dans le cache
+      // Mettre à jour l'état d'authentification
+      const currentAuth = JSON.parse(localStorage.getItem('auth') || '{}');
+      const newAuth = {
+        ...currentAuth,
+        user: data.user,
+        userDetails: data.userDetails
+      };
+      localStorage.setItem('auth', JSON.stringify(newAuth));
+      
+      // Mettre à jour le cache React Query
       queryClient.setQueryData(['/api/user/profile'], data);
+      queryClient.invalidateQueries();
+      
       toast({
         title: 'Profile updated',
         description: 'Your profile has been updated successfully',
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
     },
     onError: (error) => {
       toast({

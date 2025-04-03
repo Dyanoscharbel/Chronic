@@ -277,8 +277,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           { user: userId },
           { specialty, hospital },
           { new: true }
-        );
-        return res.json({ user, userDetails: doctor });
+        ).populate('user');
+        return res.json({ 
+          user: {
+            id: user._id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role
+          },
+          userDetails: doctor 
+        });
       }
 
       res.json({ user });
