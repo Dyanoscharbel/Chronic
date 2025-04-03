@@ -185,11 +185,11 @@ export default function LabResultsPage() {
                   </TableHeader>
                   <TableBody>
                     {paginatedResults.map((result) => {
-                      const patient = getPatient(result.patient);
+                      const patient = patients?.find(p => p._id === result.patient);
                       const test = labTests?.find(t => t._id === result.labTest);
-                      const value = result.resultValue;
-                      const min = test?.normalMin;
-                      const max = test?.normalMax;
+                      const value = parseFloat(result.resultValue);
+                      const min = test?.normalMin ? parseFloat(test.normalMin) : undefined;
+                      const max = test?.normalMax ? parseFloat(test.normalMax) : undefined;
 
                       let status = 'Normal';
                       let statusColor = 'text-green-600 bg-green-50';
