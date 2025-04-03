@@ -381,6 +381,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create new patient
       const newPatient = new Patient({
         user: newUser._id,
+        doctor: user.id, // Add doctor reference from authenticated user
         birthDate,
         gender,
         address,
