@@ -49,17 +49,17 @@ export default function LabResultAdd() {
 
   const { data: labTests, isLoading: labTestsLoading } = useQuery<LabTest[]>({
     queryKey: ['/api/lab-tests'],
-    select: (data) => {
-      const patientGender = patients?.find(p => p._id === form.watch('patientId'))?.gender;
-      return data.filter(test => {
-        if (patientGender === 'M') {
-          return !test.testName.toLowerCase().includes('femme');
-        } else if (patientGender === 'F') {
-          return !test.testName.toLowerCase().includes('homme');
-        }
-        return true;
-      });
+    enabled: true
+  });
+
+  const filteredTests = labTests?.filter(test => {
+    const patientGender = patients?.find(p => p._id === form.watch('patientId'))?.gender;
+    if (patientGender === 'M') {
+      return !test.testName.toLowerCase().includes('femme');
+    } else if (patientGender === 'F') {
+      return !test.testName.toLowerCase().includes('homme');
     }
+    return true;
   });
 
   const { user } = useAuth();
@@ -198,7 +198,7 @@ export default function LabResultAdd() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {labTests?.map((test) => (
+                          {filteredTests?.map((test) => (
                             <SelectItem key={test._id} value={test._id.toString()}>
                               {test.testName}
                             </SelectItem>
