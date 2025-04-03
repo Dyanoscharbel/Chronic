@@ -127,14 +127,14 @@ export default function PatientView({ id }: PatientViewProps) {
 
   // Fetch lab results
   const { data: labResults, isLoading: labResultsLoading } = useQuery<PatientLabResult[]>({
-    queryKey: [`/api/patient-lab-results/patient/${patientId}`],
-    enabled: !!patientId,
+    queryKey: [`/api/patient-lab-results/patient/${patient?._id}`],
+    enabled: !!patient?._id,
   });
 
   // Fetch appointments
   const { data: appointments, isLoading: appointmentsLoading } = useQuery<Appointment[]>({
-    queryKey: [`/api/appointments/patient/${patientId}`],
-    enabled: !!patientId,
+    queryKey: [`/api/appointments/patient/${patient?._id}`],
+    enabled: !!patient?._id,
   });
 
   // Fetch lab tests for dropdown
@@ -915,8 +915,8 @@ const handleLabResultSubmit = () => {
   }
 
   addLabResultMutation.mutate({
-    patientId,
-    doctorId: 1, // Use the first doctor for now (would normally come from auth)
+    patient: patient._id,
+    doctor: user.id,
     labTest: labTestId,
     resultValue: parseFloat(resultValue),
     resultDate
@@ -936,8 +936,8 @@ const handleAppointmentSubmit = () => {
   const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
 
   addAppointmentMutation.mutate({
-    patientId,
-    doctorId,
+    patient: patient._id,
+    doctor: doctorId,
     appointmentDate: dateTime.toISOString(),
     purpose,
     status: 'pending'
