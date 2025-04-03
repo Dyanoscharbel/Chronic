@@ -75,20 +75,15 @@ export default function SettingsPage() {
   const { user, userDetails, setAuthState } = useAuth();
   const [selectedTab, setSelectedTab] = useState('profile');
 
-  // Get user details if doctor
-  const { data: doctorDetails, isLoading: doctorLoading } = useQuery<Doctor>({
-    queryKey: [`/api/doctors/${userDetails?.id}`],
-    enabled: !!user && user.role === 'medecin' && !!userDetails,
-  });
-
+  // Get doctor details from userDetails directly
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      specialty: doctorDetails?.specialty || '',
-      hospital: doctorDetails?.hospital || '',
+      specialty: userDetails?.specialty || '',
+      hospital: userDetails?.hospital || '',
     },
   });
 
