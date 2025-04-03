@@ -65,15 +65,8 @@ export default function LabResultAdd() {
     },
   });
 
-  const filteredTests = labTests?.filter(test => {
-    const patientGender = patients?.find(p => p._id === form.watch('patientId'))?.gender;
-    if (patientGender === 'M') {
-      return !test.testName.toLowerCase().includes('femme');
-    } else if (patientGender === 'F') {
-      return !test.testName.toLowerCase().includes('homme');
-    }
-    return true;
-  });
+  // Plus de filtrage des tests par sexe
+  const filteredTests = labTests;
 
   // Selected test details for showing units and normal range
   const [selectedTest, setSelectedTest] = useState<LabTest | null>(null);
@@ -170,7 +163,7 @@ export default function LabResultAdd() {
                         <SelectContent>
                           {patients?.map((patient) => (
                             <SelectItem key={patient._id} value={patient._id}>
-                              {patient.user.firstName} {patient.user.lastName}
+                              {patient.user.firstName} {patient.user.lastName} ({patient.gender})
                             </SelectItem>
                           ))}
                         </SelectContent>
