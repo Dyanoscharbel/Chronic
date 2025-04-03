@@ -121,27 +121,30 @@ export default function SettingsPage() {
       return response;
     },
     onSuccess: async (data) => {
-      // Update auth state with new user data
-      const newAuth = {
-        ...JSON.parse(localStorage.getItem('auth') || '{}'),
-        user: data.user,
-        userDetails: data.userDetails,
-        isAuthenticated: true
-      };
-      
-      localStorage.setItem('auth', JSON.stringify(newAuth));
-      setAuthState(newAuth);
-      
-      // Refresh queries
-      queryClient.invalidateQueries();
-      
       toast({
         title: 'Profile updated',
-        description: 'Your profile has been updated successfully',
+        description: 'Reconnexion en cours...',
       });
 
-      // Redirect to dashboard
-      window.location.href = '/';
+      // Récupérer les identifiants pour la reconnexion
+      const storedAuth = JSON.parse(localStorage.getItem('auth') || '{}');
+      const userEmail = storedAuth.user?.email;
+
+      // Clear auth state
+      localStorage.removeItem('auth');
+      queryClient.clear();
+
+      // Rediriger vers login et reconnecter automatiquement
+      const savedPassword = storedAuth.password;
+      
+      setTimeout(async () => {
+        window.location.href = '/login';
+        setTimeout(async () => {
+          if (userEmail && savedPassword) {
+            await login(userEmail, savedPassword);
+          }
+        }, 1000);
+      }, 1500);
     },
     onError: (error) => {
       toast({
