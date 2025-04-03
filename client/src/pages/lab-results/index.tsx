@@ -33,19 +33,19 @@ export default function LabResultsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 10;
 
-  const { data: labResults, isLoading: resultsLoading } = useQuery<PatientLabResult[]>({
+  const { data: labResults = [], isLoading: resultsLoading } = useQuery<PatientLabResult[]>({
     queryKey: ['/api/patient-lab-results'],
   });
 
-  const { data: patients } = useQuery<Patient[]>({
+  const { data: patients = [] } = useQuery<Patient[]>({
     queryKey: ['/api/patients'],
   });
 
-  const { data: labTests, isLoading: labTestsLoading } = useQuery<LabTest[]>({
+  const { data: labTests = [], isLoading: labTestsLoading } = useQuery<LabTest[]>({
     queryKey: ['/api/lab-tests'],
   });
 
-  const { data: doctors } = useQuery<Doctor[]>({
+  const { data: doctors = [] } = useQuery<Doctor[]>({
     queryKey: ['/api/doctors'],
   });
 
@@ -185,11 +185,11 @@ export default function LabResultsPage() {
                   </TableHeader>
                   <TableBody>
                     {paginatedResults.map((result) => {
-                      const patient = patients?.find(p => p._id === result.patient);
-                      const test = labTests?.find(t => t._id === result.labTest);
-                      const value = parseFloat(result.resultValue);
-                      const min = test?.normalMin ? parseFloat(test.normalMin) : undefined;
-                      const max = test?.normalMax ? parseFloat(test.normalMax) : undefined;
+                      const patient = patients.find(p => p._id === result.patient);
+                      const test = labTests.find(t => t._id === result.labTest);
+                      const value = parseFloat(result.resultValue.toString());
+                      const min = test?.normalMin ? parseFloat(test.normalMin.toString()) : undefined;
+                      const max = test?.normalMax ? parseFloat(test.normalMax.toString()) : undefined;
 
                       let status = 'Normal';
                       let statusColor = 'text-green-600 bg-green-50';
