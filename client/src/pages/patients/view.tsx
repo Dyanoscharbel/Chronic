@@ -856,7 +856,7 @@ export default function PatientView({ id }: PatientViewProps) {
                   <div>{patient.user.email}</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div className="font-medium<div className="font-medium">Âge</div>
+                  <div className="font-medium">Âge</div>
                   <div>{age} ans</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
