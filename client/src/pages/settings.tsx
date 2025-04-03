@@ -81,20 +81,14 @@ export default function SettingsPage() {
     enabled: !!user && user.role === 'medecin' && !!userDetails,
   });
 
-  // Profile form
-  const { data: doctorDetails } = useQuery({
-    queryKey: [`/api/doctors/${userDetails?.id}`],
-    enabled: !!user && user.role === 'medecin' && !!userDetails,
-  });
-
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      specialty: doctorDetails?.specialty || userDetails?.specialty || '',
-      hospital: doctorDetails?.hospital || userDetails?.hospital || '',
+      specialty: doctorDetails?.specialty || '',
+      hospital: doctorDetails?.hospital || '',
     },
   });
 
