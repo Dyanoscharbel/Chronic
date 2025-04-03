@@ -82,14 +82,19 @@ export default function SettingsPage() {
   });
 
   // Profile form
+  const { data: doctorDetails } = useQuery({
+    queryKey: [`/api/doctors/${userDetails?.id}`],
+    enabled: !!user && user.role === 'medecin' && !!userDetails,
+  });
+
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      specialty: userDetails?.specialty || '',
-      hospital: userDetails?.hospital || '',
+      specialty: doctorDetails?.specialty || userDetails?.specialty || '',
+      hospital: doctorDetails?.hospital || userDetails?.hospital || '',
     },
   });
 
@@ -121,30 +126,40 @@ export default function SettingsPage() {
       return response;
     },
     onSuccess: async (data) => {
+      // Récupérer les données auth actuelles
+      const currentAuth = JSON.parse(localStorage.getItem('auth') || '{}');
+
+      // Mettre à jour avec les nouvelles données
+      const newAuth = {
+        ...currentAuth,
+        user: {
+          ...currentAuth.user,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+        },
+        userDetails: {
+          ...currentAuth.userDetails,
+          specialty: data.specialty,
+          hospital: data.hospital,
+        },
+        isAuthenticated: true
+      };
+
+      // Sauvegarder et mettre à jour l'état
+      localStorage.setItem('auth', JSON.stringify(newAuth));
+      setAuthState(newAuth);
+
+      // Rafraîchir les queries
+      await queryClient.invalidateQueries();
+
       toast({
-        title: 'Profile updated',
-        description: 'Reconnexion en cours...',
+        title: 'Profil mis à jour',
+        description: 'Vos informations ont été mises à jour avec succès',
       });
 
-      // Récupérer les identifiants pour la reconnexion
-      const storedAuth = JSON.parse(localStorage.getItem('auth') || '{}');
-      const userEmail = storedAuth.user?.email;
-
-      // Clear auth state
-      localStorage.removeItem('auth');
-      queryClient.clear();
-
-      // Rediriger vers login et reconnecter automatiquement
-      const savedPassword = storedAuth.password;
-      
-      setTimeout(async () => {
-        window.location.href = '/login';
-        setTimeout(async () => {
-          if (userEmail && savedPassword) {
-            await login(userEmail, savedPassword);
-          }
-        }, 1000);
-      }, 1500);
+      // Rediriger vers le dashboard
+      window.location.href = '/';
     },
     onError: (error) => {
       toast({
