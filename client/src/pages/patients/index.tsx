@@ -181,7 +181,7 @@ export default function PatientsPage() {
                             />
                           </TableCell>
                           <TableCell>
-                            <div className="text-sm text-gray-900">P-{patient.id.toString().padStart(5, '0')}</div>
+                            <div className="text-sm text-gray-900">P-{patient._id.toString().padStart(5, '0')}</div>
                           </TableCell>
                           <TableCell>
                             <div className="text-sm text-gray-900">{age} / {patient.gender}</div>
