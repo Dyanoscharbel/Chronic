@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
-import { Save, User, Lock, Building, Bell, Palette, Globe } from 'lucide-react';
+import { Save, User, Lock, Building, Bell, Palette } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
 import {
@@ -70,44 +70,12 @@ const themeSchema = z.object({
   radius: z.number(),
 });
 
-const languageSchema = z.object({
-  language: z.enum(['fr', 'en']),
-});
 
 export default function SettingsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user, setAuthState, logout } = useAuth();
   const [selectedTab, setSelectedTab] = useState('profile');
-  const [currentLanguage, setCurrentLanguage] = useState(localStorage.getItem('language') || 'fr');
-
-  const languageForm = useForm<z.infer<typeof languageSchema>>({
-    resolver: zodResolver(languageSchema),
-    defaultValues: {
-      language: currentLanguage as 'fr' | 'en'
-    },
-  });
-
-  const updateLanguageMutation = useMutation({
-    mutationFn: async (data: z.infer<typeof languageSchema>) => {
-      localStorage.setItem('language', data.language);
-      return data;
-    },
-    onSuccess: () => {
-      toast({
-        title: 'Langue mise à jour',
-        description: 'Vos préférences de langue ont été enregistrées',
-      });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    }
-  });
-
-  const onLanguageSubmit = (data: z.infer<typeof languageSchema>) => {
-    updateLanguageMutation.mutate(data);
-    useI18n.getState().setLanguage(data.language);
-  };
 
   // Get doctor details
   const { data: doctorDetails } = useQuery({
@@ -201,7 +169,7 @@ export default function SettingsPage() {
 
       // Déconnecter l'utilisateur
       await logout();
-      
+
       // Rediriger vers la page de connexion après un court délai
       setTimeout(() => {
         window.location.href = '/login';
@@ -346,7 +314,7 @@ export default function SettingsPage() {
 
   return (
     <div className="flex flex-col space-y-6">
-      <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
+      <h1 className="text-2xl font-semibold text-gray-900">Paramètres</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Left column - User info */}
@@ -366,7 +334,7 @@ export default function SettingsPage() {
                   </h2>
                   <p className="text-sm text-gray-500">{user.email}</p>
                   <p className="text-xs text-gray-500 mt-1">
-                    Role: {user.role && user.role === 'medecin' ? 'Medical Professional' : user?.role?.charAt(0)?.toUpperCase() + user?.role?.slice(1) || ''}
+                    Rôle: {user.role && user.role === 'medecin' ? 'Professionnel Médical' : user?.role?.charAt(0)?.toUpperCase() + user?.role?.slice(1) || ''}
                   </p>
                 </div>
               </div>
@@ -380,7 +348,7 @@ export default function SettingsPage() {
                   onClick={() => setSelectedTab('profile')}
                 >
                   <User className="mr-2 h-4 w-4" />
-                  Profile
+                  Profil
                 </Button>
                 <Button
                   variant={selectedTab === 'password' ? 'secondary' : 'ghost'}
@@ -388,7 +356,7 @@ export default function SettingsPage() {
                   onClick={() => setSelectedTab('password')}
                 >
                   <Lock className="mr-2 h-4 w-4" />
-                  Password
+                  Mot de passe
                 </Button>
                 <Button
                   variant={selectedTab === 'notifications' ? 'secondary' : 'ghost'}
@@ -404,15 +372,7 @@ export default function SettingsPage() {
                   onClick={() => setSelectedTab('theme')}
                 >
                   <Palette className="mr-2 h-4 w-4" />
-                  Theme
-                </Button>
-                <Button
-                  variant={selectedTab === 'language' ? 'secondary' : 'ghost'}
-                  className="w-full justify-start"
-                  onClick={() => setSelectedTab('language')}
-                >
-                  <Globe className="mr-2 h-4 w-4" />
-                  Langue
+                  Thème
                 </Button>
               </nav>
             </CardContent>
@@ -425,9 +385,9 @@ export default function SettingsPage() {
             {selectedTab === 'profile' && (
               <>
                 <CardHeader>
-                  <CardTitle>Profile Information</CardTitle>
+                  <CardTitle>Informations du Profil</CardTitle>
                   <CardDescription>
-                    Update your personal and professional information
+                    Mettez à jour vos informations personnelles et professionnelles
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -440,7 +400,7 @@ export default function SettingsPage() {
                             name="firstName"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>First Name</FormLabel>
+                                <FormLabel>Prénom</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
@@ -454,7 +414,7 @@ export default function SettingsPage() {
                             name="lastName"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Last Name</FormLabel>
+                                <FormLabel>Nom</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
@@ -478,7 +438,7 @@ export default function SettingsPage() {
                           )}
                         />
 
-                        
+
                       </div>
 
                       <CardFooter className="px-0 pt-4 pb-0">
@@ -490,12 +450,12 @@ export default function SettingsPage() {
                           {updateProfileMutation.isPending ? (
                             <>
                               <Loader size="sm" color="white" className="mr-2" />
-                              Saving...
+                              Enregistrement...
                             </>
                           ) : (
                             <>
                               <Save className="mr-2 h-4 w-4" />
-                              Save Changes
+                              Enregistrer les modifications
                             </>
                           )}
                         </Button>
@@ -509,9 +469,9 @@ export default function SettingsPage() {
             {selectedTab === 'password' && (
               <>
                 <CardHeader>
-                  <CardTitle>Change Password</CardTitle>
+                  <CardTitle>Changer le mot de passe</CardTitle>
                   <CardDescription>
-                    Update your account password
+                    Mettez à jour le mot de passe de votre compte
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -523,7 +483,7 @@ export default function SettingsPage() {
                           name="currentPassword"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Current Password</FormLabel>
+                              <FormLabel>Mot de passe actuel</FormLabel>
                               <FormControl>
                                 <Input type="password" {...field} />
                               </FormControl>
@@ -537,12 +497,12 @@ export default function SettingsPage() {
                           name="newPassword"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>New Password</FormLabel>
+                              <FormLabel>Nouveau mot de passe</FormLabel>
                               <FormControl>
                                 <Input type="password" {...field} />
                               </FormControl>
                               <FormDescription>
-                                Password must be at least 6 characters
+                                Le mot de passe doit comporter au moins 6 caractères
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -554,7 +514,7 @@ export default function SettingsPage() {
                           name="confirmPassword"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Confirm New Password</FormLabel>
+                              <FormLabel>Confirmer le nouveau mot de passe</FormLabel>
                               <FormControl>
                                 <Input type="password" {...field} />
                               </FormControl>
@@ -573,12 +533,12 @@ export default function SettingsPage() {
                           {changePasswordMutation.isPending ? (
                             <>
                               <Loader size="sm" color="white" className="mr-2" />
-                              Updating...
+                              Mise à jour...
                             </>
                           ) : (
                             <>
                               <Save className="mr-2 h-4 w-4" />
-                              Update Password
+                              Mettre à jour le mot de passe
                             </>
                           )}
                         </Button>
@@ -592,9 +552,9 @@ export default function SettingsPage() {
             {selectedTab === 'notifications' && (
               <>
                 <CardHeader>
-                  <CardTitle>Notification Preferences</CardTitle>
+                  <CardTitle>Préférences de notification</CardTitle>
                   <CardDescription>
-                    Manage how you receive notifications
+                    Gérez la façon dont vous recevez les notifications
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -607,9 +567,9 @@ export default function SettingsPage() {
                           render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
                               <div className="space-y-0.5">
-                                <FormLabel className="text-base">Email Notifications</FormLabel>
+                                <FormLabel className="text-base">Notifications par e-mail</FormLabel>
                                 <FormDescription>
-                                  Receive notifications via email
+                                  Recevoir des notifications par e-mail
                                 </FormDescription>
                               </div>
                               <FormControl>
@@ -628,9 +588,9 @@ export default function SettingsPage() {
                           render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
                               <div className="space-y-0.5">
-                                <FormLabel className="text-base">Critical Alerts Only</FormLabel>
+                                <FormLabel className="text-base">Alertes critiques seulement</FormLabel>
                                 <FormDescription>
-                                  Only receive notifications for critical alerts
+                                  Recevoir uniquement des notifications pour les alertes critiques
                                 </FormDescription>
                               </div>
                               <FormControl>
@@ -649,9 +609,9 @@ export default function SettingsPage() {
                           render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
                               <div className="space-y-0.5">
-                                <FormLabel className="text-base">Appointment Reminders</FormLabel>
+                                <FormLabel className="text-base">Rappels de rendez-vous</FormLabel>
                                 <FormDescription>
-                                  Receive reminders for upcoming appointments
+                                  Recevoir des rappels pour les rendez-vous à venir
                                 </FormDescription>
                               </div>
                               <FormControl>
@@ -670,9 +630,9 @@ export default function SettingsPage() {
                           render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
                               <div className="space-y-0.5">
-                                <FormLabel className="text-base">Lab Result Alerts</FormLabel>
+                                <FormLabel className="text-base">Alertes de résultats de laboratoire</FormLabel>
                                 <FormDescription>
-                                  Receive alerts for new lab results
+                                  Recevoir des alertes pour les nouveaux résultats de laboratoire
                                 </FormDescription>
                               </div>
                               <FormControl>
@@ -695,12 +655,12 @@ export default function SettingsPage() {
                           {updateNotificationsMutation.isPending ? (
                             <>
                               <Loader size="sm" color="white" className="mr-2" />
-                              Saving...
+                              Enregistrement...
                             </>
                           ) : (
                             <>
                               <Save className="mr-2 h-4 w-4" />
-                              Save Preferences
+                              Enregistrer les préférences
                             </>
                           )}
                         </Button>
@@ -714,9 +674,9 @@ export default function SettingsPage() {
             {selectedTab === 'theme' && (
               <>
                 <CardHeader>
-                  <CardTitle>Application Theme</CardTitle>
+                  <CardTitle>Thème de l'application</CardTitle>
                   <CardDescription>
-                    Customize the application appearance
+                    Personnalisez l'apparence de l'application
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -728,7 +688,7 @@ export default function SettingsPage() {
                           name="primaryColor"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Primary Color</FormLabel>
+                              <FormLabel>Couleur principale</FormLabel>
                               <div className="grid grid-cols-5 gap-3">
                                 {['hsl(173 74% 18%)', 'hsl(221 83% 53%)', 'hsl(142 76% 36%)', 'hsl(346 84% 61%)', 'hsl(270 67% 47%)'].map((color) => (
                                   <div 
@@ -740,7 +700,7 @@ export default function SettingsPage() {
                                 ))}
                               </div>
                               <FormDescription>
-                                Choose a primary color for the application
+                                Choisissez une couleur principale pour l'application
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -752,11 +712,11 @@ export default function SettingsPage() {
                           name="variant"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Color Variant</FormLabel>
+                              <FormLabel>Variante de couleur</FormLabel>
                               <div className="grid grid-cols-3 gap-4">
                                 {[
-                                  { value: 'professional', label: 'Professional' },
-                                  { value: 'tint', label: 'Tint' },
+                                  { value: 'professional', label: 'Professionnel' },
+                                  { value: 'tint', label: 'Teinte' },
                                   { value: 'vibrant', label: 'Vibrant' },
                                 ].map((variant) => (
                                   <div
@@ -769,7 +729,7 @@ export default function SettingsPage() {
                                 ))}
                               </div>
                               <FormDescription>
-                                Set how intense the color should appear
+                                Définissez l'intensité de la couleur
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -781,12 +741,12 @@ export default function SettingsPage() {
                           name="appearance"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Appearance</FormLabel>
+                              <FormLabel>Apparence</FormLabel>
                               <div className="grid grid-cols-3 gap-4">
                                 {[
-                                  { value: 'light', label: 'Light' },
-                                  { value: 'dark', label: 'Dark' },
-                                  { value: 'system', label: 'System' },
+                                  { value: 'light', label: 'Clair' },
+                                  { value: 'dark', label: 'Sombre' },
+                                  { value: 'system', label: 'Système' },
                                 ].map((appearance) => (
                                   <div
                                     key={appearance.value}
@@ -798,7 +758,7 @@ export default function SettingsPage() {
                                 ))}
                               </div>
                               <FormDescription>
-                                Choose light or dark mode, or follow system settings
+                                Choisissez le mode clair ou sombre, ou suivez les paramètres système
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -810,7 +770,7 @@ export default function SettingsPage() {
                           name="radius"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Border Radius: {field.value}</FormLabel>
+                              <FormLabel>Rayon de bordure: {field.value}</FormLabel>
                               <FormControl>
                                 <input
                                   type="range"
@@ -823,11 +783,11 @@ export default function SettingsPage() {
                                 />
                               </FormControl>
                               <div className="flex justify-between text-xs text-muted-foreground">
-                                <span>Square</span>
-                                <span>Round</span>
+                                <span>Carré</span>
+                                <span>Rond</span>
                               </div>
                               <FormDescription>
-                                Adjust the roundness of UI elements
+                                Ajustez l'arrondi des éléments de l'interface utilisateur
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -836,7 +796,7 @@ export default function SettingsPage() {
 
                         {/* Theme Preview */}
                         <div className="bg-muted p-4 rounded-md mt-6">
-                          <h3 className="text-md font-medium mb-2">Theme Preview</h3>
+                          <h3 className="text-md font-medium mb-2">Aperçu du thème</h3>
                           <div className="flex gap-2 flex-wrap">
                             <Button 
                               size="sm" 
@@ -845,7 +805,7 @@ export default function SettingsPage() {
                                 borderRadius: `${themeForm.watch('radius') * 0.5}rem`
                               }}
                             >
-                              Primary Button
+                              Bouton principal
                             </Button>
                             <Button 
                               size="sm" 
@@ -854,7 +814,7 @@ export default function SettingsPage() {
                                 borderRadius: `${themeForm.watch('radius') * 0.5}rem`
                               }}
                             >
-                              Secondary Button
+                              Bouton secondaire
                             </Button>
                             <Button 
                               size="sm" 
@@ -863,7 +823,7 @@ export default function SettingsPage() {
                                 borderRadius: `${themeForm.watch('radius') * 0.5}rem`
                               }}
                             >
-                              Destructive Button
+                              Bouton destructeur
                             </Button>
                           </div>
                         </div>
@@ -883,71 +843,12 @@ export default function SettingsPage() {
                           {updateThemeMutation.isPending ? (
                             <>
                               <Loader size="sm" color="white" className="mr-2" />
-                              Applying Theme...
+                              Application du thème...
                             </>
                           ) : (
                             <>
                               <Save className="mr-2 h-4 w-4" />
-                              Apply Theme
-                            </>
-                          )}
-                        </Button>
-                      </CardFooter>
-                    </form>
-                  </Form>
-                </CardContent>
-              </>
-            )}
-
-            {selectedTab === 'language' && (
-              <>
-                <CardHeader>
-                  <CardTitle>Langue</CardTitle>
-                  <CardDescription>
-                    Changer la langue de l'application
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...languageForm}>
-                    <form onSubmit={languageForm.handleSubmit(onLanguageSubmit)} className="space-y-6">
-                      <FormField
-                        control={languageForm.control}
-                        name="language"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Langue</FormLabel>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Sélectionnez une langue" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="fr">Français</SelectItem>
-                                <SelectItem value="en">English</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <CardFooter className="px-0 pt-4 pb-0">
-                        <Button
-                          type="submit"
-                          className="ml-auto"
-                          disabled={updateLanguageMutation.isPending}
-                        >
-                          {updateLanguageMutation.isPending ? (
-                            <>
-                              <Loader size="sm" color="white" className="mr-2" />
-                              Enregistrement...
-                            </>
-                          ) : (
-                            <>
-                              <Save className="mr-2 h-4 w-4" />
-                              Sauvegarder
+                              Appliquer le thème
                             </>
                           )}
                         </Button>
