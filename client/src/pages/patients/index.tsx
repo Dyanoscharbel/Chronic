@@ -199,7 +199,7 @@ export default function PatientsPage() {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
-                              <Link href={`/patients/${patient.id}`}>
+                              <Link href={`/patients/${patient._id}`}>
                                 <Button variant="ghost" size="sm">View</Button>
                               </Link>
                               <Link href={`/patients/add-edit/${patient._id}`}>
