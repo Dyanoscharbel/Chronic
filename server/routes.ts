@@ -825,7 +825,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard statistics
   apiRouter.get('/dashboard/stats', authenticate, async (req, res) => {
     try {
-      const patients = await storage.getPatients();
+      // Get the connected doctor's ID from the session
+      const doctorId = req.session.user?.id;
+      
+      // Find only patients where doctor field matches the connected doctor's ID
+      const patients = await Patient.find({ doctor: doctorId });
       const appointments = await storage.getAppointments();
       const results = await storage.getPatientLabResults();
 
