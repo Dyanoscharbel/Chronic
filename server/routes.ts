@@ -359,21 +359,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Recherche le patient avec toutes les informations associées
       // First find and update the patient with the current doctor if missing
       const doctorId = req.session.user?.id;
-      const patient = await Patient.findByIdAndUpdate(
-        patientId,
-        { $set: { doctor: doctorId } },
-        { new: true }
-      ).populate({
-        path: 'user',
-        select: 'firstName lastName email role'
-      }).populate({
-        path: 'doctor',
-        select: '_id',
-        populate: {
+      const patient = await Patient.findById(patientId)
+        .populate({
           path: 'user',
-          select: 'firstName lastName specialty'
-        }
-      });
+          select: 'firstName lastName email role'
+        })
+        .populate({
+          path: 'doctor',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName specialty'
+          }
+        });
+
+      // Set doctor if missing
+      if (!patient.doctor && doctorId) {
+        patient.doctor = doctorId;
+        await patient.save();
+      }
 
       if (!patient) {
         console.log('Patient not found for ID:', patientId);
@@ -591,8 +594,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Lab tests routes
   apiRouter.get('/lab-tests', authenticate, async (req, res) => {
     try {
-      // Récupérer les tests depuis MongoDB
-      const labTests = await LabTest.find().sort({ testName: 1 });
+      // Récupérer les tests depuis MongoDB avec tri et tous les champs
+      const labTests = await LabTest.find()
+        .select('testName description unit normalMin normalMax category')
+        .sort({ category: 1, testName: 1 });
+      
+      if (!labTests.length) {
+        console.log('No lab tests found in database');
+      }
+      
       res.json(labTests);
     } catch (error) {
       console.error('Error fetching lab tests:', error);
