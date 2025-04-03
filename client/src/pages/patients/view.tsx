@@ -179,7 +179,7 @@ export default function PatientView({ id }: PatientViewProps) {
   };
 
   // Loading state for initial data fetch
-  if (patientLoading || !patientId || (!patient && !patient?.user)) {
+  if (patientLoading || !patientId) {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh]">
         <Loader size="lg" />
@@ -189,7 +189,7 @@ export default function PatientView({ id }: PatientViewProps) {
   }
 
   // Handle patient not found or invalid data
-  if (!patient?.user?.firstName) {
+  if (!patient || !patient.user || !patient?.user?.firstName) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
@@ -198,6 +198,16 @@ export default function PatientView({ id }: PatientViewProps) {
         <Button onClick={() => setLocation('/patients')}>
           Retour à la liste des patients
         </Button>
+      </div>
+    );
+  }
+
+  // Wait for additional data to load
+  if (!labTests || !doctors) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <Loader size="lg" />
+        <p className="mt-4 text-gray-600">Chargement des données complémentaires...</p>
       </div>
     );
   }
