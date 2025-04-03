@@ -78,6 +78,24 @@ export default function PatientView({ id }: PatientViewProps) {
   const [doctorId, setDoctorId] = useState('');
   const [purpose, setPurpose] = useState('');
 
+  // Set doctor if missing
+  useEffect(() => {
+    const updateDoctor = async () => {
+      if (patient && !patient.doctor && user) {
+        try {
+          await apiRequest('PUT', `/api/patients/${patient._id}`, {
+            ...patient,
+            doctor: user.id
+          });
+          queryClient.invalidateQueries({ queryKey: [`/api/patients/${id}`] });
+        } catch (error) {
+          console.error('Failed to update doctor:', error);
+        }
+      }
+    };
+    updateDoctor();
+  }, [patient, user, id, queryClient]);
+
   // Fetch patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${id}`],
@@ -189,24 +207,6 @@ export default function PatientView({ id }: PatientViewProps) {
       </div>
     );
   }
-
-  // Set doctor if missing
-  useEffect(() => {
-    const updateDoctor = async () => {
-      if (patient && !patient.doctor && user) {
-        try {
-          await apiRequest('PUT', `/api/patients/${patient._id}`, {
-            ...patient,
-            doctor: user.id
-          });
-          queryClient.invalidateQueries({ queryKey: [`/api/patients/${id}`] });
-        } catch (error) {
-          console.error('Failed to update doctor:', error);
-        }
-      }
-    };
-    updateDoctor();
-  }, [patient, user, id, queryClient]);
 
   if (!patient) {
     return (
