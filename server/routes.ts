@@ -588,9 +588,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Patient lab results routes
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
-      const results = await storage.getPatientLabResults();
+      const results = await PatientLabResult.find()
+        .populate('patient')
+        .populate('doctor')
+        .populate('labTest')
+        .sort({ resultDate: -1 });
       res.json(results);
     } catch (error) {
+      console.error('Error fetching lab results:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
