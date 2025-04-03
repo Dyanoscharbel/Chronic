@@ -120,27 +120,26 @@ export default function SettingsPage() {
       const response = await apiRequest('PUT', '/api/user/profile', data);
       return response;
     },
-    onSuccess: (data) => {
-      // Mettre à jour l'état d'authentification
-      const currentAuth = JSON.parse(localStorage.getItem('auth') || '{}');
+    onSuccess: async (data) => {
+      // Mettre à jour le state d'authentification
       const newAuth = {
-        ...currentAuth,
         user: data.user,
         userDetails: data.userDetails,
-        isAuthenticated: true
+        isAuthenticated: true,
+        token: data.token
       };
+      
+      // Mettre à jour localStorage
       localStorage.setItem('auth', JSON.stringify(newAuth));
       
-      // Mettre à jour le state global
+      // Forcer la mise à jour du state global
       queryClient.setQueryData(['auth'], newAuth);
       
-      // Invalider et recharger les données
-      queryClient.invalidateQueries();
+      // Mettre à jour les queries
+      await queryClient.invalidateQueries();
       
-      // Attendre un peu avant de recharger pour laisser le temps à la session de se mettre à jour
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
+      // Rediriger vers le dashboard pour forcer un rechargement complet
+      window.location.href = '/';
       
       toast({
         title: 'Profile updated',
