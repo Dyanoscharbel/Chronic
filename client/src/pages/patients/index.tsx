@@ -91,7 +91,7 @@ export default function PatientsPage() {
         <Link href="/patients/add">
           <Button className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            <span>Add Patient</span>
+            <span>Ajouter un patient</span>
           </Button>
         </Link>
       </div>

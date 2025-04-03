@@ -63,37 +63,37 @@ export default function Dashboard() {
           title="Total Patients"
           value={dashboardStats?.totalPatients || 0}
           footerLink="/patients"
-          footerText="View all patients"
+          footerText="Voir tous les patients"
           footerLinkColor="text-primary hover:text-primary-dark"
         />
         
         <StatsCard
           icon={<Calendar className="h-6 w-6 text-white" />}
           iconBgColor="bg-indigo-500"
-          title="Upcoming Appointments"
+          title="Rendez-vous à venir"
           value={dashboardStats?.upcomingAppointments || 0}
           footerLink="/appointments"
-          footerText="View all appointments"
+          footerText="Voir tous les rendez-vous"
           footerLinkColor="text-indigo-600 hover:text-indigo-500"
         />
         
         <StatsCard
           icon={<AlertTriangle className="h-6 w-6 text-white" />}
           iconBgColor="bg-yellow-500"
-          title="Critical Alerts"
+          title="Alertes critiques"
           value={dashboardStats?.criticalAlerts || 0}
           footerLink="/notifications"
-          footerText="View all alerts"
+          footerText="Voir toutes les alertes"
           footerLinkColor="text-yellow-600 hover:text-yellow-500"
         />
         
         <StatsCard
           icon={<FileText className="h-6 w-6 text-white" />}
           iconBgColor="bg-green-500"
-          title="Pending Lab Results"
+          title="Résultats en attente"
           value={dashboardStats?.pendingLabResults || 0}
           footerLink="/lab-results"
-          footerText="View all results"
+          footerText="Voir tous les résultats"
           footerLinkColor="text-green-600 hover:text-green-500"
         />
       </div>

@@ -105,11 +105,11 @@ export default function LabResultsPage() {
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Lab Results</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Résultats de laboratoire</h1>
         <Link href="/lab-results/add">
           <Button className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            <span>Add Result</span>
+            <span>Ajouter un résultat</span>
           </Button>
         </Link>
       </div>

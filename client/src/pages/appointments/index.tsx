@@ -126,11 +126,11 @@ export default function AppointmentsPage() {
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Appointments</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Rendez-vous</h1>
         <Link href="/appointments/add">
           <Button className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            <span>Schedule Appointment</span>
+            <span>Planifier un rendez-vous</span>
           </Button>
         </Link>
       </div>
