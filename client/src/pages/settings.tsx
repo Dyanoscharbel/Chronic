@@ -94,16 +94,16 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    if (userDetails) {
+    if (doctorDetails) {
       profileForm.reset({
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
         email: user?.email || '',
-        specialty: userDetails.specialty || '',
-        hospital: userDetails.hospital || '',
+        specialty: doctorDetails.specialty || '',
+        hospital: doctorDetails.hospital || '',
       });
     }
-  }, [userDetails, user]);
+  }, [doctorDetails, user]);
 
   // Password form
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
