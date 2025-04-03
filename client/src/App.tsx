@@ -103,7 +103,7 @@ function Router() {
           </AppLayout>
         )} />
       </Route>
-      <Route path="/patients/edit/:id">
+      <Route path="/patients/add-edit/:id">
         {(params) => (
           <ProtectedRoute component={() => (
             <AppLayout>
