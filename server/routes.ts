@@ -321,7 +321,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Get the connected user's ID from the session
       const doctorId = req.session.user?.id;
-      
+
       // Find only patients where doctor field matches the connected doctor's ID
       // and populate the complete user information
       const patients = await Patient.find({ doctor: doctorId })
@@ -350,7 +350,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const patientId = req.params.id;
       console.log('Fetching patient with ID:', patientId);
-      
+
       // Recherche le patient avec toutes les informations associées
       const patient = await Patient.findById(patientId)
         .populate({
@@ -359,6 +359,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
         .populate({
           path: 'doctor',
+          select: '_id',
           populate: {
             path: 'user',
             select: 'firstName lastName specialty'
@@ -387,7 +388,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get user from session
       const user = req.session.user;
-      
+
       // Check if the authenticated user is a doctor
       if (!user || user.role !== 'medecin') {
         return res.status(403).json({ message: 'Only doctors can create patients' });
@@ -402,7 +403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create new user
       const defaultPassword = "patient2025";
       const passwordHash = await bcrypt.hash(defaultPassword, 10);
-      
+
       const newUser = new User({
         firstName,
         lastName,
@@ -426,7 +427,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Fetch the complete patient data with user information
       const patientWithUser = await Patient.findById(newPatient._id).populate('user');
-      
+
       res.status(201).json({
         ...patientWithUser.toObject(),
         user: { ...patientWithUser.user.toObject(), passwordHash: undefined }
@@ -465,7 +466,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get updated patient with user data
       const updatedPatient = await Patient.findById(patientId).populate('user');
-      
+
       res.json({
         ...updatedPatient.toObject(),
         user: { ...updatedPatient.user.toObject(), passwordHash: undefined }
@@ -479,7 +480,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.delete('/patients/:id', authenticate, async (req, res) => {
     try {
       const patientId = req.params.id;
-      
+
       // Find the patient first
       const patient = await Patient.findById(patientId);
       if (!patient) {
@@ -493,10 +494,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         // Delete the patient
         await Patient.findByIdAndDelete(patientId).session(session);
-        
+
         // Delete the associated user
         await User.findByIdAndDelete(patient.user).session(session);
-        
+
         // Commit the transaction
         await session.commitTransaction();
         res.json({ success: true });
@@ -604,11 +605,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const doctorId = req.session.user?.id;
       console.log('Fetching lab results for doctor:', doctorId);
-      
+
       // Find patients for this doctor first
       const doctorPatients = await Patient.find({ doctor: doctorId }).select('_id');
       const patientIds = doctorPatients.map(p => p._id);
-      
+
       // Then find lab results for these patients
       const results = await PatientLabResult.find({
         patient: { $in: patientIds }
@@ -617,7 +618,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       .populate('doctor')
       .populate('labTest')
       .sort({ resultDate: -1 });
-      
+
       console.log('Found results:', results.length);
       res.json(results);
     } catch (error) {
@@ -887,7 +888,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Get the connected doctor's ID from the session
       const doctorId = req.session.user?.id;
-      
+
       // Find only patients where doctor field matches the connected doctor's ID
       const patients = await Patient.find({ doctor: doctorId });
       const appointments = await storage.getAppointments();
@@ -948,11 +949,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Get doctor ID from session
       const doctorId = req.session.user?.id;
-      
+
       // Calculate date 6 months ago
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-      
+
       // Find most recently added patients for this doctor
       const recentPatients = await Patient.find({
         doctor: doctorId,

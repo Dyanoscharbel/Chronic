@@ -82,6 +82,9 @@ export default function PatientView({ id }: PatientViewProps) {
         setLocation('/patients');
         throw new Error('Invalid patient ID');
       }
+      if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error('Invalid MongoDB ID format');
+      }
       const response = await apiRequest('GET', `/api/patients/${id}`);
       return response;
     },
