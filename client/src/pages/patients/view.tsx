@@ -75,8 +75,12 @@ export default function PatientView({ id }: PatientViewProps) {
 
   // Fetch patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
-    queryKey: [`/api/patients/${patientId}`],
-    enabled: !isNaN(patientId),
+    queryKey: [`/api/patients/${id}`],
+    queryFn: async () => {
+      const response = await apiRequest('GET', `/api/patients/${id}`);
+      return response;
+    },
+    enabled: !!id
   });
 
   // Fetch lab results
