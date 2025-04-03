@@ -188,6 +188,23 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
+  // Set doctor if missing
+  useEffect(() => {
+    if (patient && !patient.doctor && user) {
+      const updatePatient = async () => {
+        try {
+          await apiRequest('PUT', `/api/patients/${patient._id}`, {
+            ...patient,
+            doctor: user.id
+          });
+        } catch (error) {
+          console.error('Failed to update doctor:', error);
+        }
+      };
+      updatePatient();
+    }
+  }, [patient, user]);
+
   // Handle patient not found or invalid data
   if (!patient) {
     return (

@@ -363,6 +363,12 @@ console.error('----------------------------------------');
       // Recherche le patient avec toutes les informations associées
       // First find and update the patient with the current doctor if missing
       const doctorId = req.session.user?.id;
+      // Get the current doctor's ID from the session
+      const doctorId = req.session.user?.id;
+      if (!doctorId) {
+        return res.status(401).json({ message: 'Doctor authentication required' });
+      }
+
       const patient = await Patient.findById(patientId)
         .populate({
           path: 'user',
@@ -377,9 +383,18 @@ console.error('----------------------------------------');
         });
 
       // Set doctor if missing
-      if (!patient.doctor && doctorId) {
+      if (!patient.doctor) {
         patient.doctor = doctorId;
         await patient.save();
+        
+        // Reload patient with populated doctor data
+        await patient.populate({
+          path: 'doctor',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName specialty'
+          }
+        });
       }
 
       if (!patient) {
