@@ -36,34 +36,34 @@ export default function PatientsPage() {
   const [filterStage, setFilterStage] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const patientsPerPage = 10;
-  
+
   const { data: patients, isLoading, refetch } = useQuery<Patient[]>({
     queryKey: ['/api/patients'],
   });
-  
+
   const filteredPatients = patients?.filter(patient => {
     const matchesSearch = searchQuery ? (
       patient.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       patient.user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       patient.user.email.toLowerCase().includes(searchQuery.toLowerCase())
     ) : true;
-    
+
     const matchesStage = filterStage === 'all' ? true : patient.ckdStage === filterStage;
-    
+
     return matchesSearch && matchesStage;
   }) || [];
-  
+
   // Calculate pagination
   const totalPages = Math.ceil(filteredPatients.length / patientsPerPage);
   const startIndex = (currentPage - 1) * patientsPerPage;
   const paginatedPatients = filteredPatients.slice(startIndex, startIndex + patientsPerPage);
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Reset to first page when searching
     setCurrentPage(1);
   };
-  
+
   const handleDeletePatient = async (patient: Patient) => {
     if (window.confirm('Are you sure you want to delete this patient?')) {
       try {
@@ -83,7 +83,7 @@ export default function PatientsPage() {
       }
     }
   };
-  
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
@@ -95,7 +95,7 @@ export default function PatientsPage() {
           </Button>
         </Link>
       </div>
-      
+
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -105,7 +105,7 @@ export default function PatientsPage() {
                 Manage and view all registered patients
               </CardDescription>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <form onSubmit={handleSearch} className="relative w-full sm:w-auto">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -117,7 +117,7 @@ export default function PatientsPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </form>
-              
+
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-gray-500" />
                 <Select
@@ -158,69 +158,64 @@ export default function PatientsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Patient</TableHead>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Age/Gender</TableHead>
-                      <TableHead>CKD Stage</TableHead>
-                      <TableHead>Contact</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead key="patient">Patient</TableHead>
+                      <TableHead key="id">ID</TableHead>
+                      <TableHead key="age">Age/Gender</TableHead>
+                      <TableHead key="stage">CKD Stage</TableHead>
+                      <TableHead key="contact">Contact</TableHead>
+                      <TableHead key="actions" className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedPatients.map((patient) => {
-                      const stageColors = getCKDStageColor(patient.ckdStage);
-                      const age = calculateAge(patient.birthDate);
-                      
-                      return (
-                        <TableRow key={patient.id} className="hover:bg-gray-50">
-                          <TableCell>
-                            <AvatarName
-                              firstName={patient.user.firstName}
-                              lastName={patient.user.lastName}
-                              showEmail
-                              email={patient.user.email}
-                              gender={patient.gender}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm text-gray-900">P-{patient._id.toString().padStart(5, '0')}</div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm text-gray-900">{age} / {patient.gender}</div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text} px-2 py-1 text-xs`}>
-                              {patient.ckdStage}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm text-gray-900">{patient.phone || 'N/A'}</div>
-                            <div className="text-xs text-gray-500">{patient.address || 'No address'}</div>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <Link href={`/patients/${patient._id}`}>
-                                <Button variant="ghost" size="sm">View</Button>
-                              </Link>
-                              <Link href={`/patients/add-edit/${patient._id}`}>
-                                <Button variant="outline" size="sm">Edit</Button>
-                              </Link>
-                              <Button 
-                                variant="destructive" 
-                                size="sm"
-                                onClick={() => handleDeletePatient(patient)}
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    {paginatedPatients.map((patient) => (
+                      <TableRow key={patient._id} className="hover:bg-gray-50">
+                        <TableCell>
+                          <AvatarName
+                            firstName={patient.user.firstName}
+                            lastName={patient.user.lastName}
+                            showEmail
+                            email={patient.user.email}
+                            gender={patient.gender}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm text-gray-900">P-{patient._id.toString().padStart(5, '0')}</div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm text-gray-900">{calculateAge(patient.birthDate)} / {patient.gender}</div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className={`${getCKDStageColor(patient.ckdStage).bg} ${getCKDStageColor(patient.ckdStage).text} px-2 py-1 text-xs`}>
+                            {patient.ckdStage}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm text-gray-900">{patient.phone || 'N/A'}</div>
+                          <div className="text-xs text-gray-500">{patient.address || 'No address'}</div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Link href={`/patients/${patient._id}`}>
+                              <Button variant="ghost" size="sm">View</Button>
+                            </Link>
+                            <Link href={`/patients/add-edit/${patient._id}`}>
+                              <Button variant="outline" size="sm">Edit</Button>
+                            </Link>
+                            <Button 
+                              variant="destructive" 
+                              size="sm"
+                              onClick={() => handleDeletePatient(patient)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </div>
-              
+
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-between items-center mt-4">
@@ -235,7 +230,7 @@ export default function PatientsPage() {
                           className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                         />
                       </PaginationItem>
-                      
+
                       {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
                         const page = i + 1;
                         return (
@@ -249,13 +244,13 @@ export default function PatientsPage() {
                           </PaginationItem>
                         );
                       })}
-                      
+
                       {totalPages > 5 && currentPage < totalPages - 2 && (
                         <PaginationItem>
                           <span className="flex h-9 w-9 items-center justify-center">...</span>
                         </PaginationItem>
                       )}
-                      
+
                       {totalPages > 5 && (
                         <PaginationItem>
                           <PaginationLink
@@ -266,7 +261,7 @@ export default function PatientsPage() {
                           </PaginationLink>
                         </PaginationItem>
                       )}
-                      
+
                       <PaginationItem>
                         <PaginationNext 
                           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
