@@ -32,47 +32,47 @@ export default function LabResultsPage() {
   const [filterTest, setFilterTest] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 10;
-  
+
   const { data: labResults, isLoading: resultsLoading } = useQuery<PatientLabResult[]>({
     queryKey: ['/api/patient-lab-results'],
   });
-  
+
   const { data: patients } = useQuery<Patient[]>({
     queryKey: ['/api/patients'],
   });
-  
+
   const { data: labTests } = useQuery<LabTest[]>({
     queryKey: ['/api/lab-tests'],
   });
-  
+
   const { data: doctors } = useQuery<Doctor[]>({
     queryKey: ['/api/doctors'],
   });
-  
+
   const getPatientName = (patientId: number) => {
     const patient = patients?.find(p => p.id === patientId);
     return patient ? `${patient.user.firstName} ${patient.user.lastName}` : 'Unknown Patient';
   };
-  
+
   const getPatient = (patientId: number) => {
     return patients?.find(p => p.id === patientId);
   };
-  
+
   const getTestName = (testId: number) => {
     const test = labTests?.find(t => t.id === testId);
     return test ? test.testName : `Test #${testId}`;
   };
-  
+
   const getDoctorName = (doctorId: number) => {
     const doctor = doctors?.find(d => d.id === doctorId);
     return doctor ? `Dr. ${doctor.user.firstName} ${doctor.user.lastName}` : 'Unknown Doctor';
   };
-  
+
   // Filter results based on search and filter
   const filteredResults = labResults?.filter(result => {
     const patient = getPatient(result.patientId);
     const testName = getTestName(result.labTestId);
-    
+
     const matchesSearch = searchQuery ? (
       patient && (
         patient.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -80,28 +80,28 @@ export default function LabResultsPage() {
       ) ||
       testName.toLowerCase().includes(searchQuery.toLowerCase())
     ) : true;
-    
+
     const matchesFilter = filterTest === 'all' ? true : result.labTestId.toString() === filterTest;
-    
+
     return matchesSearch && matchesFilter;
   }) || [];
-  
+
   // Sort by date (newest first)
   const sortedResults = [...filteredResults].sort(
     (a, b) => new Date(b.resultDate).getTime() - new Date(a.resultDate).getTime()
   );
-  
+
   // Calculate pagination
   const totalPages = Math.ceil(sortedResults.length / resultsPerPage);
   const startIndex = (currentPage - 1) * resultsPerPage;
   const paginatedResults = sortedResults.slice(startIndex, startIndex + resultsPerPage);
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Reset to first page when searching
     setCurrentPage(1);
   };
-  
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
@@ -113,7 +113,7 @@ export default function LabResultsPage() {
           </Button>
         </Link>
       </div>
-      
+
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -123,7 +123,7 @@ export default function LabResultsPage() {
                 View and manage all laboratory test results
               </CardDescription>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <form onSubmit={handleSearch} className="relative w-full sm:w-auto">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -135,7 +135,7 @@ export default function LabResultsPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </form>
-              
+
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-gray-500" />
                 <Select
@@ -148,7 +148,7 @@ export default function LabResultsPage() {
                   <SelectContent>
                     <SelectItem value="all">All Tests</SelectItem>
                     {labTests?.map(test => (
-                      <SelectItem key={test.id} value={test.id.toString()}>
+                      <SelectItem key={test._id} value={test._id.toString()}>
                         {test.testName}
                       </SelectItem>
                     ))}
@@ -190,10 +190,10 @@ export default function LabResultsPage() {
                       const value = parseFloat(result.resultValue.toString());
                       const min = test?.normalMin ? parseFloat(test.normalMin.toString()) : undefined;
                       const max = test?.normalMax ? parseFloat(test.normalMax.toString()) : undefined;
-                      
+
                       let status = 'Normal';
                       let statusColor = 'text-green-600 bg-green-50';
-                      
+
                       if (min !== undefined && max !== undefined) {
                         if (value < min) {
                           status = 'Below Normal';
@@ -203,7 +203,7 @@ export default function LabResultsPage() {
                           statusColor = 'text-red-600 bg-red-50';
                         }
                       }
-                      
+
                       return (
                         <TableRow key={result.id}>
                           <TableCell>
@@ -242,7 +242,7 @@ export default function LabResultsPage() {
                   </TableBody>
                 </Table>
               </div>
-              
+
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-between items-center mt-4">
@@ -257,7 +257,7 @@ export default function LabResultsPage() {
                           className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                         />
                       </PaginationItem>
-                      
+
                       {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
                         const page = i + 1;
                         return (
@@ -271,13 +271,13 @@ export default function LabResultsPage() {
                           </PaginationItem>
                         );
                       })}
-                      
+
                       {totalPages > 5 && currentPage < totalPages - 2 && (
                         <PaginationItem>
                           <span className="flex h-9 w-9 items-center justify-center">...</span>
                         </PaginationItem>
                       )}
-                      
+
                       {totalPages > 5 && (
                         <PaginationItem>
                           <PaginationLink
@@ -288,7 +288,7 @@ export default function LabResultsPage() {
                           </PaginationLink>
                         </PaginationItem>
                       )}
-                      
+
                       <PaginationItem>
                         <PaginationNext 
                           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
