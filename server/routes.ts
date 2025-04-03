@@ -359,9 +359,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Validate data
-      // Générer un mot de passe aléatoire pour le patient
-      const tempPassword = Math.random().toString(36).slice(-8);
-      const passwordHash = await bcrypt.hash(tempPassword, 10);
+      // Utiliser patient2025 comme mot de passe par défaut
+      const defaultPassword = "patient2025";
+      const passwordHash = await bcrypt.hash(defaultPassword, 10);
 
       const userData = {
         firstName,
