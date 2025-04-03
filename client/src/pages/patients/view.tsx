@@ -863,7 +863,7 @@ export default function PatientView({ id }: PatientViewProps) {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-lg">Informations personnelles</CardTitle>
-                </</div>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-3 text-sm">
