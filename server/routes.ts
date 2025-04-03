@@ -607,9 +607,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   apiRouter.post('/patient-lab-results', authenticate, async (req, res) => {
     try {
-      const result = await storage.createPatientLabResult(req.body);
-      res.status(201).json(result);
+      const { patientId, labTestId, resultValue, resultDate } = req.body;
+      const doctorId = req.session.user?.id;
+
+      const newResult = new PatientLabResult({
+        patient: patientId,
+        doctor: doctorId,
+        labTest: labTestId,
+        resultValue,
+        resultDate
+      });
+
+      await newResult.save();
+      res.status(201).json(newResult);
     } catch (error) {
+      console.error('Error creating lab result:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
