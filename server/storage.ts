@@ -280,12 +280,21 @@ class MemStorage implements IStorage {
       }
     ]);
 
+    // Tests sanguins
+    this.createLabTest({
+      testName: "Créatinine sanguine",
+      description: "Mesure de la fonction rénale",
+      unit: "mg/dL",
+      normalMin: 0.5,
+      normalMax: 1.2
+    });
+
     this.createLabTest({
       testName: "DFG estimé",
       description: "Débit de filtration glomérulaire estimé",
       unit: "mL/min/1.73m²",
       normalMin: 90,
-      normalMax: 120
+      normalMax: 999 // > 90
     });
 
     this.createLabTest({
@@ -294,6 +303,224 @@ class MemStorage implements IStorage {
       unit: "mg/dL",
       normalMin: 7,
       normalMax: 20
+    });
+
+    this.createLabTest({
+      testName: "Sodium",
+      description: "Électrolyte sanguin",
+      unit: "mmol/L",
+      normalMin: 135,
+      normalMax: 145
+    });
+
+    this.createLabTest({
+      testName: "Potassium",
+      description: "Électrolyte sanguin",
+      unit: "mmol/L",
+      normalMin: 3.5,
+      normalMax: 5.0
+    });
+
+    this.createLabTest({
+      testName: "Calcium",
+      description: "Électrolyte sanguin",
+      unit: "mmol/L",
+      normalMin: 2.1,
+      normalMax: 2.6
+    });
+
+    this.createLabTest({
+      testName: "Phosphore",
+      description: "Minéral sanguin",
+      unit: "mmol/L",
+      normalMin: 0.8,
+      normalMax: 1.5
+    });
+
+    this.createLabTest({
+      testName: "Magnésium",
+      description: "Électrolyte sanguin",
+      unit: "mmol/L",
+      normalMin: 0.7,
+      normalMax: 1.0
+    });
+
+    this.createLabTest({
+      testName: "Bicarbonates",
+      description: "Équilibre acido-basique",
+      unit: "mmol/L",
+      normalMin: 22,
+      normalMax: 30
+    });
+
+    this.createLabTest({
+      testName: "Chlore",
+      description: "Électrolyte sanguin",
+      unit: "mmol/L",
+      normalMin: 98,
+      normalMax: 106
+    });
+
+    this.createLabTest({
+      testName: "Protéines totales",
+      description: "Protéines sanguines",
+      unit: "g/L",
+      normalMin: 60,
+      normalMax: 80
+    });
+
+    this.createLabTest({
+      testName: "Albumine",
+      description: "Protéine sanguine",
+      unit: "g/L",
+      normalMin: 35,
+      normalMax: 50
+    });
+
+    this.createLabTest({
+      testName: "Parathormone",
+      description: "Hormone parathyroïdienne",
+      unit: "pg/mL",
+      normalMin: 10,
+      normalMax: 65
+    });
+
+    this.createLabTest({
+      testName: "Hémoglobine Homme",
+      description: "Taux d'hémoglobine masculin",
+      unit: "g/dL",
+      normalMin: 13,
+      normalMax: 17
+    });
+
+    this.createLabTest({
+      testName: "Hémoglobine Femme",
+      description: "Taux d'hémoglobine féminin",
+      unit: "g/dL",
+      normalMin: 12,
+      normalMax: 16
+    });
+
+    this.createLabTest({
+      testName: "Hématocrite Homme",
+      description: "Pourcentage du volume sanguin occupé par les globules rouges (homme)",
+      unit: "%",
+      normalMin: 40,
+      normalMax: 54
+    });
+
+    this.createLabTest({
+      testName: "Hématocrite Femme",
+      description: "Pourcentage du volume sanguin occupé par les globules rouges (femme)",
+      unit: "%",
+      normalMin: 37,
+      normalMax: 47
+    });
+
+    this.createLabTest({
+      testName: "Glycémie à jeun",
+      description: "Taux de glucose sanguin à jeun",
+      unit: "mg/dL",
+      normalMin: 70,
+      normalMax: 100
+    });
+
+    this.createLabTest({
+      testName: "Glycémie postprandiale",
+      description: "Taux de glucose sanguin après repas",
+      unit: "mg/dL",
+      normalMin: 0,
+      normalMax: 140
+    });
+
+    this.createLabTest({
+      testName: "Hémoglobine glyquée",
+      description: "HbA1c",
+      unit: "%",
+      normalMin: 0,
+      normalMax: 5.7
+    });
+
+    this.createLabTest({
+      testName: "Cholestérol total",
+      description: "Taux de cholestérol sanguin total",
+      unit: "mg/dL",
+      normalMin: 0,
+      normalMax: 200
+    });
+
+    this.createLabTest({
+      testName: "Triglycérides",
+      description: "Taux de triglycérides sanguins",
+      unit: "mg/dL",
+      normalMin: 0,
+      normalMax: 150
+    });
+
+    this.createLabTest({
+      testName: "HDL",
+      description: "Cholestérol HDL",
+      unit: "mg/dL",
+      normalMin: 40,
+      normalMax: 999
+    });
+
+    this.createLabTest({
+      testName: "LDL",
+      description: "Cholestérol LDL",
+      unit: "mg/dL",
+      normalMin: 0,
+      normalMax: 100
+    });
+
+    // Analyses d'urine
+    this.createLabTest({
+      testName: "Protéinurie",
+      description: "Protéines dans les urines",
+      unit: "mg/24h",
+      normalMin: 0,
+      normalMax: 150
+    });
+
+    this.createLabTest({
+      testName: "Albuminurie/créatininurie",
+      description: "Rapport albumine/créatinine urinaire",
+      unit: "mg/g",
+      normalMin: 0,
+      normalMax: 30
+    });
+
+    this.createLabTest({
+      testName: "Sodium urinaire",
+      description: "Taux de sodium dans les urines",
+      unit: "mmol/L",
+      normalMin: 40,
+      normalMax: 220
+    });
+
+    this.createLabTest({
+      testName: "Potassium urinaire",
+      description: "Taux de potassium dans les urines",
+      unit: "mmol/L",
+      normalMin: 25,
+      normalMax: 125
+    });
+
+    // Examens spécialisés
+    this.createLabTest({
+      testName: "Clairance de la créatinine",
+      description: "Mesure du taux de filtration de la créatinine",
+      unit: "mL/min",
+      normalMin: 90,
+      normalMax: 120
+    });
+
+    this.createLabTest({
+      testName: "Clairance de l'inuline",
+      description: "Mesure précise du taux de filtration glomérulaire",
+      unit: "mL/min",
+      normalMin: 100,
+      normalMax: 120
     });
 
     this.createLabTest({
