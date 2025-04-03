@@ -197,10 +197,24 @@ export default function LabResultAdd() {
                             <SelectValue placeholder="Select a test" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px]">
                           {filteredTests?.map((test) => (
-                            <SelectItem key={test._id} value={test._id.toString()}>
-                              {test.testName}
+                            <SelectItem 
+                              key={test._id} 
+                              value={test._id.toString()}
+                              className="flex flex-col items-start py-3"
+                            >
+                              <div className="font-medium">{test.testName}</div>
+                              {test.description && (
+                                <div className="text-sm text-gray-500 mt-1">
+                                  {test.description}
+                                </div>
+                              )}
+                              {test.unit && (
+                                <div className="text-xs text-gray-400 mt-1">
+                                  Unité: {test.unit}
+                                </div>
+                              )}
                             </SelectItem>
                           ))}
                         </SelectContent>
