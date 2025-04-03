@@ -179,12 +179,12 @@ export default function PatientView({ id }: PatientViewProps) {
   };
 
   // Loading state
-  if (patientLoading || !patientId) {
+  if (patientLoading) {
     return <PageLoader />;
   }
 
-  // Handle patient not found
-  if (!patient) {
+  // Handle patient not found or invalid data
+  if (!patient || !patient.user) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
@@ -195,6 +195,11 @@ export default function PatientView({ id }: PatientViewProps) {
         </Button>
       </div>
     );
+  }
+
+  // Ensure all required data is loaded
+  if (!labTests || !doctors) {
+    return <PageLoader />;
   }
 
   const stageColors = getCKDStageColor(patient.ckdStage);
