@@ -86,9 +86,9 @@ export default function LabResultAdd() {
   const createLabResultMutation = useMutation({
     mutationFn: async (data: LabResultFormData) => {
       return apiRequest('POST', '/api/patient-lab-results', {
-        patientId: parseInt(data.patientId),
+        patientId: data.patientId,
         doctorId: user?.id,
-        labTestId: parseInt(data.labTestId),
+        labTestId: data.labTestId,
         resultValue: parseFloat(data.resultValue),
         resultDate: data.resultDate
       });
