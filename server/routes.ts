@@ -358,39 +358,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: 'Only doctors can create patients' });
       }
 
-      // Validate data
-      // Utiliser patient2025 comme mot de passe par défaut
+      // Check if user already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ message: 'User with this email already exists' });
+      }
+
+      // Create new user
       const defaultPassword = "patient2025";
       const passwordHash = await bcrypt.hash(defaultPassword, 10);
-
-      const userData = {
+      
+      const newUser = new User({
         firstName,
         lastName,
         email,
         passwordHash,
         role: 'patient'
-      };
+      });
+      await newUser.save();
 
-      const patientData = {
+      // Create new patient
+      const newPatient = new Patient({
+        user: newUser._id,
         birthDate,
         gender,
         address,
         phone,
-        ckdStage,
-        userId: 0, // Will be set by the storage implementation
-        createdBy: doctorId // Add the doctor ID
-      };
+        ckdStage
+      });
+      await newPatient.save();
 
-      // Check if user already exists
-      const existingUser = await storage.getUserByEmail(email);
-      if (existingUser) {
-        return res.status(400).json({ message: 'User with this email already exists' });
-      }
-
-      const patient = await storage.createPatient(patientData, userData);
+      // Fetch the complete patient data with user information
+      const patientWithUser = await Patient.findById(newPatient._id).populate('user');
+      
       res.status(201).json({
-        ...patient,
-        user: { ...patient.user, passwordHash: undefined }
+        ...patientWithUser.toObject(),
+        user: { ...patientWithUser.user.toObject(), passwordHash: undefined }
       });
     } catch (error) {
       console.error('Create patient error:', error);
