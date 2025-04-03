@@ -23,11 +23,23 @@ export async function apiRequest(
     ...(token ? { "Authorization": `Bearer ${token}` } : {})
   };
   
+  console.log(`Envoi requête ${method} vers ${url}`, { 
+    headers, 
+    data: data || 'Pas de données' 
+  });
+
   const res = await fetch(url, {
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
+  });
+
+  console.log(`Réponse reçue de ${url}:`, {
+    status: res.status,
+    ok: res.ok,
+    statusText: res.statusText,
+    headers: Object.fromEntries(res.headers.entries())
   });
 
   await throwIfResNotOk(res);

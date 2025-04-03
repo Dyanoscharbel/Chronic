@@ -119,7 +119,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Doctor auth middleware
   const requireDoctor = (req: any, res: any, next: any) => {
     const user = req.session.user || req.user;
-    
+
     if (!user) {
       return res.status(401).json({ message: 'Authentication required' });
     }
@@ -137,23 +137,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Public routes
   apiRouter.post('/auth/login', async (req, res) => {
-
-  // Auth routes
-  apiRouter.post('/auth/login', async (req, res) => {
     try {
+      console.log('Tentative de connexion:', { email: req.body.email });
       const { email, password } = req.body;
       if (!email || !password) {
+        console.log('Données manquantes:', { email: !!email, password: !!password });
         return res.status(400).json({ message: 'Email et mot de passe requis' });
       }
 
-      // Recherche l'utilisateur avec son email et inclut le passwordHash
+      // Recherche l'utilisateur avec son email
       const user = await User.findOne({ email });
+      console.log('Utilisateur trouvé:', { found: !!user, email });
       if (!user) {
         return res.status(401).json({ message: 'Utilisateur non trouvé' });
       }
 
       // Vérifie le mot de passe
       const isValid = await bcrypt.compare(password, user.passwordHash);
+      console.log('Mot de passe vérifié:', { isValid });
       if (!isValid) {
         return res.status(401).json({ message: 'Mot de passe incorrect' });
       }
@@ -216,7 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { specialty, hospital, ...userFields } = userData;
-      
+
       // Create user
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       const newUser = new User({
@@ -899,7 +900,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
     }
-  });
   });
 
   // Routes pour la gestion du thème

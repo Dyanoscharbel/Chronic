@@ -48,10 +48,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       console.log('Tentative de connexion avec:', { email });
+      console.log('Envoi de la requête au serveur...');
       const response = await apiRequest('POST', '/api/auth/login', { email, password });
+      console.log('Statut de la réponse:', response.status);
       const data = await response.json();
       
-      console.log('Réponse du serveur:', data);
+      console.log('Réponse complète du serveur:', {
+        status: response.status,
+        data,
+        headers: Object.fromEntries(response.headers.entries())
+      });
       
       if (!response.ok) {
         throw new Error(data.message || 'Erreur de connexion');
