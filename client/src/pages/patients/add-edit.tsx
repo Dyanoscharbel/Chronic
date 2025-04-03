@@ -95,9 +95,15 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
   }, [patient, isEditing, form]);
   
   // Create patient mutation
+  const { user } = useAuth();
+  
   const createPatientMutation = useMutation({
     mutationFn: async (data: PatientFormData) => {
-      return apiRequest('POST', '/api/patients', data);
+      // Add doctor ID to patient data
+      return apiRequest('POST', '/api/patients', {
+        ...data,
+        doctorId: user?.id
+      });
     },
     onSuccess: () => {
       toast({
