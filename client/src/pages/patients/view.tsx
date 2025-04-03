@@ -854,7 +854,11 @@ export default function PatientView({ id }: PatientViewProps) {
           <DialogHeader>
             <DialogTitle>Informations détaillées du patient</DialogTitle>
             <DialogDescription>
-              Dossier complet de {patient.user.firstName} {patient.user.lastName}
+              {patient.user ? (
+                <>Dossier complet de {patient.user.firstName} {patient.user.lastName}</>
+              ) : (
+                'Chargement des informations...'
+              )}
             </DialogDescription>
           </DialogHeader>
 
@@ -868,11 +872,11 @@ export default function PatientView({ id }: PatientViewProps) {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="font-medium">Nom complet</div>
-                  <div>{patient.user.firstName} {patient.user.lastName}</div>
+                  <div>{patient.user?.firstName} {patient.user?.lastName}</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="font-medium">Email</div>
-                  <div>{patient.user.email}</div>
+                  <div>{patient.user?.email}</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="font-medium">Âge</div>
