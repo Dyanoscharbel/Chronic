@@ -319,7 +319,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Patients routes
   apiRouter.get('/patients', authenticate, async (req, res) => {
     try {
-      const patients = await Patient.find().populate('user');
+      // Get the connected user's ID from the session
+      const doctorId = req.session.user?.id;
+      
+      // Find only patients where doctor field matches the connected doctor's ID
+      const patients = await Patient.find({ doctor: doctorId }).populate('user');
       res.json(patients.map(patient => ({
         ...patient.toObject(),
         user: { ...patient.user.toObject(), passwordHash: undefined }
