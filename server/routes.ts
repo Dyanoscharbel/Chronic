@@ -978,6 +978,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes pour le changement de mot de passe
+  apiRouter.post('/user/change-password', authenticate, async (req, res) => {
+    try {
+      const userId = req.session.user?.id;
+      const { currentPassword, newPassword } = req.body;
+
+      // Trouver l'utilisateur
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      }
+
+      // Vérifier l'ancien mot de passe
+      const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
+      if (!isValid) {
+        return res.status(401).json({ message: 'Mot de passe actuel incorrect' });
+      }
+
+      // Hasher et sauvegarder le nouveau mot de passe
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.passwordHash = hashedPassword;
+      await user.save();
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Erreur changement mot de passe:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
