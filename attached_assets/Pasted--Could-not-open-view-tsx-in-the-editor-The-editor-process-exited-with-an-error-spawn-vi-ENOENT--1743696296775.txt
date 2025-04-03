@@ -1,0 +1,78 @@
+
+Could not open view.tsx in the editor.
+The editor process exited with an error: spawn vi ENOENT ('vi' command does not exist in 'PATH').
+
+4:02:50 PM [express] GET /api/notifications 304 in 3ms :: []
+Fetching patient with ID: 67ee662c4133b9e57a946110
+4:02:50 PM [express] GET /api/doctors 304 in 4ms :: [{"specialty":"Néphrologie","hospital":"Hôpital …
+4:02:50 PM [express] GET /api/workflows 304 in 1ms :: []
+4:02:50 PM [express] GET /api/lab-tests 304 in 140ms :: [{"_id":"67eeb0eb5e0c8ee7653a5899","testName…
+Found patient: {
+  _id: new ObjectId('67ee662c4133b9e57a946110'),
+  user: {
+    _id: new ObjectId('67ee662b4133b9e57a94610e'),
+    firstName: 'fazer',
+    lastName: 'ee',
+    email: 'ttt@JJD.com',
+    role: 'patient'
+  },
+  doctor: null,
+  birthDate: 2025-04-03T00:00:00.000Z,
+  gender: 'M',
+  address: 'rtrt',
+  phone: '23444',
+  ckdStage: 'Stage 1',
+  __v: 0,
+  createdAt: 2025-04-03T13:26:43.714Z
+}
+4:02:50 PM [express] GET /api/patients/67ee662c4133b9e57a946110 304 in 285ms :: {"_id":"67ee662c4133…
+4:03:18 PM [express] GET /api/notifications 304 in 1ms :: []
+Fetching patient with ID: 67ee6e205a32df51654acc39
+4:03:18 PM [express] GET /api/doctors 304 in 1ms :: [{"specialty":"Néphrologie","hospital":"Hôpital …
+4:03:18 PM [express] GET /api/lab-tests 304 in 137ms :: [{"_id":"67eeb0eb5e0c8ee7653a5899","testName…
+4:03:18 PM [express] GET /api/workflows 304 in 1ms :: []
+Found patient: {
+  _id: new ObjectId('67ee6e205a32df51654acc39'),
+  user: {
+    _id: new ObjectId('67ee6e1f5a32df51654acc37'),
+    firstName: 'fazer',
+    lastName: 'ee',
+    email: 'hv@ff.com',
+    role: 'patient'
+  },
+  doctor: null,
+  birthDate: 2000-02-10T00:00:00.000Z,
+  gender: 'M',
+  address: 'jik',
+  phone: '44443',
+  ckdStage: 'Stage 3A',
+  createdAt: 2025-04-03T11:16:48.105Z,
+  __v: 0
+}
+4:03:18 PM [express] GET /api/patients/67ee6e205a32df51654acc39 304 in 274ms :: {"_id":"67ee6e205a32…
+4:03:22 PM [express] GET /api/dashboard/recent-alerts 304 in 1ms :: [{"id":1,"type":"critical","titl…
+4:03:22 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+4:03:22 PM [express] GET /api/notifications 304 in 1ms :: []
+4:03:22 PM [express] GET /api/dashboard/stats 200 in 272ms :: {"totalPatients":0,"upcomingAppointmen…
+4:03:23 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+4:03:23 PM [express] GET /api/dashboard/recent-alerts 304 in 1ms :: [{"id":1,"type":"critical","titl…
+4:03:25 PM [vite] hmr update /src/pages/patients/view.tsx, /src/index.css?v=plA7SqFpKLfkMVR9NI5qE
+4:03:25 PM [express] GET /api/dashboard/stats 304 in 272ms :: {"totalPatients":0,"upcomingAppointmen…
+4:03:26 PM [vite] Internal server error: /home/runner/workspace/client/src/pages/patients/view.tsx: Unexpected token (866:18)
+
+  864 |                 <div className="flex justify-between items-center">
+  865 |                   <CardTitle className="text-lg">Informations personnelles</CardTitle>
+> 866 |                 </</div>
+      |                   ^
+  867 |               </CardHeader>
+  868 |               <CardContent className="space-y-4">
+  869 |                 <div className="grid grid-cols-2 gap-3 text-sm">
+  Plugin: vite:react-babel
+  File: /home/runner/workspace/client/src/pages/patients/view.tsx:866:18
+  864|                  <div className="flex justify-between items-center">
+  865|                    <CardTitle className="text-lg">Informations personnelles</CardTitle>
+  866|                  </</div>
+     |                    ^
+  867|                </CardHeader>
+  868|                <CardContent className="space-y-4">
+      at toParseError (/home/runner/workspace/node_modules/@babel/parser/src/parse-error.ts:95:45)
