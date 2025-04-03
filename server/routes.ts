@@ -257,10 +257,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session.user?.id;
       console.log('User ID from session:', userId);
+      console.log('Session user:', req.session.user);
       const { firstName, lastName, specialty, hospital } = req.body;
 
-      // Mettre à jour l'utilisateur
-      const user = await User.findByIdAndUpdate(
+      // Convertir l'ID en ObjectId MongoDB
+      const user = await User.findOneAndUpdate(
+        { _id: userId },
         userId,
         { firstName, lastName },
         { new: true }
