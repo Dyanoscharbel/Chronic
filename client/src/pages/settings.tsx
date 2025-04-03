@@ -88,8 +88,8 @@ export default function SettingsPage() {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      specialty: '',
-      hospital: '',
+      specialty: doctorDetails?.specialty || '',
+      hospital: doctorDetails?.hospital || '',
     },
   });
 
@@ -103,7 +103,7 @@ export default function SettingsPage() {
         hospital: doctorDetails.hospital || '',
       });
     }
-  }, [user, doctorDetails]);
+  }, [user, doctorDetails, profileForm]);
 
   // Password form
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
