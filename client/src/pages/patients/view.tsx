@@ -260,28 +260,33 @@ export default function PatientView({ id }: PatientViewProps) {
           {/* Basic Info Card */}
           <Card>
             <CardHeader className="pb-4">
-              <div className="flex flex-col items-center space-y-4">
-                <AvatarName
-                  firstName={patient?.user?.firstName || ''}
-                  lastName={patient?.user?.lastName || ''}
-                  size="lg"
-                />
-                <div className="text-center">
-                  {patient && patient.user && (
+                <div className="flex flex-col items-center space-y-4">
+                  {patient?.user ? (
                     <>
-                      <h2 className="text-xl font-semibold">
-                        {patient.user.firstName} {patient.user.lastName}
-                      </h2>
-                      <p className="text-sm text-gray-500">{patient.user.email}</p>
-                      <p className="text-sm text-gray-500">ID: P-{patient._id?.toString()}</p>
+                      <AvatarName
+                        firstName={patient.user.firstName}
+                        lastName={patient.user.lastName}
+                        size="lg"
+                      />
+                      <div className="text-center">
+                        <h2 className="text-xl font-semibold">
+                          {patient.user.firstName} {patient.user.lastName}
+                        </h2>
+                        <p className="text-sm text-gray-500">{patient.user.email}</p>
+                        <p className="text-sm text-gray-500">ID: P-{patient._id?.toString()}</p>
+                      </div>
+                      <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text}`}>
+                        {patient.ckdStage || 'Stage not set'}
+                      </Badge>
                     </>
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <Loader size="lg" />
+                      <p className="mt-2 text-sm text-gray-500">Loading patient data...</p>
+                    </div>
                   )}
                 </div>
-                <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text}`}>
-                  {patient.ckdStage || 'Stage not set'}
-                </Badge>
-              </div>
-            </CardHeader>
+              </CardHeader>
 
             <CardContent>
               <div className="space-y-4">
