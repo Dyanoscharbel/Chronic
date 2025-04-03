@@ -59,7 +59,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
   // Define form
   const form = useForm<PatientFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: isEditing ? {} : {
       firstName: '',
       lastName: '',
       email: '',
