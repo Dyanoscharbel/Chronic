@@ -93,6 +93,21 @@ export default function PatientView({ id }: PatientViewProps) {
   });
 
   // Set doctor if missing
+  // Fetch patient data
+  const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
+    queryKey: [`/api/patients/${id}`],
+    enabled: !!id && id !== 'undefined',
+    queryFn: async () => {
+      if (!id || id === 'undefined') {
+        setLocation('/patients');
+        throw new Error('Invalid patient ID');
+      }
+      const response = await apiRequest('GET', `/api/patients/${id}`);
+      return response;
+    },
+  });
+
+  // Set doctor if missing
   useEffect(() => {
     const updateDoctor = async () => {
       if (patient && !patient.doctor && user) {
@@ -109,16 +124,6 @@ export default function PatientView({ id }: PatientViewProps) {
     };
     updateDoctor();
   }, [patient, user, id, queryClient]);
-    enabled: !!id && id !== 'undefined',
-    queryFn: async () => {
-      if (!id || id === 'undefined') {
-        setLocation('/patients');
-        throw new Error('Invalid patient ID');
-      }
-      const response = await apiRequest('GET', `/api/patients/${id}`);
-      return response;
-    },
-  });
 
   // Fetch lab results
   const { data: labResults, isLoading: labResultsLoading } = useQuery<PatientLabResult[]>({
