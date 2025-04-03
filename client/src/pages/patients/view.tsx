@@ -78,6 +78,20 @@ export default function PatientView({ id }: PatientViewProps) {
   const [doctorId, setDoctorId] = useState('');
   const [purpose, setPurpose] = useState('');
 
+  // Fetch patient data
+  const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
+    queryKey: [`/api/patients/${id}`],
+    enabled: !!id && id !== 'undefined',
+    queryFn: async () => {
+      if (!id || id === 'undefined') {
+        setLocation('/patients');
+        throw new Error('Invalid patient ID');
+      }
+      const response = await apiRequest('GET', `/api/patients/${id}`);
+      return response;
+    },
+  });
+
   // Set doctor if missing
   useEffect(() => {
     const updateDoctor = async () => {
@@ -95,10 +109,6 @@ export default function PatientView({ id }: PatientViewProps) {
     };
     updateDoctor();
   }, [patient, user, id, queryClient]);
-
-  // Fetch patient data
-  const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
-    queryKey: [`/api/patients/${id}`],
     enabled: !!id && id !== 'undefined',
     queryFn: async () => {
       if (!id || id === 'undefined') {
