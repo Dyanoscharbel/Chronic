@@ -135,11 +135,15 @@ export default function SettingsPage() {
       queryClient.clear();
 
       // Rediriger vers login et reconnecter automatiquement
+      const savedPassword = storedAuth.password;
+      
       setTimeout(async () => {
         window.location.href = '/login';
-        if (userEmail) {
-          await login(userEmail, storedAuth.password);
-        }
+        setTimeout(async () => {
+          if (userEmail && savedPassword) {
+            await login(userEmail, savedPassword);
+          }
+        }, 1000);
       }, 1500);
     },
     onError: (error) => {

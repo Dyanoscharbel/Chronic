@@ -161,5 +161,11 @@ export function useAuth() {
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context;
+  return {
+    ...context,
+    login: context.login,
+    logout: context.logout,
+    register: context.register,
+    setAuthState: context.setAuthState
+  };
 }
