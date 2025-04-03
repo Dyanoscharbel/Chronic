@@ -588,7 +588,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Patient lab results routes
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
-      const results = await PatientLabResult.find()
+      const doctorId = req.session.user?.id;
+      const results = await PatientLabResult.find({ doctor: doctorId })
         .populate('patient')
         .populate('doctor')
         .populate('labTest')
