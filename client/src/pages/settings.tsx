@@ -434,37 +434,7 @@ export default function SettingsPage() {
                           )}
                         />
 
-                        {user.role === 'medecin' && (
-                          <>
-                            <FormField
-                              control={profileForm.control}
-                              name="specialty"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Specialty</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="e.g. Nephrology" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={profileForm.control}
-                              name="hospital"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Hospital/Clinic</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="e.g. General Hospital" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </>
-                        )}
+                        
                       </div>
 
                       <CardFooter className="px-0 pt-4 pb-0">
