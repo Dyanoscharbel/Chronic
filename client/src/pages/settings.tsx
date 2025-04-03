@@ -165,8 +165,8 @@ export default function SettingsPage() {
         description: 'Vos informations ont été mises à jour avec succès',
       });
 
-      // Rediriger vers le dashboard
-      window.location.href = '/';
+      // Rediriger vers la page de connexion
+      window.location.href = '/login';
     },
     onError: (error) => {
       toast({
