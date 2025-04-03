@@ -61,7 +61,7 @@ export default function PatientView({ id }: PatientViewProps) {
   const patientId = parseInt(id);
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
-  
+
   // Dialog states
   const [patientDetailsDialogOpen, setPatientDetailsDialogOpen] = useState(false);
   const [labTestId, setLabTestId] = useState('');
@@ -71,40 +71,41 @@ export default function PatientView({ id }: PatientViewProps) {
   const [appointmentTime, setAppointmentTime] = useState('');
   const [doctorId, setDoctorId] = useState('');
   const [purpose, setPurpose] = useState('');
-  
+  const [editDialogOpen, setEditDialogOpen] = useState(false); // Added state for Edit Dialog
+
   // Fetch patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${patientId}`],
     enabled: !isNaN(patientId),
   });
-  
+
   // Fetch lab results
   const { data: labResults, isLoading: labResultsLoading } = useQuery<PatientLabResult[]>({
     queryKey: [`/api/patient-lab-results/patient/${patientId}`],
     enabled: !isNaN(patientId),
   });
-  
+
   // Fetch appointments
   const { data: appointments, isLoading: appointmentsLoading } = useQuery<Appointment[]>({
     queryKey: [`/api/appointments/patient/${patientId}`],
     enabled: !isNaN(patientId),
   });
-  
+
   // Fetch lab tests for dropdown
   const { data: labTests } = useQuery<LabTest[]>({
     queryKey: ['/api/lab-tests'],
   });
-  
+
   // Fetch doctors for dropdown
   const { data: doctors } = useQuery<Doctor[]>({
     queryKey: ['/api/doctors'],
   });
-  
+
   // Fetch workflows
   const { data: workflows } = useQuery<Workflow[]>({
     queryKey: ['/api/workflows'],
   });
-  
+
   // Mutation for adding lab result
   const addLabResultMutation = useMutation({
     mutationFn: async (newResult: any) => {
@@ -127,7 +128,7 @@ export default function PatientView({ id }: PatientViewProps) {
       });
     }
   });
-  
+
   // Mutation for adding appointment
   const addAppointmentMutation = useMutation({
     mutationFn: async (newAppointment: any) => {
@@ -150,21 +151,21 @@ export default function PatientView({ id }: PatientViewProps) {
       });
     }
   });
-  
+
   // Reset forms
   const resetLabResultForm = () => {
     setLabTestId('');
     setResultValue('');
     setResultDate(new Date().toISOString().split('T')[0]);
   };
-  
+
   const resetAppointmentForm = () => {
     setAppointmentDate('');
     setAppointmentTime('');
     setDoctorId('');
     setPurpose('');
   };
-  
+
   // Submit handlers
   const handleLabResultSubmit = () => {
     if (!labTestId || !resultValue || !resultDate) {
@@ -175,7 +176,7 @@ export default function PatientView({ id }: PatientViewProps) {
       });
       return;
     }
-    
+
     addLabResultMutation.mutate({
       patientId,
       doctorId: 1, // Use the first doctor for now (would normally come from auth)
@@ -184,7 +185,7 @@ export default function PatientView({ id }: PatientViewProps) {
       resultDate
     });
   };
-  
+
   const handleAppointmentSubmit = () => {
     if (!appointmentDate || !appointmentTime || !doctorId) {
       toast({
@@ -194,9 +195,9 @@ export default function PatientView({ id }: PatientViewProps) {
       });
       return;
     }
-    
+
     const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
-    
+
     addAppointmentMutation.mutate({
       patientId,
       doctorId: parseInt(doctorId),
@@ -205,12 +206,12 @@ export default function PatientView({ id }: PatientViewProps) {
       status: 'pending'
     });
   };
-  
+
   // Loading state
   if (patientLoading || isNaN(patientId)) {
     return <PageLoader />;
   }
-  
+
   // Handle patient not found
   if (!patient) {
     return (
@@ -224,10 +225,10 @@ export default function PatientView({ id }: PatientViewProps) {
       </div>
     );
   }
-  
+
   const stageColors = getCKDStageColor(patient.ckdStage);
   const age = calculateAge(patient.birthDate);
-  
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center gap-4">
@@ -240,7 +241,7 @@ export default function PatientView({ id }: PatientViewProps) {
         </Button>
         <h1 className="text-2xl font-semibold text-gray-900">Patient Profile</h1>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Left column - Patient info */}
         <div className="md:col-span-1">
@@ -302,7 +303,7 @@ export default function PatientView({ id }: PatientViewProps) {
                     <div className="font-medium text-right">{formatDate(patient.birthDate)}</div>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">CKD Information</h3>
                   <Separator className="my-2" />
@@ -341,7 +342,7 @@ export default function PatientView({ id }: PatientViewProps) {
                     <p className="mt-1"><strong>Proteinuria:</strong> A1 (&lt;30 mg/g), A2 (30-300 mg/g), A3 (&gt;300 mg/g)</p>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Contact Information</h3>
                   <Separator className="my-2" />
@@ -357,7 +358,7 @@ export default function PatientView({ id }: PatientViewProps) {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Assigned Workflows Card */}
           <Card className="mt-6">
             <CardHeader>
@@ -371,28 +372,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 <Accordion type="single" collapsible className="w-full">
                   {workflows
                     .filter(wf => wf.ckdStage === patient.ckdStage || !wf.ckdStage)
-                    .map((workflow) => (
-                      <AccordionItem key={workflow.id} value={`workflow-${workflow.id}`}>
-                        <AccordionTrigger className="text-sm font-medium">
-                          {workflow.name}
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <p className="text-sm text-gray-500 mb-2">{workflow.description}</p>
-                          {workflow.requirements && workflow.requirements.length > 0 ? (
-                            <ul className="text-sm space-y-2">
-                              {workflow.requirements.map((req, idx) => (
-                                <li key={idx} className="flex justify-between">
-                                  <span>{req.testName}</span>
-                                  <span className="text-gray-500">{req.frequency}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-sm text-gray-500">No specific requirements</p>
-                          )}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
+                    }
                 </Accordion>
               ) : (
                 <div className="p-4 text-center text-gray-500">
@@ -402,7 +382,7 @@ export default function PatientView({ id }: PatientViewProps) {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Right column - Tabs */}
         <div className="md:col-span-3">
           <Tabs defaultValue="lab-results">
@@ -410,7 +390,7 @@ export default function PatientView({ id }: PatientViewProps) {
               <TabsTrigger value="lab-results">Lab Results</TabsTrigger>
               <TabsTrigger value="appointments">Appointments</TabsTrigger>
             </TabsList>
-            
+
             {/* Lab Results Tab */}
             <TabsContent value="lab-results">
               <Card>
@@ -421,7 +401,7 @@ export default function PatientView({ id }: PatientViewProps) {
                   </div>
                   <div className="flex space-x-2">
                     <GenerateReport patient={patient} />
-                    
+
                     {labTests && (
                       <AutoGenerateDialog 
                         patient={patient}
@@ -429,7 +409,7 @@ export default function PatientView({ id }: PatientViewProps) {
                         doctorId={1} // Would normally be the doctor from auth
                       />
                     )}
-                    
+
                     <Button 
                       className="flex items-center gap-2"
                       onClick={() => setAddLabResultDialogOpen(true)}
@@ -475,10 +455,10 @@ export default function PatientView({ id }: PatientViewProps) {
                             const value = parseFloat(result.resultValue.toString());
                             const min = test?.normalMin ? parseFloat(test.normalMin.toString()) : undefined;
                             const max = test?.normalMax ? parseFloat(test.normalMax.toString()) : undefined;
-                            
+
                             let status = 'Normal';
                             let statusColor = 'text-green-600 bg-green-50';
-                            
+
                             if (min !== undefined && max !== undefined) {
                               if (value < min) {
                                 status = 'Below Normal';
@@ -488,7 +468,7 @@ export default function PatientView({ id }: PatientViewProps) {
                                 statusColor = 'text-red-600 bg-red-50';
                               }
                             }
-                            
+
                             return (
                               <TableRow key={result.id}>
                                 <TableCell className="font-medium">
@@ -521,7 +501,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Appointments Tab */}
             <TabsContent value="appointments">
               <Card>
@@ -572,7 +552,7 @@ export default function PatientView({ id }: PatientViewProps) {
                               .map((appointment) => {
                                 const doctor = doctors?.find(d => d.id === appointment.doctorId);
                                 const statusColor = getStatusColor(appointment.status);
-                                
+
                                 return (
                                   <Card key={appointment.id} className="p-4">
                                     <div className="flex justify-between items-start">
@@ -605,7 +585,7 @@ export default function PatientView({ id }: PatientViewProps) {
                           </div>
                         )}
                       </div>
-                      
+
                       <div>
                         <h3 className="text-sm font-medium text-gray-900 mb-3">Past Appointments</h3>
                         {appointments?.filter(a => new Date(a.appointmentDate) < new Date() || a.status === 'cancelled').length === 0 ? (
@@ -621,7 +601,7 @@ export default function PatientView({ id }: PatientViewProps) {
                               .map((appointment) => {
                                 const doctor = doctors?.find(d => d.id === appointment.doctorId);
                                 const statusColor = getStatusColor(appointment.status);
-                                
+
                                 return (
                                   <Card key={appointment.id} className="p-4">
                                     <div className="flex justify-between items-start">
@@ -662,7 +642,7 @@ export default function PatientView({ id }: PatientViewProps) {
           </Tabs>
         </div>
       </div>
-      
+
       {/* Add Lab Result Dialog */}
       <Dialog open={addLabResultDialogOpen} onOpenChange={setAddLabResultDialogOpen}>
         <DialogContent>
@@ -672,7 +652,7 @@ export default function PatientView({ id }: PatientViewProps) {
               Record a new lab test result for {patient.user.firstName} {patient.user.lastName}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="test-type" className="text-right">
@@ -696,7 +676,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 </Select>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="result-value" className="text-right">
                 Result
@@ -710,7 +690,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 className="col-span-3"
               />
             </div>
-            
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="result-date" className="text-right">
                 Date
@@ -724,7 +704,7 @@ export default function PatientView({ id }: PatientViewProps) {
               />
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddLabResultDialogOpen(false)}>
               Cancel
@@ -745,7 +725,7 @@ export default function PatientView({ id }: PatientViewProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       {/* Add Appointment Dialog */}
       <Dialog open={addAppointmentDialogOpen} onOpenChange={setAddAppointmentDialogOpen}>
         <DialogContent>
@@ -755,7 +735,7 @@ export default function PatientView({ id }: PatientViewProps) {
               Schedule a new appointment for {patient.user.firstName} {patient.user.lastName}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="appointment-date" className="text-right">
@@ -769,7 +749,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 className="col-span-3"
               />
             </div>
-            
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="appointment-time" className="text-right">
                 Time
@@ -782,7 +762,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 className="col-span-3"
               />
             </div>
-            
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="doctor" className="text-right">
                 Doctor
@@ -805,7 +785,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 </Select>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="purpose" className="text-right">
                 Purpose
@@ -819,7 +799,7 @@ export default function PatientView({ id }: PatientViewProps) {
               />
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddAppointmentDialogOpen(false)}>
               Cancel
@@ -850,7 +830,7 @@ export default function PatientView({ id }: PatientViewProps) {
               Dossier complet de {patient.user.firstName} {patient.user.lastName}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
             <Card>
               <CardHeader>
@@ -1005,7 +985,7 @@ export default function PatientView({ id }: PatientViewProps) {
               </CardContent>
             </Card>
           </div>
-          
+
           <DialogFooter className="flex justify-between">
             <Button variant="outline" onClick={() => setPatientDetailsDialogOpen(false)}>
               Fermer
