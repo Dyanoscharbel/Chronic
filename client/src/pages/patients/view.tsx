@@ -287,16 +287,20 @@ export default function PatientView({ id }: PatientViewProps) {
                   <Separator className="my-2" />
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Age</span>
-                      <span>{age} years</span>
+                      <span className="text-gray-500">Birth Date</span>
+                      <span>{formatDate(patient.birthDate)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Gender</span>
-                      <span>{patient.gender}</span>
+                      <span>{patient.gender === 'M' ? 'Male' : 'Female'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Phone</span>
                       <span>{patient.phone || 'Not provided'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Address</span>
+                      <span>{patient.address || 'Not provided'}</span>
                     </div>
                   </div>
                 </div>
