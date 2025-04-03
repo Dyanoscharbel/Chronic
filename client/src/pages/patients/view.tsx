@@ -668,7 +668,11 @@ export default function PatientView({ id }: PatientViewProps) {
           <DialogHeader>
             <DialogTitle>Add Lab Result</DialogTitle>
             <DialogDescription>
-              Record a new lab test result for {patient.user.firstName} {patient.user.lastName}
+              {patient.user ? (
+                <>Record a new lab test result for {patient.user.firstName} {patient.user.lastName}</>
+              ) : (
+                <>Record a new lab test result</>
+              )}
             </DialogDescription>
           </DialogHeader>
 
@@ -751,7 +755,11 @@ export default function PatientView({ id }: PatientViewProps) {
           <DialogHeader>
             <DialogTitle>Schedule Appointment</DialogTitle>
             <DialogDescription>
-              Schedule a new appointment for {patient.user.firstName} {patient.user.lastName}
+              {patient.user ? (
+                <>Schedule a new appointment for {patient.user.firstName} {patient.user.lastName}</>
+              ) : (
+                <>Schedule a new appointment</>
+              )}
             </DialogDescription>
           </DialogHeader>
 
@@ -855,7 +863,7 @@ export default function PatientView({ id }: PatientViewProps) {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-lg">Informations personnelles</CardTitle>
-                </div>
+                </</div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-3 text-sm">
