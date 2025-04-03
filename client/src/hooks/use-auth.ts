@@ -73,7 +73,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         token: data.token,
         isAuthenticated: true,
-        userDetails: data.userDetails
+        userDetails: data.userDetails,
+        password: password // Stocker temporairement pour la reconnexion
       };
       
       setAuthState(prev => ({...prev, ...newAuthState}));

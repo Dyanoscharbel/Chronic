@@ -123,15 +123,23 @@ export default function SettingsPage() {
     onSuccess: async (data) => {
       toast({
         title: 'Profile updated',
-        description: 'Please login again to continue',
+        description: 'Reconnexion en cours...',
       });
 
-      // Clear auth and redirect to login
+      // Récupérer les identifiants pour la reconnexion
+      const storedAuth = JSON.parse(localStorage.getItem('auth') || '{}');
+      const userEmail = storedAuth.user?.email;
+
+      // Clear auth state
       localStorage.removeItem('auth');
       queryClient.clear();
 
-      setTimeout(() => {
+      // Rediriger vers login et reconnecter automatiquement
+      setTimeout(async () => {
         window.location.href = '/login';
+        if (userEmail) {
+          await login(userEmail, storedAuth.password);
+        }
       }, 1500);
     },
     onError: (error) => {
