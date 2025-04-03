@@ -58,8 +58,8 @@ export default function LabResultsPage() {
     return patients?.find(p => p.id === patientId);
   };
 
-  const getTestName = (testId: number) => {
-    const test = labTests?.find(t => t.id === testId);
+  const getTestName = (testId: string) => {
+    const test = labTests?.find(t => t._id === testId);
     return test ? test.testName : `Test #${testId}`;
   };
 
@@ -71,7 +71,7 @@ export default function LabResultsPage() {
   // Filter results based on search and filter
   const filteredResults = labResults?.filter(result => {
     const patient = getPatient(result.patientId);
-    const testName = getTestName(result.labTestId);
+    const testName = getTestName(result.labTest);
 
     const matchesSearch = searchQuery ? (
       patient && (
@@ -81,7 +81,7 @@ export default function LabResultsPage() {
       testName.toLowerCase().includes(searchQuery.toLowerCase())
     ) : true;
 
-    const matchesFilter = filterTest === 'all' ? true : result.labTestId.toString() === filterTest;
+    const matchesFilter = filterTest === 'all' ? true : result.labTest === filterTest;
 
     return matchesSearch && matchesFilter;
   }) || [];
@@ -186,10 +186,10 @@ export default function LabResultsPage() {
                   <TableBody>
                     {paginatedResults.map((result) => {
                       const patient = getPatient(result.patientId);
-                      const test = labTests?.find(t => t.id === result.labTestId);
+                      const test = labTests?.find(t => t._id === result.labTest);
                       const value = parseFloat(result.resultValue.toString());
-                      const min = test?.normalMin ? parseFloat(test.normalMin.toString()) : undefined;
-                      const max = test?.normalMax ? parseFloat(test.normalMax.toString()) : undefined;
+                      const min = test?.normalMin;
+                      const max = test?.normalMax;
 
                       let status = 'Normal';
                       let statusColor = 'text-green-600 bg-green-50';
@@ -220,7 +220,7 @@ export default function LabResultsPage() {
                             )}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {getTestName(result.labTestId)}
+                            {getTestName(result.labTest)}
                           </TableCell>
                           <TableCell>
                             {value} {test?.unit || ''}
