@@ -281,23 +281,8 @@ class MemStorage implements IStorage {
     ]);
 
     // Tests sanguins
-    this.createLabTest({
-      testName: "Créatinine sanguine",
-      description: "Mesure de la fonction rénale",
-      unit: "mg/dL",
-      normalMin: 0.5,
-      normalMax: 1.2
-    });
-
-    this.createLabTest({
-      testName: "DFG estimé",
-      description: "Débit de filtration glomérulaire estimé",
-      unit: "mL/min/1.73m²",
-      normalMin: 90,
-      normalMax: 999 // > 90
-    });
-
-    this.createLabTest({
+    // Les tests sont maintenant stockés dans MongoDB
+    // Vous pouvez les ajouter via l'interface d'administration
       testName: "Urée sanguine",
       description: "Mesure de la fonction rénale",
       unit: "mg/dL",

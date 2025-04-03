@@ -567,9 +567,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Lab tests routes
   apiRouter.get('/lab-tests', authenticate, async (req, res) => {
     try {
-      const labTests = await storage.getLabTests();
+      // Récupérer les tests depuis MongoDB
+      const labTests = await LabTest.find().sort({ testName: 1 });
       res.json(labTests);
     } catch (error) {
+      console.error('Error fetching lab tests:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
