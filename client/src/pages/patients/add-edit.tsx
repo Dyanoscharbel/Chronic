@@ -72,7 +72,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
 
   // Fetch patient data if editing
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
-    queryKey: [`/api/patients/${patientId}`],
+    queryKey: [`/api/patients/${id}`],
     enabled: isEditing,
     onSuccess: (data) => {
       if (data && data.user) {
