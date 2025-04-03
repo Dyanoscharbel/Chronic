@@ -896,7 +896,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Find patients created in the last 6 months for this doctor
       const recentPatients = await Patient.find({
         doctor: doctorId,
-        createdAt: { $gte: sixMonthsAgo }
+        createdAt: { $gte: sixMonthsAgo },
+        'user': { $ne: null },  // Ensure user exists
+        'birthDate': { $exists: true }, // Ensure birthDate exists
+        'gender': { $exists: true }  // Ensure gender exists
       })
       .populate('user')
       .sort({ createdAt: -1 })
