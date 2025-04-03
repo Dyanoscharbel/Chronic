@@ -348,10 +348,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   apiRouter.post('/patients', authenticate, async (req, res) => {
     try {
-      const { firstName, lastName, email, password, birthDate, gender, address, phone, ckdStage, doctorId } = req.body;
+      const { firstName, lastName, email, birthDate, gender, address, phone, ckdStage, doctorId } = req.body;
 
+      // Get user from session
+      const user = req.session.user;
+      
       // Check if the authenticated user is a doctor
-      if (req.user.role !== 'medecin') {
+      if (!user || user.role !== 'medecin') {
         return res.status(403).json({ message: 'Only doctors can create patients' });
       }
 
