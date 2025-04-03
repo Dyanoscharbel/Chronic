@@ -32,7 +32,8 @@ const labTestSchema = new mongoose.Schema({
   description: String,
   unit: String,
   normalMin: Number,
-  normalMax: Number
+  normalMax: Number,
+  category: String
 });
 
 const patientLabResultSchema = new mongoose.Schema({
