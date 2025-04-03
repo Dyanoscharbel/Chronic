@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { User, Users, Calendar, FileText, AlertTriangle, Settings, Plus } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/stats-card';
 import { ChartCard } from '@/components/dashboard/chart-card';
-import { PatientTable } from '@/components/dashboard/patient-table';
+
 import { AppointmentsList } from '@/components/dashboard/appointments-list';
 import { AlertsList } from '@/components/dashboard/alerts-list';
 import { Button } from '@/components/ui/button';
@@ -19,10 +19,7 @@ export default function Dashboard() {
     refetchInterval: 5000, // Rafraîchit toutes les 5 secondes
   });
   
-  const { data: recentPatients, isLoading: patientsLoading } = useQuery<Patient[]>({
-    queryKey: ['/api/dashboard/recent-patients'],
-    refetchInterval: 5000,
-  });
+  
   
   const { data: upcomingAppointments, isLoading: appointmentsLoading } = useQuery<Appointment[]>({
     queryKey: ['/api/dashboard/upcoming-appointments'],
@@ -34,7 +31,7 @@ export default function Dashboard() {
     refetchInterval: 5000,
   });
   
-  if (statsLoading || patientsLoading || appointmentsLoading || alertsLoading) {
+  if (statsLoading || appointmentsLoading || alertsLoading) {
     return (
       <div className="flex flex-col space-y-4">
         <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
@@ -116,11 +113,7 @@ export default function Dashboard() {
         />
       </div>
       
-      {/* Patient Table */}
-      <PatientTable 
-        patients={recentPatients || []} 
-        totalPatients={dashboardStats?.totalPatients || 0}
-      />
+      
       
       {/* Appointments and Alerts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
