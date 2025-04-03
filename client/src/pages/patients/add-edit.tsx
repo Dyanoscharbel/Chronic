@@ -54,41 +54,44 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isEditing = !!id;
-  const patientId = id;
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const patientId = isEditing ? parseInt(id) : undefined;
+  
+  // Define form
+  const form = useForm<PatientFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: isEditing ? {} : {
       firstName: '',
       lastName: '',
       email: '',
-      birthDate: '',
+      birthDate: new Date().toISOString().split('T')[0],
       gender: 'M',
       address: '',
       phone: '',
-      ckdStage: 'Stage 3A'
-    }
+      ckdStage: 'Stage 3A',
+    },
   });
-
+  
   // Fetch patient data if editing
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${id}`],
     enabled: isEditing,
-    onSuccess: (data) => {
-      if (data && data.user) {
-        form.reset({
-          firstName: data.user.firstName || '',
-          lastName: data.user.lastName || '',
-          email: data.user.email || '',
-          birthDate: data.birthDate ? new Date(data.birthDate).toISOString().split('T')[0] : '',
-          gender: data.gender || 'M',
-          address: data.address || '',
-          phone: data.phone || '',
-          ckdStage: data.ckdStage || 'Stage 3A'
-        });
-      }
-    }
   });
+
+  // Update form when patient data is loaded
+  useEffect(() => {
+    if (patient && patient.user) {
+      form.reset({
+        firstName: patient.user.firstName,
+        lastName: patient.user.lastName,
+        email: patient.user.email,
+        birthDate: new Date(patient.birthDate).toISOString().split('T')[0],
+        gender: patient.gender,
+        address: patient.address || '',
+        phone: patient.phone || '',
+        ckdStage: patient.ckdStage
+      });
+    }
+  }, [patient, form]);
 
   // Update patient mutation
   const updatePatientMutation = useMutation({
@@ -112,7 +115,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
       });
     }
   });
-
+  
   // Update form when patient data is loaded
   useEffect(() => {
     if (patient && isEditing) {
@@ -128,10 +131,10 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
       });
     }
   }, [patient, isEditing, form]);
-
+  
   // Create patient mutation
   const { user } = useAuth();
-
+  
   const createPatientMutation = useMutation({
     mutationFn: async (data: PatientFormData) => {
       // Add doctor ID to patient data
@@ -156,9 +159,9 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
       });
     }
   });
-
-
-
+  
+  
+  
   // Form submission
   const onSubmit = (data: PatientFormData) => {
     if (isEditing) {
@@ -167,12 +170,12 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
       createPatientMutation.mutate(data);
     }
   };
-
+  
   // Loading state
   if (isEditing && patientLoading) {
     return <PageLoader />;
   }
-
+  
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center gap-4">
@@ -187,7 +190,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
           {isEditing ? 'Edit Patient' : 'Add New Patient'}
         </h1>
       </div>
-
+      
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle>{isEditing ? 'Edit Patient Information' : 'New Patient Registration'}</CardTitle>
@@ -218,7 +221,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                       </FormItem>
                     )}
                   />
-
+                  
                   <FormField
                     control={form.control}
                     name="lastName"
@@ -232,7 +235,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                       </FormItem>
                     )}
                   />
-
+                  
                   <FormField
                     control={form.control}
                     name="email"
@@ -255,9 +258,9 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                       </FormItem>
                     )}
                   />
-
-
-
+                  
+                  
+                  
                   <FormField
                     control={form.control}
                     name="birthDate"
@@ -271,7 +274,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                       </FormItem>
                     )}
                   />
-
+                  
                   <FormField
                     control={form.control}
                     name="gender"
@@ -311,7 +314,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                   />
                 </div>
               </div>
-
+              
               <div>
                 <h3 className="text-lg font-medium">Contact Information</h3>
                 <Separator className="my-4" />
@@ -329,7 +332,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                       </FormItem>
                     )}
                   />
-
+                  
                   <div className="md:col-span-2">
                     <FormField
                       control={form.control}
@@ -351,7 +354,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                   </div>
                 </div>
               </div>
-
+              
               <div>
                 <h3 className="text-lg font-medium">Medical Information</h3>
                 <Separator className="my-4" />
@@ -386,7 +389,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
                   />
                 </div>
               </div>
-
+            
               <CardFooter className="flex justify-between px-0 pb-0">
                 <Button
                   type="button"
