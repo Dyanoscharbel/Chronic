@@ -1,0 +1,90 @@
+36:38 PM [express] GET /api/dashboard/upcoming-appointments 304 in 0ms :: []
+Patient Not Found
+The patient you're looking for doesn't exist or has been removed.3:36:40 PM [express] GET /api/dashboard/stats 304 in 271ms :: {"totalPatients":5,"upcomingAppointmen…
+3:36:43 PM [express] GET /api/dashboard/recent-alerts 304 in 1ms :: [{"id":1,"type":"critical","titl…
+3:36:43 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+3:36:46 PM [express] GET /api/dashboard/stats 304 in 271ms :: {"totalPatients":5,"upcomingAppointmen…
+3:36:49 PM [express] GET /api/dashboard/recent-alerts 304 in 1ms :: [{"id":1,"type":"critical","titl…
+3:36:49 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+3:36:51 PM [express] GET /api/dashboard/stats 304 in 269ms :: {"totalPatients":5,"upcomingAppointmen…
+3:36:54 PM [express] GET /api/dashboard/recent-alerts 304 in 1ms :: [{"id":1,"type":"critical","titl…
+3:36:54 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+3:36:57 PM [express] GET /api/dashboard/stats 304 in 270ms :: {"totalPatients":5,"upcomingAppointmen…
+3:36:59 PM [express] GET /api/dashboard/recent-alerts 304 in 1ms :: [{"id":1,"type":"critical","titl…
+3:36:59 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+3:37:02 PM [express] GET /api/dashboard/stats 304 in 270ms :: {"totalPatients":5,"upcomingAppointmen…
+3:37:04 PM [express] GET /api/dashboard/recent-alerts 304 in 1ms :: [{"id":1,"type":"critical","titl…
+3:37:05 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+3:37:08 PM [express] GET /api/dashboard/stats 304 in 288ms :: {"totalPatients":5,"upcomingAppointmen…
+3:37:10 PM [express] GET /api/dashboard/recent-alerts 304 in 1ms :: [{"id":1,"type":"critical","titl…
+3:37:10 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+3:37:13 PM [express] GET /api/dashboard/stats 304 in 271ms :: {"totalPatients":5,"upcomingAppointmen…
+3:37:15 PM [express] GET /api/dashboard/recent-alerts 304 in 6ms :: [{"id":1,"type":"critical","titl…
+3:37:15 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+3:37:19 PM [express] GET /api/dashboard/stats 304 in 270ms :: {"totalPatients":5,"upcomingAppointmen…
+3:37:20 PM [express] GET /api/dashboard/recent-alerts 304 in 2ms :: [{"id":1,"type":"critical","titl…
+3:37:20 PM [express] GET /api/dashboard/upcoming-appointments 304 in 1ms :: []
+Fetching patient with ID: undefined
+Error fetching patient: CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Patient"
+    at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:251:11)
+    at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+    at SchemaType.castForQuery (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1673:17)
+    at cast (/home/runner/workspace/node_modules/mongoose/lib/cast.js:390:32)
+    at Query.cast (/home/runner/workspace/node_modules/mongoose/lib/query.js:4907:12)
+    at Query._castConditions (/home/runner/workspace/node_modules/mongoose/lib/query.js:2325:10)
+    at model.Query._findOne (/home/runner/workspace/node_modules/mongoose/lib/query.js:2648:8)
+    at model.Query.exec (/home/runner/workspace/node_modules/mongoose/lib/query.js:4456:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:355:23) {
+  stringValue: '"undefined"',
+  messageFormat: undefined,
+  kind: 'ObjectId',
+  value: 'undefined',
+  path: '_id',
+  reason: BSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer
+      at new ObjectId (/home/runner/workspace/node_modules/bson/src/objectid.ts:120:15)
+      at castObjectId (/home/runner/workspace/node_modules/mongoose/lib/cast/objectid.js:25:12)
+      at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:249:12)
+      at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+      at SchemaType.castForQuery (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1673:17)
+      at cast (/home/runner/workspace/node_modules/mongoose/lib/cast.js:390:32)
+      at Query.cast (/home/runner/workspace/node_modules/mongoose/lib/query.js:4907:12)
+      at Query._castConditions (/home/runner/workspace/node_modules/mongoose/lib/query.js:2325:10)
+      at model.Query._findOne (/home/runner/workspace/node_modules/mongoose/lib/query.js:2648:8)
+      at model.Query.exec (/home/runner/workspace/node_modules/mongoose/lib/query.js:4456:80)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async <anonymous> (/home/runner/workspace/server/routes.ts:355:23),
+  valueType: 'string'
+}
+3:37:24 PM [express] GET /api/patients/undefined 500 in 2ms :: {"message":"Server error"}
+Fetching patient with ID: undefined
+Error fetching patient: CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Patient"
+    at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:251:11)
+    at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+    at SchemaType.castForQuery (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1673:17)
+    at cast (/home/runner/workspace/node_modules/mongoose/lib/cast.js:390:32)
+    at Query.cast (/home/runner/workspace/node_modules/mongoose/lib/query.js:4907:12)
+    at Query._castConditions (/home/runner/workspace/node_modules/mongoose/lib/query.js:2325:10)
+    at model.Query._findOne (/home/runner/workspace/node_modules/mongoose/lib/query.js:2648:8)
+    at model.Query.exec (/home/runner/workspace/node_modules/mongoose/lib/query.js:4456:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:355:23) {
+  stringValue: '"undefined"',
+  messageFormat: undefined,
+  kind: 'ObjectId',
+  value: 'undefined',
+  path: '_id',
+  reason: BSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer
+      at new ObjectId (/home/runner/workspace/node_modules/bson/src/objectid.ts:120:15)
+      at castObjectId (/home/runner/workspace/node_modules/mongoose/lib/cast/objectid.js:25:12)
+      at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:249:12)
+      at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+      at SchemaType.castForQuery (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1673:17)
+      at cast (/home/runner/workspace/node_modules/mongoose/lib/cast.js:390:32)
+      at Query.cast (/home/runner/workspace/node_modules/mongoose/lib/query.js:4907:12)
+      at Query._castConditions (/home/runner/workspace/node_modules/mongoose/lib/query.js:2325:10)
+      at model.Query._findOne (/home/runner/workspace/node_modules/mongoose/lib/query.js:2648:8)
+      at model.Query.exec (/home/runner/workspace/node_modules/mongoose/lib/query.js:4456:80)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async <anonymous> (/home/runner/workspace/server/routes.ts:355:23),
+  valueType: 'string'
