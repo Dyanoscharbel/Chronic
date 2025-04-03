@@ -185,7 +185,7 @@ export default function LabResultsPage() {
                   </TableHeader>
                   <TableBody>
                     {paginatedResults.map((result) => {
-                      const patient = getPatient(result.patientId);
+                      const patient = getPatient(result.patient);
                       const test = labTests?.find(t => t._id === result.labTest);
                       const value = result.resultValue;
                       const min = test?.normalMin;
@@ -231,7 +231,7 @@ export default function LabResultsPage() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            {getDoctorName(result.doctor)}
+                            {doctors?.find(d => d._id === result.doctor)?.user.firstName} {doctors?.find(d => d._id === result.doctor)?.user.lastName}
                           </TableCell>
                           <TableCell>
                             {formatDate(result.resultDate)}
