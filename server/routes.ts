@@ -886,11 +886,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Recent patients for dashboard
   apiRouter.get('/dashboard/recent-patients', authenticate, async (req, res) => {
     try {
-      const patients = await storage.getPatients();
-      const results = await storage.getPatientLabResults();
-
-      // Simulate "recently added" patients by returning a subset
-      const recentPatients = patients.slice(0, Math.min(patients.length, 4));
+      // Get doctor ID from session
+      const doctorId = req.session.user?.id;
+      
+      // Calculate date 6 months ago
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      
+      // Find patients created in the last 6 months for this doctor
+      const recentPatients = await Patient.find({
+        doctor: doctorId,
+        createdAt: { $gte: sixMonthsAgo }
+      })
+      .populate('user')
+      .sort({ createdAt: -1 })
+      .limit(4);
 
       // Augment with latest eGFR value where available
       const enhancedPatients = await Promise.all(recentPatients.map(async patient => {

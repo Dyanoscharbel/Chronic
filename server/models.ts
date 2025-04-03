@@ -14,6 +14,7 @@ const patientSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
   birthDate: { type: Date, required: true },
+  createdAt: { type: Date, default: Date.now },
   gender: { type: String, enum: ['M', 'F', 'Autre'], required: true },
   address: String,
   phone: String,
