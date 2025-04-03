@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Notification } from '@/lib/types';
+import { t } from '@/lib/i18n'; // Added import for translations
 
 interface HeaderProps {
   toggleSidebar: () => void;

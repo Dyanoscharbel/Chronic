@@ -106,6 +106,7 @@ export default function SettingsPage() {
 
   const onLanguageSubmit = (data: z.infer<typeof languageSchema>) => {
     updateLanguageMutation.mutate(data);
+    useI18n.getState().setLanguage(data.language);
   };
 
   // Get doctor details
