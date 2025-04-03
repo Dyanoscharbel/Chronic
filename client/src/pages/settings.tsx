@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
-import { Save, User, Lock, Building, Bell, Palette } from 'lucide-react';
+import { Save, User, Lock, Building, Bell, Palette, Globe } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -69,11 +70,43 @@ const themeSchema = z.object({
   radius: z.number(),
 });
 
+const languageSchema = z.object({
+  language: z.enum(['fr', 'en']),
+});
+
 export default function SettingsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user, setAuthState, logout } = useAuth();
   const [selectedTab, setSelectedTab] = useState('profile');
+  const [currentLanguage, setCurrentLanguage] = useState(localStorage.getItem('language') || 'fr');
+
+  const languageForm = useForm<z.infer<typeof languageSchema>>({
+    resolver: zodResolver(languageSchema),
+    defaultValues: {
+      language: currentLanguage as 'fr' | 'en'
+    },
+  });
+
+  const updateLanguageMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof languageSchema>) => {
+      localStorage.setItem('language', data.language);
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Langue mise à jour',
+        description: 'Vos préférences de langue ont été enregistrées',
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+  });
+
+  const onLanguageSubmit = (data: z.infer<typeof languageSchema>) => {
+    updateLanguageMutation.mutate(data);
+  };
 
   // Get doctor details
   const { data: doctorDetails } = useQuery({
@@ -371,6 +404,14 @@ export default function SettingsPage() {
                 >
                   <Palette className="mr-2 h-4 w-4" />
                   Theme
+                </Button>
+                <Button
+                  variant={selectedTab === 'language' ? 'secondary' : 'ghost'}
+                  className="w-full justify-start"
+                  onClick={() => setSelectedTab('language')}
+                >
+                  <Globe className="mr-2 h-4 w-4" />
+                  Langue
                 </Button>
               </nav>
             </CardContent>
@@ -847,6 +888,65 @@ export default function SettingsPage() {
                             <>
                               <Save className="mr-2 h-4 w-4" />
                               Apply Theme
+                            </>
+                          )}
+                        </Button>
+                      </CardFooter>
+                    </form>
+                  </Form>
+                </CardContent>
+              </>
+            )}
+
+            {selectedTab === 'language' && (
+              <>
+                <CardHeader>
+                  <CardTitle>Langue</CardTitle>
+                  <CardDescription>
+                    Changer la langue de l'application
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Form {...languageForm}>
+                    <form onSubmit={languageForm.handleSubmit(onLanguageSubmit)} className="space-y-6">
+                      <FormField
+                        control={languageForm.control}
+                        name="language"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Langue</FormLabel>
+                            <Select
+                              value={field.value}
+                              onValueChange={field.onChange}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Sélectionnez une langue" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="fr">Français</SelectItem>
+                                <SelectItem value="en">English</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <CardFooter className="px-0 pt-4 pb-0">
+                        <Button
+                          type="submit"
+                          className="ml-auto"
+                          disabled={updateLanguageMutation.isPending}
+                        >
+                          {updateLanguageMutation.isPending ? (
+                            <>
+                              <Loader size="sm" color="white" className="mr-2" />
+                              Enregistrement...
+                            </>
+                          ) : (
+                            <>
+                              <Save className="mr-2 h-4 w-4" />
+                              Sauvegarder
                             </>
                           )}
                         </Button>
