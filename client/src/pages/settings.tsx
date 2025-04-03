@@ -121,25 +121,27 @@ export default function SettingsPage() {
       return response;
     },
     onSuccess: async (data) => {
-      // Mettre à jour le state d'authentification
+      // Récupérer l'état d'authentification actuel
+      const currentAuth = JSON.parse(localStorage.getItem('auth') || '{}');
+      
+      // Mettre à jour le state d'authentification en conservant le token
       const newAuth = {
+        ...currentAuth,
         user: data.user,
         userDetails: data.userDetails,
-        isAuthenticated: true,
-        token: data.token
+        isAuthenticated: true
       };
       
       // Mettre à jour localStorage
       localStorage.setItem('auth', JSON.stringify(newAuth));
       
-      // Forcer la mise à jour du state global
+      // Mettre à jour le state global
       queryClient.setQueryData(['auth'], newAuth);
       
-      // Mettre à jour les queries
-      await queryClient.invalidateQueries();
-      
-      // Rediriger vers le dashboard pour forcer un rechargement complet
-      window.location.href = '/';
+      toast({
+        title: 'Profile updated',
+        description: 'Your profile has been updated successfully',
+      });
       
       toast({
         title: 'Profile updated',
