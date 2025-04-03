@@ -18,34 +18,6 @@ import { AvatarName } from '@/components/ui/avatar-name';
 import { Loader, PageLoader } from '@/components/ui/loader';
 import { 
   Dialog,
-
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editForm] = useState({
-    firstName: patient?.user?.firstName || '',
-    lastName: patient?.user?.lastName || '',
-    email: patient?.user?.email || '',
-    phone: patient?.phone || ''
-  });
-
-  const editPatientMutation = useMutation({
-    mutationFn: async (data: any) => {
-      return apiRequest('PUT', `/api/patients/${patient.id}`, data);
-    },
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Patient updated successfully',
-      });
-      queryClient.invalidateQueries({ queryKey: [`/api/patients/${patient.id}`] });
-      setEditDialogOpen(false);
-    }
-  });
-
-  const handleEditSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    editPatientMutation.mutate(editForm);
-  };
-
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -87,7 +59,33 @@ export default function PatientView({ id }: PatientViewProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const patientId = parseInt(id);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: ''
+  });
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
+  
+  const editPatientMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return apiRequest('PUT', `/api/patients/${patientId}`, data);
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Patient updated successfully',
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/patients/${patientId}`] });
+      setEditDialogOpen(false);
+    }
+  });
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    editPatientMutation.mutate(editForm);
+  };
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
   
   // Dialog states
