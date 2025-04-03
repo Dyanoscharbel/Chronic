@@ -666,7 +666,7 @@ export default function PatientView({ id }: PatientViewProps) {
           <DialogHeader>
             <DialogTitle>Add Lab Result</DialogTitle>
             <DialogDescription>
-              Record a new lab test result for {patient.user.firstName} {patient.user.lastName}
+              Record a new lab test result for {patient?.user?.firstName} {patient?.user?.lastName}
             </DialogDescription>
           </DialogHeader>
 
