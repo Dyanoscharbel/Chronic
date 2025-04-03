@@ -74,7 +74,7 @@ export default function SettingsPage() {
   const queryClient = useQueryClient();
   const { user, setAuthState } = useAuth();
   const [selectedTab, setSelectedTab] = useState('profile');
-  
+
   // Get doctor details
   const { data: doctorDetails } = useQuery({
     queryKey: ['doctor', user?.id],
