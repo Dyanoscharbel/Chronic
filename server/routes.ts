@@ -255,7 +255,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Users routes
   apiRouter.put('/user/profile', authenticate, async (req, res) => {
     try {
-      const userId = req.session.user?._id;
+      const userId = req.session.user?.id;
       console.log('User ID from session:', userId);
       const { firstName, lastName, specialty, hospital } = req.body;
 
