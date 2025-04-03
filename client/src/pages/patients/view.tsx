@@ -58,7 +58,7 @@ export default function PatientView({ id }: PatientViewProps) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const patientId = id;
+  const patientId = id?.toString();
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
 

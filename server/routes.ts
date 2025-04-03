@@ -351,6 +351,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const patientId = req.params.id;
       console.log('Fetching patient with ID:', patientId);
 
+      if (!patientId || !mongoose.Types.ObjectId.isValid(patientId)) {
+        console.log('Invalid patient ID:', patientId);
+        return res.status(400).json({ message: 'Invalid patient ID format' });
+      }
+
       // Recherche le patient avec toutes les informations associées
       const patient = await Patient.findById(patientId)
         .populate({
