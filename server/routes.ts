@@ -845,7 +845,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Pending lab results - same approach
       const pendingLabResults = 8;
 
-      // Calculate CKD stage distribution
+      // Calculate CKD stage distribution for doctor's patients only
       const stageDistribution = {
         'Stage 1': 0,
         'Stage 2': 0,
@@ -855,7 +855,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'Stage 5': 0
       };
 
-      patients.forEach(patient => {
+      // Only count patients belonging to the connected doctor
+      const doctorPatients = await Patient.find({ doctor: doctorId });
+      doctorPatients.forEach(patient => {
         if (patient.ckdStage && stageDistribution.hasOwnProperty(patient.ckdStage)) {
           (stageDistribution as any)[patient.ckdStage]++;
         }
