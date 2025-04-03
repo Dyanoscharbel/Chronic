@@ -56,6 +56,20 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
   const isEditing = !!id;
   const patientId = id;
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      birthDate: '',
+      gender: 'M',
+      address: '',
+      phone: '',
+      ckdStage: 'Stage 3A'
+    }
+  });
+
   // Fetch patient data if editing
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${patientId}`],
