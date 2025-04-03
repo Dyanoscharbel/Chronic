@@ -269,26 +269,26 @@ export default function PatientView({ id }: PatientViewProps) {
                 </div>
               </div>
               <div className="flex flex-col items-center space-y-2 pt-2">
-                {patient.user ? (
-                  <>
-                    <AvatarName
-                      firstName={patient.user.firstName}
-                      lastName={patient.user.lastName}
-                      size="lg"
-                      showName={false}
-                    />
-                    <div className="text-center">
-                      <h2 className="text-xl font-semibold">
-                        {patient.user.firstName} {patient.user.lastName}
-                      </h2>
-                      <p className="text-sm text-gray-500">{patient.user.email}</p>
+                  {patient?.user ? (
+                    <>
+                      <AvatarName
+                        firstName={patient.user.firstName}
+                        lastName={patient.user.lastName}
+                        size="lg"
+                        showName={false}
+                      />
+                      <div className="text-center">
+                        <h2 className="text-xl font-semibold">
+                          {patient.user.firstName} {patient.user.lastName}
+                        </h2>
+                        <p className="text-sm text-gray-500">{patient.user.email}</p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center text-gray-500">
+                      Loading patient information...
                     </div>
-                  </>
-                ) : (
-                  <div className="text-center text-gray-500">
-                    Loading patient information...
-                  </div>
-                )}
+                  )}
                 <div className="flex flex-col items-center gap-2">
                   <Badge variant="outline" className={`${stageColors.bg} ${stageColors.text} px-3 py-1`}>
                     {patient.ckdStage}
@@ -872,11 +872,11 @@ export default function PatientView({ id }: PatientViewProps) {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="font-medium">Nom complet</div>
-                  <div>{patient.user?.firstName} {patient.user?.lastName}</div>
+                  <div>{patient?.user?.firstName} {patient?.user?.lastName}</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="font-medium">Email</div>
-                  <div>{patient.user?.email}</div>
+                  <div>{patient?.user?.email}</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="font-medium">Âge</div>
