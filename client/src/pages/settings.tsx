@@ -99,11 +99,11 @@ export default function SettingsPage() {
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
         email: user?.email || '',
-        specialty: doctorDetails.specialty || '',
-        hospital: doctorDetails.hospital || '',
+        specialty: doctorDetails?.specialty || '',
+        hospital: doctorDetails?.hospital || '',
       });
     }
-  }, [doctorDetails, user]);
+  }, [doctorDetails, user, profileForm]);
 
   // Password form
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
