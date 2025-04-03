@@ -82,8 +82,8 @@ export default function LabResultAdd() {
   const watchLabTestId = form.watch('labTestId');
 
   // Update selected test when lab test ID changes
-  if (watchLabTestId && labTests && (!selectedTest || selectedTest.id.toString() !== watchLabTestId)) {
-    const test = labTests.find(t => t.id.toString() === watchLabTestId);
+  if (watchLabTestId && labTests && (!selectedTest || selectedTest._id.toString() !== watchLabTestId)) {
+    const test = labTests.find(t => t._id.toString() === watchLabTestId);
     if (test) {
       setSelectedTest(test);
     }
@@ -199,7 +199,7 @@ export default function LabResultAdd() {
                         </FormControl>
                         <SelectContent>
                           {labTests?.map((test) => (
-                            <SelectItem key={test.id} value={test.id.toString()}>
+                            <SelectItem key={test._id} value={test._id.toString()}>
                               {test.testName}
                             </SelectItem>
                           ))}
