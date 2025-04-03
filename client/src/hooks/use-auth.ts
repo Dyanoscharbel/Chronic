@@ -122,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('auth');
       queryClient.clear();
       toast({
-        title: "Déconnexion réussie",
+        title: "Veuillez vous reconnecter",
       });
       
       // Rediriger vers login et forcer le rechargement
