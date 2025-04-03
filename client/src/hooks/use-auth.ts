@@ -121,10 +121,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('auth');
       queryClient.clear();
       toast({
-        title: "Logged out successfully",
+        title: "Déconnexion réussie",
       });
-      // Redirect to login page
-      window.location.href = '/login';
+      // Redirection vers la page de connexion
+      window.location.replace('/login');
     } catch (error) {
       console.error("Logout error:", error);
       toast({
