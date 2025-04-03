@@ -178,13 +178,13 @@ export default function PatientView({ id }: PatientViewProps) {
     setPurpose('');
   };
 
-  // Loading state
-  if (patientLoading) {
+  // Loading state for initial data fetch
+  if (patientLoading || !patientId) {
     return <PageLoader />;
   }
 
   // Handle patient not found or invalid data
-  if (!patient || !patient.user) {
+  if (!patient?.user) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
@@ -197,7 +197,7 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  // Ensure all required data is loaded
+  // Wait for additional data to load
   if (!labTests || !doctors) {
     return <PageLoader />;
   }
