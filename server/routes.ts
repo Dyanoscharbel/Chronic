@@ -255,7 +255,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Users routes
   apiRouter.put('/user/profile', authenticate, async (req, res) => {
     try {
-      const userId = req.session.user?.id;
+      const userId = req.session.user?._id;
+      console.log('User ID from session:', userId);
       const { firstName, lastName, specialty, hospital } = req.body;
 
       // Mettre à jour l'utilisateur
@@ -263,7 +264,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId,
         { firstName, lastName },
         { new: true }
-      );
+      ).select('-passwordHash');
 
       if (!user) {
         return res.status(404).json({ message: 'Utilisateur non trouvé' });
