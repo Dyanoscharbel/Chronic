@@ -123,11 +123,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast({
         title: "Déconnexion réussie",
       });
-      // Forcer la redirection et le rechargement
-      window.location.replace('/login');
+      
+      // Rediriger vers login et forcer le rechargement
       setTimeout(() => {
-        window.location.reload();
-      }, 100);
+        window.location.href = '/login';
+        window.location.reload(true);
+      }, 500);
     } catch (error) {
       console.error("Logout error:", error);
       toast({
