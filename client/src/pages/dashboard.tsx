@@ -16,18 +16,22 @@ export default function Dashboard() {
   
   const { data: dashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
     queryKey: ['/api/dashboard/stats'],
+    refetchInterval: 5000, // Rafraîchit toutes les 5 secondes
   });
   
   const { data: recentPatients, isLoading: patientsLoading } = useQuery<Patient[]>({
     queryKey: ['/api/dashboard/recent-patients'],
+    refetchInterval: 5000,
   });
   
   const { data: upcomingAppointments, isLoading: appointmentsLoading } = useQuery<Appointment[]>({
     queryKey: ['/api/dashboard/upcoming-appointments'],
+    refetchInterval: 5000,
   });
   
   const { data: recentAlerts, isLoading: alertsLoading } = useQuery<Alert[]>({
     queryKey: ['/api/dashboard/recent-alerts'],
+    refetchInterval: 5000,
   });
   
   if (statsLoading || patientsLoading || appointmentsLoading || alertsLoading) {
