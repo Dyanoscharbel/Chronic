@@ -262,8 +262,8 @@ export default function PatientView({ id }: PatientViewProps) {
             <CardHeader className="pb-4">
               <div className="flex flex-col items-center space-y-4">
                 <AvatarName
-                  firstName={patient.user.firstName}
-                  lastName={patient.user.lastName}
+                  firstName={patient?.user?.firstName || ''}
+                  lastName={patient?.user?.lastName || ''}
                   size="lg"
                 />
                 <div className="text-center">
