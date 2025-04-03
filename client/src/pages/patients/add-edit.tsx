@@ -144,34 +144,7 @@ export default function PatientAddEdit({ id }: PatientAddEditProps) {
     }
   });
   
-  // Update patient mutation
-  const updatePatientMutation = useMutation({
-    mutationFn: async (data: PatientFormData) => {
-      return apiRequest('PUT', `/api/patients/${patientId}`, {
-        birthDate: data.birthDate,
-        gender: data.gender,
-        address: data.address,
-        phone: data.phone,
-        ckdStage: data.ckdStage
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Patient has been updated successfully',
-      });
-      queryClient.invalidateQueries({ queryKey: [`/api/patients/${patientId}`] });
-      queryClient.invalidateQueries({ queryKey: ['/api/patients'] });
-      setLocation('/patients');
-    },
-    onError: (error) => {
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to update patient',
-        variant: 'destructive',
-      });
-    }
-  });
+  
   
   // Form submission
   const onSubmit = (data: PatientFormData) => {
