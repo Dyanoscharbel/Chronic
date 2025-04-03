@@ -271,6 +271,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'Utilisateur non trouvé' });
       }
 
+      // Mettre à jour la session
+      req.session.user = {
+        id: user._id.toString(),
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName
+      };
+
       // Si c'est un médecin, mettre à jour ses informations supplémentaires
       if (user.role === 'medecin') {
         const doctor = await Doctor.findOneAndUpdate(

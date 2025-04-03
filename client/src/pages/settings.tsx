@@ -131,8 +131,16 @@ export default function SettingsPage() {
       };
       localStorage.setItem('auth', JSON.stringify(newAuth));
       
-      // Forcer le rechargement de la page pour mettre à jour l'interface
-      window.location.reload();
+      // Mettre à jour le state global
+      queryClient.setQueryData(['auth'], newAuth);
+      
+      // Invalider et recharger les données
+      queryClient.invalidateQueries();
+      
+      // Attendre un peu avant de recharger pour laisser le temps à la session de se mettre à jour
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
       
       toast({
         title: 'Profile updated',
