@@ -207,7 +207,7 @@ export default function PatientsPage() {
                               <Button 
                                 variant="destructive" 
                                 size="sm"
-                                onClick={() => handleDeletePatient(patient.id)}
+                                onClick={() => handleDeletePatient(patient)}
                               >
                                 Delete
                               </Button>
