@@ -253,6 +253,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Users routes
+  apiRouter.put('/user/profile', authenticate, async (req, res) => {
+    try {
+      const userId = req.session.user?.id;
+      const { firstName, lastName, specialty, hospital } = req.body;
+
+      // Mettre à jour l'utilisateur
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { firstName, lastName },
+        { new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      }
+
+      // Si c'est un médecin, mettre à jour ses informations supplémentaires
+      if (user.role === 'medecin') {
+        const doctor = await Doctor.findOneAndUpdate(
+          { user: userId },
+          { specialty, hospital },
+          { new: true }
+        );
+        return res.json({ user, userDetails: doctor });
+      }
+
+      res.json({ user });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      res.status(500).json({ message: 'Erreur lors de la mise à jour du profil' });
+    }
+  });
+
   apiRouter.get('/users', authenticate, requireDoctor, async (req, res) => {
     try {
       const users = await storage.getUsers();

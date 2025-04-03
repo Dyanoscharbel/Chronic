@@ -117,11 +117,12 @@ export default function SettingsPage() {
   // Profile update mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: z.infer<typeof profileSchema>) => {
-      // Mock implementation as we don't have a real update profile endpoint
-      // In a real app, you would call an API to update the user's profile
-      return apiRequest('POST', '/api/user/profile', data);
+      const response = await apiRequest('PUT', '/api/user/profile', data);
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Mettre à jour les informations de l'utilisateur dans le cache
+      queryClient.setQueryData(['/api/user/profile'], data);
       toast({
         title: 'Profile updated',
         description: 'Your profile has been updated successfully',
