@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
-import LandingPage from "@/pages/landing";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -81,9 +80,6 @@ function AuthRoute({ component: Component, ...rest }: any) {
 function Router() {
   return (
     <Switch>
-      <Route path="/">
-        <LandingPage />
-      </Route>
       {/* Auth Routes */}
       <Route path="/login">
         <AuthRoute component={LoginPage} />
