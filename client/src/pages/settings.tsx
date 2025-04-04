@@ -247,11 +247,23 @@ export default function SettingsPage() {
   // Theme form
   const themeForm = useForm<z.infer<typeof themeSchema>>({
     resolver: zodResolver(themeSchema),
-    defaultValues: {
-      primaryColor: 'hsl(173 74% 18%)',
-      variant: 'professional',
-      appearance: 'light',
-      radius: 0.5,
+    defaultValues: () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        const themeData = JSON.parse(savedTheme);
+        return {
+          primaryColor: themeData.primary || 'hsl(173 74% 18%)',
+          variant: themeData.variant || 'professional',
+          appearance: themeData.appearance || 'light',
+          radius: themeData.radius || 0.5,
+        };
+      }
+      return {
+        primaryColor: 'hsl(173 74% 18%)',
+        variant: 'professional',
+        appearance: 'light',
+        radius: 0.5,
+      };
     },
   });
 
