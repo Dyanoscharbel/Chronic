@@ -68,7 +68,7 @@ const notificationSchema = z.object({
 
 const themeSchema = z.object({
   primaryColor: z.string(),
-  variant: z.enum(['professional', 'tint', 'vibrant']),
+  variant: z.enum(['tint', 'vibrant']),
   appearance: z.enum(['light', 'dark', 'system']),
   radius: z.number(),
 });
@@ -252,7 +252,7 @@ export default function SettingsPage() {
     resolver: zodResolver(themeSchema),
     defaultValues: {
       primaryColor: 'hsl(173 74% 18%)',
-      variant: 'professional',
+      variant: 'tint', // Default to 'tint'
       appearance: 'light',
       radius: 0.5,
     },
@@ -265,7 +265,7 @@ export default function SettingsPage() {
       const themeData = JSON.parse(savedTheme);
       themeForm.reset({
         primaryColor: themeData.primary || 'hsl(173 74% 18%)',
-        variant: themeData.variant || 'professional',
+        variant: themeData.variant || 'tint', // Default to 'tint'
         appearance: themeData.appearance || 'light',
         radius: themeData.radius || 0.5,
       });
@@ -749,7 +749,6 @@ export default function SettingsPage() {
                               <FormLabel>Variante de couleur</FormLabel>
                               <div className="grid grid-cols-3 gap-4">
                                 {[
-                                  { value: 'professional', label: 'Professionnel' },
                                   { value: 'tint', label: 'Teinte' },
                                   { value: 'vibrant', label: 'Vibrant' },
                                 ].map((variant) => (
