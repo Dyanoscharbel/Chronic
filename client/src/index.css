@@ -2,6 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .card {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02];
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .sidebar-item {
+    @apply transition-transform duration-300 hover:translate-x-2;
+  }
+
+  .btn-primary {
+    @apply transition-all duration-300 hover:shadow-lg active:scale-95;
+    transform-style: preserve-3d;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
