@@ -48,6 +48,14 @@
     --input: 0 0% 20%;
     
     --ring: var(--primary);
+    
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .dark body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
