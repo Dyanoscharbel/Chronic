@@ -19,18 +19,19 @@ import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { AppLayout } from "@/components/layout/app-layout";
+import LandingPage from "@/pages/landing"; // Import the new LandingPage component
+
 
 function ProtectedRoute({ component: Component, ...rest }: any) {
   const { isAuthenticated, loading, user } = useAuth();
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  
+
   useEffect(() => {
     if (!loading) {
       if (!isAuthenticated) {
         setLocation("/login");
       } else if (user && user.role === 'patient') {
-        // Rediriger les patients vers la page de connexion avec un message
         toast({
           title: "Accès restreint",
           description: "Seuls les médecins et les administrateurs peuvent accéder à cette application.",
@@ -40,40 +41,40 @@ function ProtectedRoute({ component: Component, ...rest }: any) {
       }
     }
   }, [loading, isAuthenticated, user, setLocation, toast]);
-  
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
     </div>;
   }
-  
+
   if (!isAuthenticated || (user && user.role === 'patient')) {
     return null;
   }
-  
+
   return <Component {...rest} />;
 }
 
 function AuthRoute({ component: Component, ...rest }: any) {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
-  
+
   useEffect(() => {
     if (!loading && isAuthenticated) {
       setLocation("/");
     }
   }, [loading, isAuthenticated, setLocation]);
-  
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
     </div>;
   }
-  
+
   if (isAuthenticated) {
     return null;
   }
-  
+
   return <Component {...rest} />;
 }
 
@@ -81,13 +82,10 @@ function Router() {
   return (
     <Switch>
       {/* Auth Routes */}
-      <Route path="/login">
-        <AuthRoute component={LoginPage} />
-      </Route>
-      <Route path="/register">
-        <AuthRoute component={RegisterPage} />
-      </Route>
-      
+      <Route path="/" component={LandingPage} /> {/* Added LandingPage route */}
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
+
       {/* Protected Routes */}
       <Route path="/">
         <ProtectedRoute component={() => (
@@ -170,7 +168,7 @@ function Router() {
           </AppLayout>
         )} />
       </Route>
-      
+
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
