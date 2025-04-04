@@ -75,15 +75,15 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
 
       <div className="flex-1 px-4 flex justify-between">
         <div className="flex-1 flex">
-          <form className="w-full flex md:ml-0" onSubmit={handleSearch}>
+          <form className="w-full max-w-xl mx-auto" onSubmit={handleSearch}>
             <label htmlFor="search-field" className="sr-only">Search</label>
-            <div className="relative w-full text-gray-400 focus-within:text-gray-600">
+            <div className="relative w-full">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-primary" />
+                <Search className="h-4 w-4 text-muted-foreground" />
               </div>
               <Input 
                 id="search-field"
-                className="block w-full h-10 pl-10 pr-4 bg-background/50 border border-primary/20 rounded-full text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/30 focus-visible:border-primary/40 transition-colors"
+                className="w-full h-9 pl-10 pr-4 bg-background border-muted rounded-full focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:border-primary"
                 placeholder="Rechercher patients, tests..."
                 type="search"
                 value={searchQuery}
