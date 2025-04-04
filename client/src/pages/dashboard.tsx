@@ -58,7 +58,7 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          icon={<User style={{color: 'white'}} />}
+          icon={<User className="text-white h-6 w-6" />}
           iconBgColor="bg-primary"
           title="Total Patients"
           value={dashboardStats?.totalPatients || 0}
