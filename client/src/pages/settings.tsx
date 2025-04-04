@@ -247,25 +247,27 @@ export default function SettingsPage() {
   // Theme form
   const themeForm = useForm<z.infer<typeof themeSchema>>({
     resolver: zodResolver(themeSchema),
-    defaultValues: () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        const themeData = JSON.parse(savedTheme);
-        return {
-          primaryColor: themeData.primary || 'hsl(173 74% 18%)',
-          variant: themeData.variant || 'professional',
-          appearance: themeData.appearance || 'light',
-          radius: themeData.radius || 0.5,
-        };
-      }
-      return {
-        primaryColor: 'hsl(173 74% 18%)',
-        variant: 'professional',
-        appearance: 'light',
-        radius: 0.5,
-      };
+    defaultValues: {
+      primaryColor: 'hsl(173 74% 18%)',
+      variant: 'professional',
+      appearance: 'light',
+      radius: 0.5,
     },
   });
+
+  // Load saved theme on component mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      const themeData = JSON.parse(savedTheme);
+      themeForm.reset({
+        primaryColor: themeData.primary || 'hsl(173 74% 18%)',
+        variant: themeData.variant || 'professional',
+        appearance: themeData.appearance || 'light',
+        radius: themeData.radius || 0.5,
+      });
+    }
+  }, []);
 
   // Theme update mutation
   const updateThemeMutation = useMutation({
