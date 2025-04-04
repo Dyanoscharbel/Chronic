@@ -120,11 +120,13 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
                   className="max-w-xs flex items-center text-sm rounded-full focus:outline-none"
                 >
                   <span className="sr-only">Open user menu</span>
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback style={{color: 'black'}} className={getAvatarColor(user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U')}>
-                      {user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="p-[2px] rounded-full bg-primary">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback style={{color: 'black'}} className={getAvatarColor(user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U')}>
+                        {user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
