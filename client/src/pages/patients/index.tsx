@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useLocation } from 'wouter';
+import { useLocation } from 'wouter';
+import AddEditDialog from '@/components/patients/add-edit-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Search, FileX, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,8 @@ export default function PatientsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStage, setFilterStage] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [addEditDialogOpen, setAddEditDialogOpen] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>();
   const patientsPerPage = 10;
 
   const { data: patients, isLoading, refetch } = useQuery<Patient[]>({
@@ -88,12 +91,10 @@ export default function PatientsPage() {
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">Patients</h1>
-        <Link href="/patients/add">
-          <Button className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            <span>Ajouter un patient</span>
-          </Button>
-        </Link>
+        <Button className="flex items-center gap-2" onClick={() => setAddEditDialogOpen(true)}>
+          <Plus className="h-4 w-4" />
+          <span>Ajouter un patient</span>
+        </Button>
       </div>
 
       <Card>
@@ -198,9 +199,16 @@ export default function PatientsPage() {
                             <Link href={`/patients/${patient._id}`}>
                               <Button variant="ghost" size="sm">View</Button>
                             </Link>
-                            <Link href={`/patients/add-edit/${patient._id}`}>
-                              <Button variant="outline" size="sm">Edit</Button>
-                            </Link>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedPatient(patient);
+                                setAddEditDialogOpen(true);
+                              }}
+                            >
+                              Edit
+                            </Button>
                             <Button 
                               variant="destructive" 
                               size="sm"
@@ -276,6 +284,15 @@ export default function PatientsPage() {
           )}
         </CardContent>
       </Card>
+
+      <AddEditDialog 
+        isOpen={addEditDialogOpen}
+        onClose={() => {
+          setAddEditDialogOpen(false);
+          setSelectedPatient(undefined);
+        }}
+        patient={selectedPatient}
+      />
     </div>
   );
 }
