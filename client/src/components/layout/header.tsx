@@ -121,7 +121,7 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
                 >
                   <span className="sr-only">Open user menu</span>
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-primary text-white">
+                    <AvatarFallback className="bg-primary text-primary-foreground">
                       {user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
                     </AvatarFallback>
                   </Avatar>
