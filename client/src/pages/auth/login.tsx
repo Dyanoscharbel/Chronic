@@ -28,7 +28,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -36,7 +36,7 @@ export default function LoginPage() {
       password: '',
     },
   });
-  
+
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
@@ -48,7 +48,7 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
@@ -58,8 +58,8 @@ export default function LoginPage() {
               CKD Care
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-center">Sign in to your account</CardTitle>
-          <CardDescription className="text-center">
+          <CardTitle className="text-2xl font-bold text-center text-foreground">Sign in to your account</CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
             Enter your credentials to access the CKD patient management system
           </CardDescription>
         </CardHeader>
