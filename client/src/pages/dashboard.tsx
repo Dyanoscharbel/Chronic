@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { User, Users, Calendar, FileText, AlertTriangle, Settings, Plus } from 'lucide-react';
+import { Users, Calendar, FileText, AlertTriangle, Settings, Plus } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/stats-card';
 import { ChartCard } from '@/components/dashboard/chart-card';
 
@@ -58,7 +58,7 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          icon={<User className="h-6 w-6 text-white" />}
+          icon={<Users className="h-6 w-6 text-white" />}
           iconBgColor="bg-primary"
           title="Total Patients"
           value={dashboardStats?.totalPatients || 0}
