@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn, getAvatarColor } from '@/lib/utils';
-import { Menu, Search, Bell } from 'lucide-react';
+import { Menu, Search, Bell, Settings, LogOut } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -129,19 +129,23 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
                   </div>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
+                  <div className="flex flex-col space-y-1.5">
+                    <p className="text-sm font-semibold text-foreground">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-xs text-muted-foreground font-medium">{user?.email}</p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/settings">Settings</Link>
+                <DropdownMenuSeparator className="my-2" />
+                <DropdownMenuItem asChild className="cursor-pointer gap-3 py-2">
+                  <Link href="/settings" className="flex items-center">
+                    <Settings className="h-4 w-4" /> 
+                    <span>Paramètres</span>
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>
-                  Logout
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-3 py-2 text-red-500 hover:text-red-600 focus:text-red-600">
+                  <LogOut className="h-4 w-4" />
+                  <span>Déconnexion</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
