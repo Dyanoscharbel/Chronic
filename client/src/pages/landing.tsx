@@ -1,8 +1,8 @@
+
 import { motion } from 'framer-motion';
-import { Link, useLocation } from 'wouter';
+import { Link } from 'wouter';
 
 export default function LandingPage() {
-  const [, setLocation] = useLocation();
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-dark to-primary-light overflow-hidden">
       <div className="relative h-screen flex items-center justify-center">
@@ -31,7 +31,7 @@ export default function LandingPage() {
             ease: "linear"
           }}
         />
-
+        
         {/* Content */}
         <div className="z-10 text-center">
           <motion.div
@@ -56,7 +56,7 @@ export default function LandingPage() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <Link href="/login" onClick={() => setLocation('/login')}>
+            <Link href="/login">
               <button className="px-8 py-3 bg-white text-primary-dark rounded-lg font-semibold 
                                transform hover:scale-105 transition-transform duration-200 
                                hover:shadow-lg active:scale-95">
