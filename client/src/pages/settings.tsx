@@ -742,23 +742,15 @@ export default function SettingsPage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Apparence</FormLabel>
-                              <div className="grid grid-cols-3 gap-4">
-                                {[
-                                  { value: 'light', label: 'Clair' },
-                                  { value: 'dark', label: 'Sombre' },
-                                  { value: 'system', label: 'Système' },
-                                ].map((appearance) => (
-                                  <div
-                                    key={appearance.value}
-                                    className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary ${field.value === appearance.value ? 'bg-muted border-primary' : ''}`}
-                                    onClick={() => field.onChange(appearance.value)}
-                                  >
-                                    {appearance.label}
-                                  </div>
-                                ))}
+                              <div className="grid grid-cols-1 gap-4">
+                                <div
+                                  className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary bg-muted border-primary`}
+                                >
+                                  Mode clair
+                                </div>
                               </div>
                               <FormDescription>
-                                Choisissez le mode clair ou sombre, ou suivez les paramètres système
+                                Interface en mode clair pour une meilleure visibilité
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
