@@ -54,7 +54,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
-            <div className="bg-primary text-primary-foreground text-2xl font-bold py-2 px-4 rounded">
+            <div className="bg-white text-black text-2xl font-bold py-2 px-4 rounded">
               CKD Care
             </div>
           </div>
