@@ -17,6 +17,7 @@ import NotificationsPage from "@/pages/notifications";
 import SettingsPage from "@/pages/settings";
 import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
+import LandingPage from "@/pages/landing";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { AppLayout } from "@/components/layout/app-layout";
 
@@ -80,6 +81,11 @@ function AuthRoute({ component: Component, ...rest }: any) {
 function Router() {
   return (
     <Switch>
+      {/* Landing Page */}
+      <Route path="/">
+        <LandingPage />
+      </Route>
+
       {/* Auth Routes */}
       <Route path="/login">
         <AuthRoute component={LoginPage} />
