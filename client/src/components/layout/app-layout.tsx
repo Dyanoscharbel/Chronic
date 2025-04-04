@@ -12,7 +12,7 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const { user, loading } = useAuth();
   const isMobile = useMobile();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
