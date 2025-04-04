@@ -772,22 +772,15 @@ export default function SettingsPage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Apparence</FormLabel>
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid grid-cols-1 gap-4">
                                 <div
-                                  className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary ${field.value === 'light' ? 'bg-muted border-primary' : ''}`}
-                                  onClick={() => field.onChange('light')}
+                                  className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary bg-muted border-primary`}
                                 >
                                   Mode clair
                                 </div>
-                                <div
-                                  className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary ${field.value === 'dark' ? 'bg-muted border-primary' : ''}`}
-                                  onClick={() => field.onChange('dark')}
-                                >
-                                  Mode sombre
-                                </div>
                               </div>
                               <FormDescription>
-                                Choisissez entre le mode clair et sombre
+                                Interface en mode clair pour une meilleure visibilité
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
