@@ -3,129 +3,34 @@
 @tailwind utilities;
 
 @layer components {
-  /* Animations de base améliorées */
   .card {
-    @apply transition-all duration-500;
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02];
     transform-style: preserve-3d;
-    perspective: 1500px;
-    animation: cardEntrance 0.8s ease-out;
-    &:hover {
-      @apply shadow-2xl;
-      transform: translateY(-10px) rotateX(10deg) rotateY(5deg);
-      animation: cardPulse 2s infinite;
-    }
+    perspective: 1000px;
   }
 
   .sidebar-item {
-    @apply transition-all duration-300;
-    &:hover {
-      @apply translate-x-2;
-      animation: sidebarGlow 1.5s infinite;
-    }
+    @apply transition-transform duration-300 hover:translate-x-2;
   }
 
   .btn-primary {
-    @apply transition-all duration-300;
+    @apply transition-all duration-300 hover:shadow-lg active:scale-95;
     transform-style: preserve-3d;
-    &:hover {
-      @apply shadow-lg;
-      animation: buttonPop 0.3s ease-in-out;
-    }
-    &:active {
-      @apply scale-95;
-      transform: translateZ(-10px);
-    }
   }
 
-  /* Animations pour les éléments interactifs */
-  .input-field, .select-field {
-    @apply transition-all duration-300;
-    &:focus {
-      animation: focusGlow 2s infinite;
-    }
-  }
-
-  .table-row {
-    @apply transition-all duration-300;
-    &:hover {
-      animation: rowHighlight 0.5s ease-in-out;
-    }
-  }
-
-  /* Animations personnalisées */
-  @keyframes cardEntrance {
-    from {
-      opacity: 0;
-      transform: translateY(100px) rotateX(-30deg);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) rotateX(0);
-    }
-  }
-
-  @keyframes cardPulse {
-    0%, 100% {
-      transform: translateY(-10px) rotateX(10deg) rotateY(5deg) scale(1);
-    }
-    50% {
-      transform: translateY(-10px) rotateX(10deg) rotateY(5deg) scale(1.02);
-    }
-  }
-
-  @keyframes sidebarGlow {
-    0%, 100% {
-      box-shadow: 0 0 5px rgba(var(--primary), 0.2);
-    }
-    50% {
-      box-shadow: 0 0 15px rgba(var(--primary), 0.4);
-    }
-  }
-
-  @keyframes buttonPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-  }
-
-  @keyframes focusGlow {
-    0%, 100% {
-      box-shadow: 0 0 5px rgba(var(--primary), 0.2);
-    }
-    50% {
-      box-shadow: 0 0 15px rgba(var(--primary), 0.4);
-    }
-  }
-
-  @keyframes rowHighlight {
-    0% {
-      background-color: transparent;
-    }
-    50% {
-      background-color: rgba(var(--primary), 0.1);
-    }
-    100% {
-      background-color: transparent;
-    }
-  }
-
-  /* Animation de float améliorée */
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
 
   @keyframes float {
     0% {
-      transform: translateY(0px) rotate(0deg);
+      transform: translateY(0px);
     }
-    25% {
-      transform: translateY(-10px) rotate(2deg);
-    }
-    75% {
-      transform: translateY(5px) rotate(-2deg);
+    50% {
+      transform: translateY(-10px);
     }
     100% {
-      transform: translateY(0px) rotate(0deg);
+      transform: translateY(0px);
     }
   }
 }
