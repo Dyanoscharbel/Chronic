@@ -4,33 +4,75 @@
 
 @layer components {
   .card {
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02];
+    @apply transition-all duration-500 hover:shadow-2xl;
     transform-style: preserve-3d;
-    perspective: 1000px;
+    perspective: 1500px;
+    animation: cardEntrance 0.8s ease-out;
+    &:hover {
+      transform: translateY(-10px) rotateX(10deg) rotateY(10deg);
+    }
   }
 
   .sidebar-item {
-    @apply transition-transform duration-300 hover:translate-x-2;
+    @apply transition-all duration-300;
+    transform-style: preserve-3d;
+    &:hover {
+      @apply translate-x-2;
+      transform: scale(1.05) rotateY(15deg);
+    }
   }
 
   .btn-primary {
-    @apply transition-all duration-300 hover:shadow-lg active:scale-95;
+    @apply transition-all duration-300;
     transform-style: preserve-3d;
+    &:hover {
+      @apply shadow-lg;
+      transform: translateZ(20px) rotateX(10deg);
+    }
+    &:active {
+      @apply scale-95;
+      transform: translateZ(0);
+    }
   }
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
+    transform-style: preserve-3d;
   }
 
   @keyframes float {
     0% {
-      transform: translateY(0px);
+      transform: translateY(0px) rotateX(0deg);
     }
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-10px) rotateX(10deg) rotateY(5deg);
     }
     100% {
-      transform: translateY(0px);
+      transform: translateY(0px) rotateX(0deg);
+    }
+  }
+
+  @keyframes cardEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(100px) rotateX(-30deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0);
+    }
+  }
+
+  .animate-pulse-3d {
+    animation: pulse3d 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse3d {
+    0%, 100% {
+      transform: scale(1) rotateX(0deg);
+    }
+    50% {
+      transform: scale(1.05) rotateX(10deg) rotateY(5deg);
     }
   }
 }
