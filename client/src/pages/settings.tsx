@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { Save, User, Lock, Building, Bell, Palette } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { getAvatarColor } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
 import {
