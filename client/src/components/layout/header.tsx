@@ -121,7 +121,7 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
                 >
                   <span className="sr-only">Open user menu</span>
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback className={getAvatarColor(user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U')}>
+                    <AvatarFallback style={{color: 'black'}} className={getAvatarColor(user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U')}>
                       {user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
                     </AvatarFallback>
                   </Avatar>
