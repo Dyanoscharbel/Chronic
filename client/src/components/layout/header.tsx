@@ -67,7 +67,7 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
   return (
     <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
       <button 
-        className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600 md:hidden"
+        className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none hover:bg-gray-100 hover:text-gray-600"
         onClick={toggleSidebar}
       >
         <Menu className="h-6 w-6" />
