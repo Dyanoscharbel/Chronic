@@ -1,3 +1,4 @@
+
 import React, { ReactNode } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Link } from 'wouter';
@@ -22,11 +23,13 @@ export function StatsCard({
   footerLinkColor
 }: StatsCardProps) {
   return (
-    <Card className="card bg-white overflow-hidden shadow rounded-lg">
+    <Card className="overflow-hidden shadow rounded-lg">
       <CardContent className="px-4 py-5 sm:p-6">
         <div className="flex items-center">
-          <div className={`flex-shrink-0 rounded-md p-3 ${iconBgColor}`}>
-            {icon}
+          <div className={`rounded-md p-3 ${iconBgColor}`}>
+            <div className="h-6 w-6 text-white">
+              {icon}
+            </div>
           </div>
           <div className="ml-5 w-0 flex-1">
             <dl>
