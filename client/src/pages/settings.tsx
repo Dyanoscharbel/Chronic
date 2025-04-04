@@ -700,7 +700,12 @@ export default function SettingsPage() {
                                   'hsl(193 82% 31%)',  // Bleu océan
                                   'hsl(322 81% 43%)',  // Magenta
                                   'hsl(155 72% 67%)',  // Menthe
-                                  'hsl(45 93% 47%)'    // Jaune doré
+                                  'hsl(45 93% 47%)',   // Jaune doré
+                                  'hsl(215 50% 23%)',  // Bleu marine foncé
+                                  'hsl(354 70% 25%)',  // Rouge bordeaux
+                                  'hsl(291 47% 30%)',  // Violet prune
+                                  'hsl(170 59% 19%)',  // Vert sapin
+                                  'hsl(200 70% 17%)'   // Bleu nuit
                                 ].map((color) => (
                                   <div 
                                     key={color} 
