@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
@@ -23,7 +22,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -31,7 +30,7 @@ export default function LoginPage() {
       password: '',
     },
   });
-  
+
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
@@ -43,17 +42,18 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-  
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-primary/10 to-primary/20">
-      <div className="absolute inset-0 bg-grid-primary/[0.1] bg-[size:20px_20px] [mask-image:linear-gradient(to_bottom,white,transparent)]" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/40 via-primary/20 to-accent py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-grid-primary/[0.2] bg-[size:20px_20px] [mask-image:linear-gradient(to_bottom,white,transparent)]" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-5xl p-4"
       >
-        <Card className="grid md:grid-cols-2 overflow-hidden">
+        <Card className="grid md:grid-cols-2 overflow-hidden w-full max-w-md shadow-2xl backdrop-blur-md bg-white/90 border border-primary/30 relative z-10">
           <div className="p-8">
             <div className="flex justify-center mb-8">
               <motion.div
