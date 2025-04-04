@@ -73,9 +73,9 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
         <Menu className="h-6 w-6" />
       </button>
 
-      <div className="flex-1 px-4 flex justify-between">
-        <div className="flex-1 flex">
-          <form className="w-full flex md:ml-0" onSubmit={handleSearch}>
+      <div className="flex-1 px-4 flex items-center justify-between">
+        <div className="flex-1 flex justify-center max-w-2xl mx-auto">
+          <form className="w-full flex" onSubmit={handleSearch}>
             <label htmlFor="search-field" className="sr-only">Search</label>
             <div className="relative w-full text-gray-400 focus-within:text-gray-600">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
