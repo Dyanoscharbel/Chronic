@@ -772,17 +772,9 @@ export default function SettingsPage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Apparence</FormLabel>
-                              <div className="grid grid-cols-1 gap-4">
-                                <div
-                                  className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary bg-muted border-primary`}
-                                >
-                                  Mode clair
-                                </div>
-                              </div>
-                              <FormDescription>
-                                Interface en mode clair pour une meilleure visibilité
-                              </FormDescription>
-                              <FormMessage />
+                              <FormControl>
+                                <input type="hidden" value="light" {...field} />
+                              </FormControl>
                             </FormItem>
                           )}
                         />
