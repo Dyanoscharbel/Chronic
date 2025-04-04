@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/hooks/use-auth';
+import { AddLabResultDialog } from '@/components/lab-results/add-dialog'; // Added import
 import { Link } from 'wouter';
 import { Plus, Search, Filter, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,10 +32,11 @@ export default function LabResultsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTest, setFilterTest] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false); // Added dialog state
   const resultsPerPage = 10;
 
   const { user } = useAuth();
-  
+
   const { data: labResults = [], isLoading: resultsLoading } = useQuery<PatientLabResult[]>({
     queryKey: ['/api/patient-lab-results'],
     select: (data) => data.map(result => ({
@@ -114,12 +115,10 @@ export default function LabResultsPage() {
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">Résultats de laboratoire</h1>
-        <Link href="/lab-results/add">
-          <Button className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            <span>Ajouter un résultat</span>
-          </Button>
-        </Link>
+        <Button onClick={() => setIsAddDialogOpen(true)}> {/* Open dialog on button click */}
+          <Plus className="h-4 w-4" />
+          <span>Ajouter un résultat</span>
+        </Button>
       </div>
 
       <Card>
@@ -311,6 +310,7 @@ export default function LabResultsPage() {
           )}
         </CardContent>
       </Card>
+      <AddLabResultDialog isOpen={isAddDialogOpen} onClose={() => setIsAddDialogOpen(false)} /> {/* Added dialog component */}
     </div>
   );
 }
