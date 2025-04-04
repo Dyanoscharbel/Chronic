@@ -78,13 +78,13 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
           <form className="w-full flex md:ml-0" onSubmit={handleSearch}>
             <label htmlFor="search-field" className="sr-only">Search</label>
             <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-              <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                <Search className="h-5 w-5" />
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-primary" />
               </div>
               <Input 
                 id="search-field"
-                className="block w-full h-full pl-8 pr-3 py-2 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 sm:text-sm"
-                placeholder="Search patients, tests..."
+                className="block w-full h-10 pl-10 pr-4 bg-background/50 border border-primary/20 rounded-full text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/30 focus-visible:border-primary/40 transition-colors"
+                placeholder="Rechercher patients, tests..."
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
