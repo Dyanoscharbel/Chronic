@@ -1,4 +1,3 @@
-
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'wouter';
 
@@ -7,7 +6,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-dark to-primary-light text-white overflow-x-hidden">
-      {/* Animated circles in background */}
+      {/* Background animations */}
       <motion.div 
         className="absolute top-20 right-20 w-72 h-72 bg-white/5 rounded-full blur-3xl"
         animate={{
@@ -41,7 +40,7 @@ export default function LandingPage() {
           </p>
         </motion.div>
 
-        {/* Key Features Grid */}
+        {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -51,7 +50,7 @@ export default function LandingPage() {
           >
             <h3 className="text-xl font-semibold mb-4">Suivi Personnalisé</h3>
             <p className="text-white/80">
-              Surveillance continue des marqueurs clés de la MRC avec alertes en temps réel
+              Surveillance continue des marqueurs clés de la MRC
             </p>
           </motion.div>
 
@@ -63,7 +62,7 @@ export default function LandingPage() {
           >
             <h3 className="text-xl font-semibold mb-4">Gestion Efficace</h3>
             <p className="text-white/80">
-              Tableau de bord intuitif pour la gestion des rendez-vous et des résultats d'analyses
+              Tableau de bord intuitif pour la gestion des rendez-vous
             </p>
           </motion.div>
 
@@ -75,7 +74,7 @@ export default function LandingPage() {
           >
             <h3 className="text-xl font-semibold mb-4">Prévention Active</h3>
             <p className="text-white/80">
-              Détection précoce des complications et recommandations personnalisées
+              Détection précoce des complications
             </p>
           </motion.div>
         </div>
