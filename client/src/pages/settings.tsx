@@ -336,12 +336,13 @@ export default function SettingsPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex flex-col items-center space-y-4">
-                <AvatarName
-                  firstName={user.firstName}
-                  lastName={user.lastName}
-                  size="lg"
-                  showName={false}
-                />
+                <div className="rounded-full p-[2px] bg-primary">
+                  <Avatar className="h-20 w-20">
+                    <AvatarFallback className="bg-background text-primary">
+                      {user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
                 <div className="text-center">
                   <h2 className="text-xl font-semibold">
                     {user.firstName} {user.lastName}
