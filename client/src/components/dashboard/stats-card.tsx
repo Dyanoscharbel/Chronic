@@ -22,7 +22,7 @@ export function StatsCard({
   footerLinkColor
 }: StatsCardProps) {
   return (
-    <Card className="card bg-white overflow-hidden shadow rounded-lg animate-pulse-3d"> {/* Added animate-pulse-3d class */}
+    <Card className="card bg-white overflow-hidden shadow rounded-lg">
       <CardContent className="px-4 py-5 sm:p-6">
         <div className="flex items-center">
           <div className={`flex-shrink-0 rounded-md p-3 ${iconBgColor}`}>
