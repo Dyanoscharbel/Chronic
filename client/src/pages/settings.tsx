@@ -690,10 +690,21 @@ export default function SettingsPage() {
                             <FormItem>
                               <FormLabel>Couleur principale</FormLabel>
                               <div className="grid grid-cols-5 gap-3">
-                                {['hsl(173 74% 18%)', 'hsl(221 83% 53%)', 'hsl(142 76% 36%)', 'hsl(346 84% 61%)', 'hsl(270 67% 47%)'].map((color) => (
+                                {[
+                                  'hsl(173 74% 18%)',  // Vert émeraude
+                                  'hsl(221 83% 53%)',  // Bleu royal
+                                  'hsl(142 76% 36%)',  // Vert forêt
+                                  'hsl(346 84% 61%)',  // Rose vif
+                                  'hsl(270 67% 47%)',  // Violet profond
+                                  'hsl(32 95% 44%)',   // Orange brûlé
+                                  'hsl(193 82% 31%)',  // Bleu océan
+                                  'hsl(322 81% 43%)',  // Magenta
+                                  'hsl(155 72% 67%)',  // Menthe
+                                  'hsl(45 93% 47%)'    // Jaune doré
+                                ].map((color) => (
                                   <div 
                                     key={color} 
-                                    className={`h-12 rounded-md border-2 cursor-pointer transition-all ${field.value === color ? 'ring-2 ring-offset-2 border-primary' : 'border-muted'}`}
+                                    className={`h-12 rounded-md border-2 cursor-pointer transition-all transform hover:scale-105 ${field.value === color ? 'ring-2 ring-offset-2 border-primary shadow-lg' : 'border-muted hover:border-primary/50'}`}
                                     style={{ backgroundColor: color }}
                                     onClick={() => field.onChange(color)}
                                   />
