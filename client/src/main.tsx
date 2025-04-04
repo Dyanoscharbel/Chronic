@@ -2,6 +2,29 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
+// Appliquer le thème par défaut
+const defaultTheme = {
+  primary: 'hsl(173 74% 18%)',
+  variant: 'professional',
+  appearance: 'light',
+  radius: 0.5
+};
+
+// Appliquer les variables CSS du thème par défaut
+document.documentElement.style.setProperty('--primary', defaultTheme.primary);
+document.documentElement.style.setProperty('--radius', `${defaultTheme.radius}rem`);
+
+// Variables pour la barre latérale
+const hslMatch = defaultTheme.primary.match(/hsl\((\d+)\s+(\d+)%\s+(\d+)%\)/);
+if (hslMatch) {
+  const [_, hue, saturation] = hslMatch;
+  document.documentElement.style.setProperty('--sidebar-background', `${hue} ${saturation}% 18%`);
+  document.documentElement.style.setProperty('--sidebar-primary', `${hue} 70% 30%`);
+  document.documentElement.style.setProperty('--sidebar-accent', `${hue} 80% 40%`);
+  document.documentElement.style.setProperty('--sidebar-border', `${hue} 60% 25%`);
+  document.documentElement.style.setProperty('--sidebar-ring', `${hue} 70% 30%`);
+}
+
 // Charger le thème depuis localStorage s'il existe
 document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('theme');
