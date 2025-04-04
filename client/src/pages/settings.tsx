@@ -770,7 +770,7 @@ export default function SettingsPage() {
                                   max="1"
                                   step="0.1"
                                   value={field.value}
-                                  onChange={field.onChange}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
                                   className="w-full"
                                 />
                               </FormControl>
