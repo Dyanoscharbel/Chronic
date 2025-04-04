@@ -80,6 +80,9 @@ function AuthRoute({ component: Component, ...rest }: any) {
 function Router() {
   return (
     <Switch>
+      <Route path="/">
+        <LandingPage />
+      </Route>
       {/* Auth Routes */}
       <Route path="/login">
         <AuthRoute component={LoginPage} />
