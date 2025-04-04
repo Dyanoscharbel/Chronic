@@ -25,7 +25,7 @@ export function StatsCard({
     <Card className="card bg-white overflow-hidden shadow rounded-lg">
       <CardContent className="px-4 py-5 sm:p-6">
         <div className="flex items-center">
-          <div className={`flex-shrink-0 rounded-md p-3 bg-primary text-primary-foreground`}>
+          <div className={`flex-shrink-0 rounded-md p-3 ${iconBgColor}`}>
             {icon}
           </div>
           <div className="ml-5 w-0 flex-1">
