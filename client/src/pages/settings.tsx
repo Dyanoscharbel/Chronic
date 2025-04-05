@@ -340,17 +340,18 @@ export default function SettingsPage() {
             <CardContent className="pt-6">
               <div className="flex flex-col items-center space-y-4">
                 <div className="rounded-full p-[2px] bg-primary">
-                  <AvatarName
-                    firstName={user.firstName}
-                    lastName={user.lastName}
-                    email={user.email}
-                    showEmail={true}
-                    size="lg"
-                    className="scale-125"
-                  />
+                  <Avatar className="h-20 w-20">
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
-                <div className="text-center mt-2">
-                  <p className="text-xs text-gray-500">
+                <div className="text-center">
+                  <h2 className="text-xl font-semibold">
+                    {user.firstName} {user.lastName}
+                  </h2>
+                  <p className="text-sm text-gray-500">{user.email}</p>
+                  <p className="text-xs text-gray-500 mt-1">
                     Rôle: {user.role && user.role === 'medecin' ? 'Professionnel Médical' : user?.role?.charAt(0)?.toUpperCase() + user?.role?.slice(1) || ''}
                   </p>
                 </div>
