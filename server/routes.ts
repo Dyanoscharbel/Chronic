@@ -975,7 +975,7 @@ console.error('----------------------------------------');
       };
 
       // Only count patients belonging to the connected doctor
-      const doctorPatients = await Patient.find({ doctor: doctorId });
+      const doctorPatients = await Patient.find({ doctor: doctor._id });
       doctorPatients.forEach(patient => {
         if (patient.ckdStage && stageDistribution.hasOwnProperty(patient.ckdStage)) {
           (stageDistribution as any)[patient.ckdStage]++;
