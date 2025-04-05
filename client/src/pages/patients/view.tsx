@@ -922,7 +922,7 @@ export default function PatientView({ id }: PatientViewProps) {
     const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
 
     addAppointmentMutation.mutate({
-      patient: patient._id,
+      patient: patient._id.toString(),
       doctor: doctorId,
       appointmentDate: dateTime.toISOString(),
       purpose,
