@@ -341,7 +341,7 @@ export default function SettingsPage() {
               <div className="flex flex-col items-center space-y-4">
                 <div className="rounded-full p-[2px] bg-primary">
                   <Avatar className="h-20 w-20">
-                    <AvatarFallback className="bg-primary text-primary-foreground">
+                    <AvatarFallback style={{backgroundColor: 'var(--primary)', color: 'white'}} className="text-2xl font-medium">
                       {user?.firstName && user?.lastName ? `${user.firstName[0]}${user.lastName[0]}` : 'U'}
                     </AvatarFallback>
                   </Avatar>
