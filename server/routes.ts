@@ -734,14 +734,30 @@ console.error('----------------------------------------');
       const patient = await Patient.findById(patientId).populate('user');
 
       if (patient && labTest) {
-        // Créer une notification pour le patient
-        const notification = {
-          userId: patient.user._id,
-          message: `Nouveau résultat pour le test ${labTest.testName}: ${resultValue} ${labTest.unit || ''}`,
-          isRead: false
-        };
+        // Calculer l'écart par rapport à la normale
+        const normalValue = (labTest.normalMax + labTest.normalMin) / 2;
+        const deviation = Math.abs((resultValue - normalValue) / normalValue);
+        
+        let message = '';
+        if (deviation > 0.3) {
+          message = resultValue < normalValue 
+            ? `ALERTE: Niveau dangereusement bas pour ${labTest.testName}: ${resultValue} ${labTest.unit}`
+            : `ALERTE: Niveau dangereusement élevé pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
+        } else if (resultValue < labTest.normalMin || resultValue > labTest.normalMax) {
+          message = `Attention: Résultat anormal pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
+        } else {
+          message = `Nouveau résultat normal pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
+        }
 
-        await storage.createNotification(notification);
+        // Créer la notification dans MongoDB
+        const newNotification = new Notification({
+          userId: patient.user._id,
+          message: message,
+          isRead: false,
+          createdAt: new Date()
+        });
+        
+        await newNotification.save();
       }
 
       res.status(201).json(newResult);
