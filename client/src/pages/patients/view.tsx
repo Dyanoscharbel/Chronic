@@ -910,7 +910,7 @@ export default function PatientView({ id }: PatientViewProps) {
   };
 
   const handleAppointmentSubmit = () => {
-    if (!appointmentDate || !appointmentTime || !doctorId || !purpose) {
+    if (!appointmentDate || !appointmentTime || !doctorId || !purpose || !patient?._id) {
       toast({
         title: 'Error',
         description: 'Please fill all required fields',
