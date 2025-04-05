@@ -106,8 +106,12 @@ class MemStorage implements IStorage {
   }
 
   private async seedInitialData() {
-    // Tests sanguins
-    await LabTest.deleteMany({});
+    // Vérifier si des tests existent déjà
+    const existingTests = await LabTest.countDocuments();
+    if (existingTests > 0) {
+      console.log('Lab tests already exist, skipping initialization');
+      return;
+    }
 
     await LabTest.create([
       {
