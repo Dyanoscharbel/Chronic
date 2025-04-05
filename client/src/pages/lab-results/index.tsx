@@ -296,7 +296,12 @@ export default function LabResultsPage() {
                           <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col space-y-1">
                               <span className="text-sm font-medium text-muted-foreground">Médecin</span>
-                              <span className="text-sm">Dr. {result.doctor.user.firstName} {result.doctor.user.lastName}</span>
+                              <span className="text-sm">
+                                {result.doctor?.user ? 
+                                  `Dr. ${result.doctor.user.firstName} ${result.doctor.user.lastName}` : 
+                                  'Médecin non spécifié'
+                                }
+                              </span>
                             </div>
                             <div className="flex flex-col space-y-1">
                               <span className="text-sm font-medium text-muted-foreground">Date</span>
