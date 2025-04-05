@@ -665,14 +665,13 @@ console.error('----------------------------------------');
 
       console.log('Fetching lab results for doctor:', doctor._id);
 
-      // Find lab results directly with the doctor ID and populate all references
+      // Rechercher d'abord les patients de ce docteur
+      const patients = await Patient.find({ doctor: doctor._id });
+      
+      // Puis trouver les résultats pour ces patients
       const results = await PatientLabResult.find({
-        doctor: doctor._id
+        patient: { $in: patients.map(p => p._id) }
       })
-      .populate('patient')
-      .populate('doctor')
-      .populate('labTest')
-      .lean()
       .populate({
         path: 'patient',
         populate: {
@@ -687,10 +686,8 @@ console.error('----------------------------------------');
           select: 'firstName lastName specialty'
         }
       })
-      .populate({
-        path: 'labTest',
-        select: 'testName description unit normalMin normalMax'
-      })
+      .populate('labTest')
+      .lean()
       .sort({ resultDate: -1 });
 
       console.log('Found results:', results.length);

@@ -276,7 +276,7 @@ export default function LabResultsPage() {
                           <div className="flex flex-col space-y-1">
                             <span className="text-sm font-medium text-muted-foreground">Patient</span>
                             <span className="font-medium">
-                              {getPatientName(result.patientId)}
+                              {result.patient?.user ? `${result.patient.user.firstName} ${result.patient.user.lastName}` : 'Patient inconnu'}
                             </span>
                           </div>
 
