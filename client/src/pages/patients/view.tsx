@@ -889,42 +889,43 @@ export default function PatientView({ id }: PatientViewProps) {
   );
 }
 
-const handleLabResultSubmit = () => {
-  if (!labTestId || !resultValue || !resultDate) {
-    toast({
-      title: 'Error',
-      description: 'Please fill all required fields',
-      variant: 'destructive',
+// Functions that need access to component state
+  const handleLabResultSubmit = () => {
+    if (!labTestId || !resultValue || !resultDate) {
+      toast({
+        title: 'Error',
+        description: 'Please fill all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    addLabResultMutation.mutate({
+      patient: patientId,
+      doctor: user?.id,
+      labTest: labTestId,
+      resultValue: parseFloat(resultValue),
+      resultDate
     });
-    return;
-  }
+  };
 
-  addLabResultMutation.mutate({
-    patient: patient._id,
-    doctor: user.id,
-    labTest: labTestId,
-    resultValue: parseFloat(resultValue),
-    resultDate
-  });
-};
+  const handleAppointmentSubmit = () => {
+    if (!appointmentDate || !appointmentTime || !doctorId || !purpose) {
+      toast({
+        title: 'Error',
+        description: 'Please fill all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
 
-const handleAppointmentSubmit = () => {
-  if (!appointmentDate || !appointmentTime || !doctorId || !purpose) {
-    toast({
-      title: 'Error',
-      description: 'Please fill all required fields',
-      variant: 'destructive',
+    const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
+
+    addAppointmentMutation.mutate({
+      patient: patientId,
+      doctor: doctorId,
+      appointmentDate: dateTime.toISOString(),
+      purpose,
+      status: 'pending'
     });
-    return;
-  }
-
-  const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
-
-  addAppointmentMutation.mutate({
-    patient: patient._id,
-    doctor: doctorId,
-    appointmentDate: dateTime.toISOString(),
-    purpose,
-    status: 'pending'
-  });
-};
+  };
