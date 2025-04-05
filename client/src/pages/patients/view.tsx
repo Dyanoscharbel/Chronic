@@ -922,8 +922,8 @@ export default function PatientView({ id }: PatientViewProps) {
     const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
 
     addAppointmentMutation.mutate({
-      patient: patient._id.toString(),
-      doctor: doctorId,
+      patientId: patient._id,
+      doctorId,
       appointmentDate: dateTime.toISOString(),
       purpose,
       status: 'pending'
