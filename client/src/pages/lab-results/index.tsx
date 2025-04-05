@@ -237,70 +237,84 @@ export default function LabResultsPage() {
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Patient</TableHead>
-                      <TableHead>Test</TableHead>
-                      <TableHead>Résultat</TableHead>
-                      <TableHead>Statut</TableHead>
-                      <TableHead>Médecin</TableHead>
-                      <TableHead>Date</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {paginatedResults.map((result) => {
-                      const patient = patients?.find(p => p._id === result.patient);
-                      const test = labTests?.find(t => t._id === result.labTest);
-                      const value = result.resultValue ? parseFloat(result.resultValue.toString()) : 0;
-                      const min = test?.normalMin ? parseFloat(test?.normalMin?.toString()) : undefined;
-                      const max = test?.normalMax ? parseFloat(test?.normalMax?.toString()) : undefined;
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {paginatedResults.map((result) => {
+                  const patient = patients?.find(p => p._id === result.patient);
+                  const test = labTests?.find(t => t._id === result.labTest);
+                  const value = result.resultValue ? parseFloat(result.resultValue.toString()) : 0;
+                  const min = test?.normalMin ? parseFloat(test?.normalMin?.toString()) : undefined;
+                  const max = test?.normalMax ? parseFloat(test?.normalMax?.toString()) : undefined;
 
-                      let status = 'Normal';
-                      let statusColor = 'text-green-600 bg-green-50';
+                  let status = 'Normal';
+                  let statusColor = 'text-green-600 bg-green-50';
+                  let icon = '✓';
 
-                      if (min !== undefined && max !== undefined) {
-                        if (value < min) {
-                          status = 'En dessous de la normale';
-                          statusColor = 'text-orange-600 bg-orange-50';
-                        } else if (value > max) {
-                          status = 'Au-dessus de la normale';
-                          statusColor = 'text-red-600 bg-red-50';
-                        }
-                      }
+                  if (min !== undefined && max !== undefined) {
+                    if (value < min) {
+                      status = 'En dessous de la normale';
+                      statusColor = 'text-orange-600 bg-orange-50';
+                      icon = '↓';
+                    } else if (value > max) {
+                      status = 'Au-dessus de la normale';
+                      statusColor = 'text-red-600 bg-red-50';
+                      icon = '↑';
+                    }
+                  }
 
-                      return (
-                        <TableRow key={result._id}>
-                          <TableCell>
-                            {patient ? (
-                              <span>{getPatientName(patient._id)}</span>
-                            ) : (
-                              <span className="text-gray-500">Patient inconnu</span>
+                  return (
+                    <Card key={result._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                      <CardHeader className="pb-3">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-lg font-semibold">
+                              {getTestName(result.labTest)}
+                            </CardTitle>
+                            <CardDescription>
+                              {test?.description || 'Description non disponible'}
+                            </CardDescription>
+                          </div>
+                          <Badge variant="outline" className={`${statusColor} text-xs flex items-center gap-1`}>
+                            {icon} {status}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="space-y-4">
+                          <div className="flex flex-col space-y-1">
+                            <span className="text-sm font-medium text-muted-foreground">Patient</span>
+                            <span className="font-medium">
+                              {patient ? getPatientName(patient._id) : 'Patient inconnu'}
+                            </span>
+                          </div>
+                          
+                          <div className="flex flex-col space-y-1">
+                            <span className="text-sm font-medium text-muted-foreground">Résultat</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl font-bold">{value}</span>
+                              <span className="text-sm text-muted-foreground">{test?.unit || ''}</span>
+                            </div>
+                            {(min !== undefined && max !== undefined) && (
+                              <span className="text-xs text-muted-foreground">
+                                Plage normale: {min} - {max} {test?.unit || ''}
+                              </span>
                             )}
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {getTestName(result.labTest)}
-                          </TableCell>
-                          <TableCell>
-                            {value} {test?.unit || ''}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className={statusColor}>
-                              {status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {getDoctorName(result.doctor)}
-                          </TableCell>
-                          <TableCell>
-                            {formatDate(result.resultDate)}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col space-y-1">
+                              <span className="text-sm font-medium text-muted-foreground">Médecin</span>
+                              <span className="text-sm">{getDoctorName(result.doctor)}</span>
+                            </div>
+                            <div className="flex flex-col space-y-1">
+                              <span className="text-sm font-medium text-muted-foreground">Date</span>
+                              <span className="text-sm">{formatDate(result.resultDate)}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
 
               {totalPages > 1 && (
