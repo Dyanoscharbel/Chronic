@@ -240,11 +240,9 @@ export default function LabResultsPage() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {paginatedResults.map((result) => {
-                  const patient = patients?.find(p => p._id === result.patient);
-                  const test = labTests?.find(t => t._id === result.labTest);
                   const value = result.resultValue ? parseFloat(result.resultValue.toString()) : 0;
-                  const min = test?.normalMin ? parseFloat(test?.normalMin?.toString()) : undefined;
-                  const max = test?.normalMax ? parseFloat(test?.normalMax?.toString()) : undefined;
+                  const min = result.labTest?.normalMin ? parseFloat(result.labTest.normalMin.toString()) : undefined;
+                  const max = result.labTest?.normalMax ? parseFloat(result.labTest.normalMax.toString()) : undefined;
 
                   let status = 'Normal';
                   let statusColor = 'text-green-600 bg-green-50';
@@ -271,7 +269,7 @@ export default function LabResultsPage() {
                               {getTestName(result.labTest)}
                             </CardTitle>
                             <CardDescription>
-                              {test?.description || 'Description non disponible'}
+                              {result.labTest?.description || 'Description non disponible'}
                             </CardDescription>
                           </div>
                           <Badge variant="outline" className={`${statusColor} text-xs flex items-center gap-1`}>
@@ -284,19 +282,19 @@ export default function LabResultsPage() {
                           <div className="flex flex-col space-y-1">
                             <span className="text-sm font-medium text-muted-foreground">Patient</span>
                             <span className="font-medium">
-                              {patient ? getPatientName(patient._id) : 'Patient inconnu'}
+                              {getPatientName(result.patientId)}
                             </span>
                           </div>
-                          
+
                           <div className="flex flex-col space-y-1">
                             <span className="text-sm font-medium text-muted-foreground">Résultat</span>
                             <div className="flex items-center gap-2">
                               <span className="text-2xl font-bold">{value}</span>
-                              <span className="text-sm text-muted-foreground">{test?.unit || ''}</span>
+                              <span className="text-sm text-muted-foreground">{result.labTest?.unit || ''}</span>
                             </div>
                             {(min !== undefined && max !== undefined) && (
                               <span className="text-xs text-muted-foreground">
-                                Plage normale: {min} - {max} {test?.unit || ''}
+                                Plage normale: {min} - {max} {result.labTest?.unit || ''}
                               </span>
                             )}
                           </div>

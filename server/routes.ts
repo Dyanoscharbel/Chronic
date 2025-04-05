@@ -676,17 +676,20 @@ console.error('----------------------------------------');
         path: 'patient',
         populate: {
           path: 'user',
-          select: 'firstName lastName'
+          select: 'firstName lastName email'
         }
       })
       .populate({
         path: 'doctor',
         populate: {
           path: 'user',
-          select: 'firstName lastName'
+          select: 'firstName lastName specialty'
         }
       })
-      .populate('labTest')
+      .populate({
+        path: 'labTest',
+        select: 'testName description unit normalMin normalMax'
+      })
       .sort({ resultDate: -1 });
 
       console.log('Found results:', results.length);
