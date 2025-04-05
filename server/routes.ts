@@ -655,11 +655,18 @@ console.error('----------------------------------------');
   // Patient lab results routes
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
-      const doctorId = req.session.user?.id;
-      console.log('Fetching lab results for doctor:', doctorId);
+      const userId = req.session.user?.id;
+      
+      // Trouver le docteur correspondant à l'utilisateur connecté
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found for the connected user' });
+      }
+      
+      console.log('Fetching lab results for doctor:', doctor._id);
 
       // Find patients for this doctor first
-      const doctorPatients = await Patient.find({ doctor: doctorId }).select('_id');
+      const doctorPatients = await Patient.find({ doctor: doctor._id }).select('_id');
       const patientIds = doctorPatients.map(p => p._id);
 
       // Then find lab results for these patients
