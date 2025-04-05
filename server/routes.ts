@@ -656,25 +656,36 @@ console.error('----------------------------------------');
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
       const userId = req.session.user?.id;
-      
+
       // Trouver le docteur correspondant à l'utilisateur connecté
       const doctor = await Doctor.findOne({ user: userId });
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
-      
+
       console.log('Fetching lab results for doctor:', doctor._id);
 
-      // Find patients for this doctor first
-      const doctorPatients = await Patient.find({ doctor: doctor._id }).select('_id');
-      const patientIds = doctorPatients.map(p => p._id);
+      // Find patients for this doctor first 
+      const doctorPatients = await Patient.find({ doctor: doctor._id });
 
       // Then find lab results for these patients
       const results = await PatientLabResult.find({
-        patient: { $in: patientIds }
+        doctor: doctor._id
       })
-      .populate('patient')
-      .populate('doctor')
+      .populate({
+        path: 'patient',
+        populate: {
+          path: 'user',
+          select: 'firstName lastName'
+        }
+      })
+      .populate({
+        path: 'doctor',
+        populate: {
+          path: 'user',
+          select: 'firstName lastName'
+        }
+      })
       .populate('labTest')
       .sort({ resultDate: -1 });
 
@@ -700,7 +711,7 @@ console.error('----------------------------------------');
     try {
       const { patientId, labTestId, resultValue, resultDate } = req.body;
       const userId = req.session.user?.id;
-      
+
       // Trouver le docteur correspondant à l'utilisateur connecté
       const doctor = await Doctor.findOne({ user: userId });
       if (!doctor) {
