@@ -243,28 +243,28 @@ export default function LabResultsPage() {
                   let icon = '✓';
 
                   if (min !== undefined && max !== undefined) {
+                    const normalValue = (max + min) / 2;
+                    const deviation = Math.abs((value - normalValue) / normalValue);
+
                     if (value < min) {
-                      status = 'En dessous de la normale';
-                      statusColor = 'text-orange-600 bg-orange-50';
-                      icon = '↓';
-                    } else if (value > max) {
-                      status = 'Au-dessus de la normale';
-                      // Vérifier si le résultat est très anormal (30% de différence)
-                      const deviation = Math.abs((value - normalValue) / normalValue);
                       if (deviation > 0.3) {
-                        status = value < normalValue 
-                          ? 'Dangereusement bas'
-                          : 'Dangereusement élevé';
+                        status = 'Dangereusement bas';
                         statusColor = 'text-red-700 bg-red-100 font-bold';
-                        icon = value < normalValue ? '⚠️↓' : '⚠️↑';
+                        icon = '⚠️↓';
                       } else {
-                        status = value < normalValue 
-                          ? 'Niveau critique bas'
-                          : 'Niveau critique élevé';
-                        statusColor = value < normalValue
-                          ? 'text-orange-600 bg-orange-50'
-                          : 'text-red-600 bg-red-50';
-                        icon = value < normalValue ? '⚠️' : '⚠️';
+                        status = 'En dessous de la normale';
+                        statusColor = 'text-orange-600 bg-orange-50';
+                        icon = '↓';
+                      }
+                    } else if (value > max) {
+                      if (deviation > 0.3) {
+                        status = 'Dangereusement élevé';
+                        statusColor = 'text-red-700 bg-red-100 font-bold';
+                        icon = '⚠️↑';
+                      } else {
+                        status = 'Au-dessus de la normale';
+                        statusColor = 'text-red-600 bg-red-50';
+                        icon = '↑';
                       }
                     }
                   }
