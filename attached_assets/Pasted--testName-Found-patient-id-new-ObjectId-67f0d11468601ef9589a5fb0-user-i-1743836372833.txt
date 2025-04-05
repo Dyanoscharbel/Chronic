@@ -1,0 +1,61 @@
+","testName"…
+Found patient: {
+  _id: new ObjectId('67f0d11468601ef9589a5fb0'),
+  user: {
+    _id: new ObjectId('67f0d11468601ef9589a5fad'),
+    firstName: 'eharbelf',
+    lastName: 'SANNI',
+    email: 'najinem771@lxheir.com',
+    role: 'patient'
+  },
+  doctor: {
+    _id: new ObjectId('67efcd42a3e5e42ab1682b55'),
+    user: {
+      _id: new ObjectId('67efcd42a3e5e42ab1682b53'),
+      firstName: 'Charbel',
+      lastName: 'SANNI'
+    },
+    specialty: 'Neurologie',
+    hospital: 'CNHU',
+    __v: 0
+  },
+  birthDate: 2025-04-05T00:00:00.000Z,
+  gender: 'M',
+  address: 'uytrezsq',
+  phone: '+22957792710',
+  ckdStage: 'Stage 3A',
+  createdAt: 2025-04-05T06:43:32.357Z,
+  __v: 0
+}
+6:59:00 AM [express] GET /api/patients/67f0d11468601ef9589a5fb0 200 in 379ms :: {"_id":"67f0d1146860…
+Update patient error: CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Patient"
+    at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:251:11)
+    at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+    at SchemaType.castForQuery (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1673:17)
+    at cast (/home/runner/workspace/node_modules/mongoose/lib/cast.js:390:32)
+    at Query.cast (/home/runner/workspace/node_modules/mongoose/lib/query.js:4907:12)
+    at Query._castConditions (/home/runner/workspace/node_modules/mongoose/lib/query.js:2325:10)
+    at model.Query._findOne (/home/runner/workspace/node_modules/mongoose/lib/query.js:2648:8)
+    at model.Query.exec (/home/runner/workspace/node_modules/mongoose/lib/query.js:4456:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:492:23) {
+  stringValue: '"undefined"',
+  messageFormat: undefined,
+  kind: 'ObjectId',
+  value: 'undefined',
+  path: '_id',
+  reason: BSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer
+      at new ObjectId (/home/runner/workspace/node_modules/bson/src/objectid.ts:120:15)
+      at castObjectId (/home/runner/workspace/node_modules/mongoose/lib/cast/objectid.js:25:12)
+      at SchemaObjectId.cast (/home/runner/workspace/node_modules/mongoose/lib/schema/objectId.js:249:12)
+      at SchemaType.applySetters (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1255:12)
+      at SchemaType.castForQuery (/home/runner/workspace/node_modules/mongoose/lib/schemaType.js:1673:17)
+      at cast (/home/runner/workspace/node_modules/mongoose/lib/cast.js:390:32)
+      at Query.cast (/home/runner/workspace/node_modules/mongoose/lib/query.js:4907:12)
+      at Query._castConditions (/home/runner/workspace/node_modules/mongoose/lib/query.js:2325:10)
+      at model.Query._findOne (/home/runner/workspace/node_modules/mongoose/lib/query.js:2648:8)
+      at model.Query.exec (/home/runner/workspace/node_modules/mongoose/lib/query.js:4456:80)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async <anonymous> (/home/runner/workspace/server/routes.ts:492:23),
+  valueType: 'string'
+}
