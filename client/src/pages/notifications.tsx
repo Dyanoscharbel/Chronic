@@ -169,7 +169,7 @@ export default function NotificationsPage() {
               <div className="space-y-4">
                 {paginatedNotifications.map((notification) => (
                   <div
-                    key={notification.id}
+                    key={notification._id}
                     className={`p-4 border rounded-lg transition-colors ${
                       notification.isRead ? 'bg-white' : 'bg-blue-50'
                     }`}
@@ -185,6 +185,11 @@ export default function NotificationsPage() {
                         </div>
                         <div>
                           <p className="text-sm text-gray-900">{notification.message}</p>
+                          {notification.patientId?.user && (
+                            <p className="text-xs text-gray-600 mt-1">
+                              Patient: {notification.patientId.user.firstName} {notification.patientId.user.lastName}
+                            </p>
+                          )}
                           <p className="text-xs text-gray-500 mt-1">
                             {getTimeAgo(notification.createdAt)} ({formatDate(notification.createdAt)})
                           </p>

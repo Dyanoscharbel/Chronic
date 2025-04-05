@@ -876,9 +876,25 @@ console.error('----------------------------------------');
   // Notifications routes
   apiRouter.get('/notifications', authenticate, async (req, res) => {
     try {
-      // Get user ID from authenticated user
-      const userId = (req as any).session.user?.id || (req as any).user.id;
-      const notifications = await storage.getNotificationsByUserId(userId);
+      const userId = req.session.user?.id;
+      
+      // Trouver le docteur connecté
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found' });
+      }
+
+      // Récupérer les notifications pour ce docteur
+      const notifications = await Notification.find({ doctorId: doctor._id })
+        .populate({
+          path: 'patientId',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName'
+          }
+        })
+        .sort({ createdAt: -1 });
+
       res.json(notifications);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
