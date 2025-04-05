@@ -938,11 +938,17 @@ console.error('----------------------------------------');
   // Dashboard statistics
   apiRouter.get('/dashboard/stats', authenticate, async (req, res) => {
     try {
-      // Get the connected doctor's ID from the session
-      const doctorId = req.session.user?.id;
+      // Get the connected user's ID from the session
+      const userId = req.session.user?.id;
+
+      // Find the doctor associated with the connected user
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found for the connected user' });
+      }
 
       // Find only patients where doctor field matches the connected doctor's ID
-      const patients = await Patient.find({ doctor: doctorId });
+      const patients = await Patient.find({ doctor: doctor._id });
       const appointments = await storage.getAppointments();
       const results = await storage.getPatientLabResults();
 
