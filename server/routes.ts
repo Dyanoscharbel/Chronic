@@ -319,12 +319,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Patients routes
   apiRouter.get('/patients', authenticate, async (req, res) => {
     try {
-      // Get the connected user's ID from the session
-      const doctorId = req.session.user?.id;
+      const userId = req.session.user?.id;
+
+      // Trouver le docteur correspondant à l'utilisateur connecté
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found for the connected user' });
+      }
 
       // Find only patients where doctor field matches the connected doctor's ID
-      // and populate the complete user information
-      const patients = await Patient.find({ doctor: doctorId })
+      const patients = await Patient.find({ doctor: doctor._id })
         .populate({
           path: 'user',
           select: '-passwordHash' // Exclude password hash
@@ -362,9 +366,14 @@ console.error('----------------------------------------');
 
       // Recherche le patient avec toutes les informations associées
       // Get the current doctor's ID from the session
-      const doctorId = req.session.user?.id;
-      if (!doctorId) {
+      const userId = req.session.user?.id;
+      if (!userId) {
         return res.status(401).json({ message: 'Doctor authentication required' });
+      }
+
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
 
       const patient = await Patient.findById(patientId)
@@ -382,9 +391,9 @@ console.error('----------------------------------------');
 
       // Set doctor if missing
       if (!patient.doctor) {
-        patient.doctor = doctorId;
+        patient.doctor = doctor._id;
         await patient.save();
-        
+
         // Reload patient with populated doctor data
         await patient.populate({
           path: 'doctor',
@@ -413,7 +422,7 @@ console.error('----------------------------------------');
 
   apiRouter.post('/patients', authenticate, async (req, res) => {
     try {
-      const { firstName, lastName, email, birthDate, gender, address, phone, ckdStage, doctorId } = req.body;
+      const { firstName, lastName, email, birthDate, gender, address, phone, ckdStage } = req.body;
 
       // Get user from session
       const user = req.session.user;
@@ -442,10 +451,17 @@ console.error('----------------------------------------');
       });
       await newUser.save();
 
+      // Find the doctor associated with the connected user
+      const doctor = await Doctor.findOne({ user: user.id });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found for the connected user' });
+      }
+
+
       // Create new patient
       const newPatient = new Patient({
         user: newUser._id,
-        doctor: user.id, // Add doctor reference from authenticated user
+        doctor: doctor._id, // Use doctor._id instead of user.id
         birthDate,
         gender,
         address,
@@ -615,11 +631,11 @@ console.error('----------------------------------------');
       const labTests = await LabTest.find()
         .select('testName description unit normalMin normalMax category')
         .sort({ category: 1, testName: 1 });
-      
+
       if (!labTests.length) {
         console.log('No lab tests found in database');
       }
-      
+
       res.json(labTests);
     } catch (error) {
       console.error('Error fetching lab tests:', error);
