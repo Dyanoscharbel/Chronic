@@ -692,11 +692,17 @@ console.error('----------------------------------------');
   apiRouter.post('/patient-lab-results', authenticate, async (req, res) => {
     try {
       const { patientId, labTestId, resultValue, resultDate } = req.body;
-      const doctorId = req.session.user?.id;
+      const userId = req.session.user?.id;
+      
+      // Trouver le docteur correspondant à l'utilisateur connecté
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found for the connected user' });
+      }
 
       const newResult = new PatientLabResult({
         patient: patientId,
-        doctor: doctorId,
+        doctor: doctor._id,
         labTest: labTestId,
         resultValue,
         resultDate
