@@ -259,12 +259,12 @@ export default function LabResultsPage() {
                         icon = value < normalValue ? '⚠️↓' : '⚠️↑';
                       } else {
                         status = value < normalValue 
-                          ? 'En dessous de la normale'
-                          : 'Au-dessus de la normale';
+                          ? 'Niveau critique bas'
+                          : 'Niveau critique élevé';
                         statusColor = value < normalValue
                           ? 'text-orange-600 bg-orange-50'
                           : 'text-red-600 bg-red-50';
-                        icon = value < normalValue ? '↓' : '↑';
+                        icon = value < normalValue ? '⚠️' : '⚠️';
                       }
                     }
                   }
