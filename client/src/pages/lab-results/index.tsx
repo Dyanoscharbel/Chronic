@@ -67,8 +67,9 @@ export default function LabResultsPage() {
     queryKey: ['/api/patient-lab-results'],
     select: (data) => data.map(result => ({
       ...result,
-      patient: result.patient._id ? result.patient : result.patientId,
-      labTest: result.labTest._id ? result.labTest : result.labTestId
+      patient: result.patient,
+      doctor: result.doctor,
+      labTest: result.labTest
     }))
   });
 
