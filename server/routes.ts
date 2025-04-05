@@ -728,6 +728,22 @@ console.error('----------------------------------------');
       });
 
       await newResult.save();
+
+      // Récupérer les informations du test et du patient pour la notification
+      const labTest = await LabTest.findById(labTestId);
+      const patient = await Patient.findById(patientId).populate('user');
+
+      if (patient && labTest) {
+        // Créer une notification pour le patient
+        const notification = {
+          userId: patient.user._id,
+          message: `Nouveau résultat pour le test ${labTest.testName}: ${resultValue} ${labTest.unit || ''}`,
+          isRead: false
+        };
+
+        await storage.createNotification(notification);
+      }
+
       res.status(201).json(newResult);
     } catch (error) {
       console.error('Error creating lab result:', error);
