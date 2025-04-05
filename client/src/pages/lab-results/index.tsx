@@ -260,10 +260,10 @@ export default function LabResultsPage() {
                         <div className="flex justify-between items-start">
                           <div>
                             <CardTitle className="text-lg font-semibold">
-                              {result.labTest.testName}
+                              {result.labTest?.testName || 'Test inconnu'}
                             </CardTitle>
                             <CardDescription>
-                              {result.labTest.description || 'Description non disponible'}
+                              {result.labTest?.description || 'Description non disponible'}
                             </CardDescription>
                           </div>
                           <Badge variant="outline" className={`${statusColor} text-xs flex items-center gap-1`}>
