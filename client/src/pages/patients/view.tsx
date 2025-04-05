@@ -866,7 +866,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 className="col-span-3"
               />
             </div>
-          </div
+          </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddAppointmentDialogOpen(false)}>
@@ -891,7 +891,7 @@ export default function PatientView({ id }: PatientViewProps) {
 
 // Functions that need access to component state
   const handleLabResultSubmit = () => {
-    if (!labTestId || !resultValue || !resultDate) {
+    if (!labTestId || !resultValue || !resultDate || !patient?._id) {
       toast({
         title: 'Error',
         description: 'Please fill all required fields',
@@ -901,7 +901,7 @@ export default function PatientView({ id }: PatientViewProps) {
     }
 
     addLabResultMutation.mutate({
-      patient: patientId,
+      patient: patient._id,
       doctor: user?.id,
       labTest: labTestId,
       resultValue: parseFloat(resultValue),
