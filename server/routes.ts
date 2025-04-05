@@ -669,6 +669,10 @@ console.error('----------------------------------------');
       const results = await PatientLabResult.find({
         doctor: doctor._id
       })
+      .populate('patient')
+      .populate('doctor')
+      .populate('labTest')
+      .lean()
       .populate({
         path: 'patient',
         populate: {
