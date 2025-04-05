@@ -866,7 +866,7 @@ export default function PatientView({ id }: PatientViewProps) {
                 className="col-span-3"
               />
             </div>
-          </div>
+          </div
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddAppointmentDialogOpen(false)}>
