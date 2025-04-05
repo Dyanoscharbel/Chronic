@@ -260,10 +260,10 @@ export default function LabResultsPage() {
                         <div className="flex justify-between items-start">
                           <div>
                             <CardTitle className="text-lg font-semibold">
-                              {getTestName(result.labTest)}
+                              {result.labTest.testName}
                             </CardTitle>
                             <CardDescription>
-                              {result.labTest?.description || 'Description non disponible'}
+                              {result.labTest.description || 'Description non disponible'}
                             </CardDescription>
                           </div>
                           <Badge variant="outline" className={`${statusColor} text-xs flex items-center gap-1`}>
@@ -296,7 +296,7 @@ export default function LabResultsPage() {
                           <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col space-y-1">
                               <span className="text-sm font-medium text-muted-foreground">Médecin</span>
-                              <span className="text-sm">{getDoctorName(result.doctor)}</span>
+                              <span className="text-sm">Dr. {result.doctor.user.firstName} {result.doctor.user.lastName}</span>
                             </div>
                             <div className="flex flex-col space-y-1">
                               <span className="text-sm font-medium text-muted-foreground">Date</span>
