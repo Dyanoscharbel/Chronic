@@ -665,10 +665,7 @@ console.error('----------------------------------------');
 
       console.log('Fetching lab results for doctor:', doctor._id);
 
-      // Find patients for this doctor first 
-      const doctorPatients = await Patient.find({ doctor: doctor._id });
-
-      // Then find lab results for these patients
+      // Find lab results directly with the doctor ID and populate all references
       const results = await PatientLabResult.find({
         doctor: doctor._id
       })

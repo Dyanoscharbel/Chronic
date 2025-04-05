@@ -65,12 +65,6 @@ export default function LabResultsPage() {
 
   const { data: labResults = [], isLoading: resultsLoading } = useQuery<PatientLabResult[]>({
     queryKey: ['/api/patient-lab-results'],
-    select: (data) => data.map(result => ({
-      ...result,
-      patient: result.patient,
-      doctor: result.doctor,
-      labTest: result.labTest
-    }))
   });
 
   const { data: patients = [] } = useQuery<Patient[]>({
