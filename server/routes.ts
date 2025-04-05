@@ -751,8 +751,9 @@ console.error('----------------------------------------');
 
         // Créer la notification dans MongoDB
         const newNotification = new Notification({
-          userId: patient.user._id,
-          message: message,
+          patientId: patient._id,
+          doctorId: doctor._id,
+          message: `Patient ${patient.user.firstName} ${patient.user.lastName}: ${message}`,
           isRead: false,
           createdAt: new Date()
         });

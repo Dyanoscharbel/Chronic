@@ -51,7 +51,8 @@ export const LabTest = mongoose.model('LabTest', labTestSchema);
 export const PatientLabResult = mongoose.model('PatientLabResult', patientLabResultSchema);
 
 const notificationSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  patientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
+  doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
   message: { type: String, required: true },
   isRead: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
