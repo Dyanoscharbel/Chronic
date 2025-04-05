@@ -745,27 +745,22 @@ export default function SettingsPage() {
                           control={themeForm.control}
                           name="variant"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Variante de couleur</FormLabel>
-                              <div className="grid grid-cols-3 gap-4">
-                                {[
-                                  { value: 'tint', label: 'Teinte' },
-                                  { value: 'vibrant', label: 'Vibrant' },
-                                ].map((variant) => (
-                                  <div
-                                    key={variant.value}
-                                    className={`border rounded-md p-4 text-center cursor-pointer transition-all hover:border-primary ${field.value === variant.value ? 'bg-muted border-primary' : ''}`}
-                                    onClick={() => field.onChange(variant.value)}
-                                  >
-                                    {variant.label}
-                                  </div>
-                                ))}
-                              </div>
-                              <FormDescription>
-                                Définissez l'intensité de la couleur
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
+                            <FormField
+                              control={themeForm.control}
+                              name="variant"
+                              defaultValue="tint"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Variante de couleur</FormLabel>
+                                  <FormControl>
+                                    <Input type="hidden" value="tint" {...field} />
+                                  </FormControl>
+                                  <FormDescription>
+                                    Teinte par défaut
+                                  </FormDescription>
+                                </FormItem>
+                              )}
+                            />
                           )}
                         />
 
