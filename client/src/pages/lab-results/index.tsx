@@ -281,31 +281,27 @@ export default function LabResultsPage() {
                           </div>
 
                           <div className="flex flex-col space-y-1">
-                            <span className="text-sm font-medium text-muted-foreground">Test</span>
-                            <span className="font-medium">
-                              {result.labTest?.testName || 'Test inconnu'}
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              {result.labTest?.description || ''}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-col space-y-1">
                             <span className="text-sm font-medium text-muted-foreground">Résultat</span>
                             <div className="flex items-center gap-2">
-                              <span className="text-2xl font-bold">{result.resultValue}</span>
+                              <span className="text-2xl font-bold">{value}</span>
                               <span className="text-sm text-muted-foreground">{result.labTest?.unit || ''}</span>
                             </div>
-                            {(result.labTest?.normalMin !== undefined && result.labTest?.normalMax !== undefined) && (
+                            {(min !== undefined && max !== undefined) && (
                               <span className="text-xs text-muted-foreground">
-                                Plage normale: {result.labTest.normalMin} - {result.labTest.normalMax} {result.labTest.unit || ''}
+                                Plage normale: {min} - {max} {result.labTest?.unit || ''}
                               </span>
                             )}
                           </div>
 
-                          <div className="flex flex-col space-y-1">
-                            <span className="text-sm font-medium text-muted-foreground">Date</span>
-                            <span className="text-sm">{formatDate(result.resultDate)}</span>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col space-y-1">
+                              <span className="text-sm font-medium text-muted-foreground">Médecin</span>
+                              <span className="text-sm">{getDoctorName(result.doctor)}</span>
+                            </div>
+                            <div className="flex flex-col space-y-1">
+                              <span className="text-sm font-medium text-muted-foreground">Date</span>
+                              <span className="text-sm">{formatDate(result.resultDate)}</span>
+                            </div>
                           </div>
                         </div>
                       </CardContent>
