@@ -252,6 +252,21 @@ export default function LabResultsPage() {
                       statusColor = 'text-red-600 bg-red-50';
                       icon = '↑';
                     }
+                  } else {
+                    // Tolérance de 15% autour de la valeur si pas de min/max définis
+                    const tolerance = value * 0.15;
+                    const inferiorLimit = value - tolerance;
+                    const superiorLimit = value + tolerance;
+
+                    if (value < inferiorLimit) {
+                      status = 'En dessous de la normale (±15%)';
+                      statusColor = 'text-orange-600 bg-orange-50';
+                      icon = '↓';
+                    } else if (value > superiorLimit) {
+                      status = 'Au-dessus de la normale (±15%)';
+                      statusColor = 'text-red-600 bg-red-50';
+                      icon = '↑';
+                    }
                   }
 
                   return (
