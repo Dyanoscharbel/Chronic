@@ -50,8 +50,12 @@ export default function NotificationsPage() {
   });
 
 
-  const handleMarkAsRead = (id: string) => {
-    markAsReadMutation.mutate(id);
+  const handleMarkAsRead = (_id: string) => {
+    if (!_id) {
+      console.error('Notification _id is undefined');
+      return;
+    }
+    markAsReadMutation.mutate(_id);
   };
 
   const handleMarkAllAsRead = async () => {
