@@ -55,7 +55,6 @@ const notificationSchema = new mongoose.Schema({
   doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
   labTest: { type: mongoose.Schema.Types.ObjectId, ref: 'LabTest', required: true },
   message: { type: String, required: true },
-  severity: { type: String, enum: ['info', 'warning', 'error'], default: 'info' },
   isRead: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
