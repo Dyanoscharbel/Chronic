@@ -33,6 +33,11 @@ export default function Dashboard() {
     queryKey: ['/api/dashboard/recent-alerts'],
     refetchInterval: 5000,
   });
+
+  const { data: labResults } = useQuery<any[]>({
+    queryKey: ['/api/patient-lab-results'],
+    refetchInterval: 5000,
+  });
   
   if (statsLoading || appointmentsLoading || alertsLoading) {
     return (
@@ -93,8 +98,8 @@ export default function Dashboard() {
         <StatsCard
           icon={<FileText className="h-6 w-6 text-white" />}
           iconBgColor="bg-green-500"
-          title="Résultats en attente"
-          value={dashboardStats?.pendingLabResults || 0}
+          title="Résultats de laboratoire"
+          value={labResults?.length || 0}
           footerLink="/lab-results"
           footerText="Voir tous les résultats"
           footerLinkColor="text-green-600 hover:text-green-500"
