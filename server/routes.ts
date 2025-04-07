@@ -935,7 +935,14 @@ console.error('----------------------------------------');
         })
         .sort({ createdAt: -1 });
 
-      res.json(notifications);
+      // Compter les notifications critiques
+      const criticalCount = await Notification.countDocuments({
+        doctorId: doctor._id,
+        severity: 'error',
+        isRead: false
+      });
+
+      res.json({ notifications, criticalCount });
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
     }
