@@ -53,6 +53,32 @@ export default function LabResultsPage() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  const deleteLabResultMutation = useMutation({
+    mutationFn: async (resultId: string) => {
+      return apiRequest('DELETE', `/api/patient-lab-results/${resultId}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Succès',
+        description: 'Le résultat a été supprimé avec succès',
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/patient-lab-results'] });
+    },
+    onError: (error) => {
+      toast({
+        title: 'Erreur',
+        description: error instanceof Error ? error.message : 'Échec de la suppression',
+        variant: 'destructive',
+      });
+    }
+  });
+
+  const handleDelete = async (resultId: string) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce résultat ?')) {
+      deleteLabResultMutation.mutate(resultId);
+    }
+  };
+
   const form = useForm<LabResultFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -323,6 +349,14 @@ export default function LabResultsPage() {
                               <span className="text-sm">{formatDate(result.resultDate)}</span>
                             </div>
                           </div>
+                          <Button 
+                            variant="destructive" 
+                            size="sm"
+                            className="mt-4"
+                            onClick={() => handleDelete(result._id)}
+                          >
+                            Supprimer
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>

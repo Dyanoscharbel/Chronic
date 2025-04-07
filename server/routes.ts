@@ -708,6 +708,31 @@ console.error('----------------------------------------');
     }
   });
 
+  apiRouter.delete('/patient-lab-results/:id', authenticate, async (req, res) => {
+    try {
+      const resultId = req.params.id;
+      
+      // Trouver le résultat avant de le supprimer pour avoir les infos
+      const result = await PatientLabResult.findById(resultId);
+      if (!result) {
+        return res.status(404).json({ message: 'Résultat non trouvé' });
+      }
+
+      // Supprimer les notifications associées
+      await Notification.deleteMany({
+        message: new RegExp(result.labTest.toString())
+      });
+
+      // Supprimer le résultat
+      await PatientLabResult.findByIdAndDelete(resultId);
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting lab result:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
   apiRouter.post('/patient-lab-results', authenticate, async (req, res) => {
     try {
       const { patientId, labTestId, resultValue, resultDate } = req.body;
