@@ -73,9 +73,18 @@ export default function LabResultsPage() {
     }
   });
 
-  const handleDelete = async (resultId: string) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce résultat ?')) {
-      deleteLabResultMutation.mutate(resultId);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
+
+  const handleDeleteClick = (resultId: string) => {
+    setSelectedResultId(resultId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (selectedResultId) {
+      deleteLabResultMutation.mutate(selectedResultId);
+      setDeleteDialogOpen(false);
     }
   };
 
@@ -353,7 +362,7 @@ export default function LabResultsPage() {
                             variant="destructive" 
                             size="sm"
                             className="mt-4"
-                            onClick={() => handleDelete(result._id)}
+                            onClick={() => handleDeleteClick(result._id)}
                           >
                             Supprimer
                           </Button>
@@ -576,6 +585,22 @@ export default function LabResultsPage() {
           </Form>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir supprimer ce résultat ? Cette action ne peut pas être annulée.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Supprimer</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -720,7 +720,10 @@ console.error('----------------------------------------');
 
       // Supprimer les notifications associées
       await Notification.deleteMany({
-        message: new RegExp(result.labTest.toString())
+        $and: [
+          { patientId: result.patient },
+          { message: { $regex: new RegExp(`.*${result.labTest}.*`) } }
+        ]
       });
 
       // Supprimer le résultat
