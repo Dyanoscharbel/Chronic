@@ -54,7 +54,7 @@ const formSchema = z.object({
 
 export default function LabResultsPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterTest, setFilterTest] = useState('all');
+  const [selectedPatient, setSelectedPatient] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTest, setSelectedTest] = useState<LabTest | null>(null);
@@ -170,20 +170,15 @@ export default function LabResultsPage() {
   };
 
   const filteredResults = labResults?.filter(result => {
-    const patient = patients?.find(p => p._id === result.patientId);
     const testName = getTestName(result.labTest);
 
     const matchesSearch = searchQuery ? (
-      patient && (
-        patient.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        patient.user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
-      ) ||
       testName.toLowerCase().includes(searchQuery.toLowerCase())
     ) : true;
 
-    const matchesFilter = filterTest === 'all' ? true : result.labTest === filterTest;
+    const matchesPatient = selectedPatient === 'all' ? true : result.patient?._id === selectedPatient;
 
-    return matchesSearch && matchesFilter;
+    return matchesSearch && matchesPatient;
   }) || [];
 
   const sortedResults = [...filteredResults].sort(
@@ -247,17 +242,17 @@ export default function LabResultsPage() {
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-gray-500" />
                 <Select
-                  value={filterTest}
-                  onValueChange={setFilterTest}
+                  value={selectedPatient}
+                  onValueChange={setSelectedPatient}
                 >
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filtrer par test" />
+                    <SelectValue placeholder="Filtrer par patient" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tous les tests</SelectItem>
-                    {labTests?.map(test => (
-                      <SelectItem key={test._id} value={test._id.toString()}>
-                        {test.testName}
+                    <SelectItem value="all">Tous les patients</SelectItem>
+                    {patients?.map(patient => (
+                      <SelectItem key={patient._id} value={patient._id}>
+                        {patient.user.firstName} {patient.user.lastName}
                       </SelectItem>
                     ))}
                   </SelectContent>
