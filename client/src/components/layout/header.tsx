@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn, getAvatarColor } from '@/lib/utils';
-import { Menu, Search, Bell, Settings, LogOut, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Menu, Search, Bell, Settings, LogOut } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -103,10 +103,7 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
                 className="p-1 text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-500 focus:outline-none"
               >
                 <span className="sr-only">View notifications</span>
-                {unreadNotifications > 0 ? (
-                  notifications[0].severity === 'error' ? <AlertCircle className="h-6 w-6 text-red-500" /> :
-                  notifications[0].severity === 'warning' ? <AlertTriangle className="h-6 w-6 text-yellow-500" /> : <Bell className="h-6 w-6" />
-                ) : <Bell className="h-6 w-6" />}
+                <Bell className="h-6 w-6" />
                 {unreadNotifications > 0 && (
                   <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
                 )}
