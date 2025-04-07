@@ -722,7 +722,7 @@ console.error('----------------------------------------');
       await Notification.deleteMany({
         $and: [
           { patientId: result.patient },
-          { message: { $regex: new RegExp(`.*${result.labTest}.*`) } }
+          { labTest: result.labTest }
         ]
       });
 
@@ -781,6 +781,7 @@ console.error('----------------------------------------');
         const newNotification = new Notification({
           patientId: patient._id,
           doctorId: doctor._id,
+          labTest: labTestId,
           message: `Patient ${patient.user.firstName} ${patient.user.lastName}: ${message}`,
           isRead: false,
           createdAt: new Date()
