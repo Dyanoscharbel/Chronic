@@ -140,6 +140,7 @@ export default function LabResultsPage() {
         description: 'Le résultat a été ajouté avec succès',
       });
       queryClient.invalidateQueries({ queryKey: ['/api/patient-lab-results'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
       setIsDialogOpen(false);
       form.reset();
     },
