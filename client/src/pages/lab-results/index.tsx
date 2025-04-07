@@ -73,6 +73,7 @@ export default function LabResultsPage() {
         description: 'Le résultat a été supprimé avec succès',
       });
       queryClient.invalidateQueries({ queryKey: ['/api/patient-lab-results'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
     },
     onError: (error) => {
       toast({
