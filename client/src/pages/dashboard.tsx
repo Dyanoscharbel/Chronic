@@ -83,8 +83,8 @@ export default function Dashboard() {
         <StatsCard
           icon={<AlertTriangle className="h-6 w-6 text-white" />}
           iconBgColor="bg-yellow-500"
-          title="Alertes critiques"
-          value={notificationsData?.criticalCount || 0}
+          title="Alertes"
+          value={notificationsData?.notifications?.length || 0}
           footerLink="/notifications"
           footerText="Voir toutes les alertes"
           footerLinkColor="text-yellow-600 hover:text-yellow-500"
