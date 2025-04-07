@@ -783,6 +783,7 @@ console.error('----------------------------------------');
           doctorId: doctor._id,
           labTest: labTestId,
           message: `Patient ${patient.user.firstName} ${patient.user.lastName}: ${message}`,
+          severity: result.isAbnormal ? 'error' : 'info',
           isRead: false,
           createdAt: new Date()
         });
