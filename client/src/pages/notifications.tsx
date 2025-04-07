@@ -28,7 +28,7 @@ export default function NotificationsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const notificationsPerPage = 10;
 
-  const { data: notifications, isLoading } = useQuery<Notification[]>({
+  const { data, isLoading } = useQuery<{ notifications: Notification[] }>({
     queryKey: ['/api/notifications'],
   });
 
@@ -85,7 +85,7 @@ export default function NotificationsPage() {
   };
 
   // Filter notifications based on search and show/hide read
-  const filteredNotifications = notifications?.filter(notification => {
+  const filteredNotifications = data?.notifications?.filter(notification => {
     const matchesSearch = searchQuery
       ? notification.message.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
@@ -106,7 +106,7 @@ export default function NotificationsPage() {
   const startIndex = (currentPage - 1) * notificationsPerPage;
   const paginatedNotifications = sortedNotifications.slice(startIndex, startIndex + notificationsPerPage);
 
-  const hasUnreadNotifications = notifications?.some(notification => !notification.isRead);
+  const hasUnreadNotifications = data?.notifications?.some(notification => !notification.isRead);
 
   return (
     <div className="flex flex-col space-y-6">
