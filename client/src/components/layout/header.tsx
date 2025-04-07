@@ -30,12 +30,12 @@ export function Header({ toggleSidebar, user }: HeaderProps) {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: notifications } = useQuery<Notification[]>({
+  const { data } = useQuery<{ notifications: Notification[] }>({
     queryKey: ['/api/notifications'],
     enabled: !!user,
   });
 
-  const unreadNotifications = notifications?.filter(n => !n.isRead).length || 0;
+  const unreadNotifications = data?.notifications?.filter(n => !n.isRead).length || 0;
 
   const handleLogout = async () => {
     try {
