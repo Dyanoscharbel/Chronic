@@ -27,28 +27,12 @@ export default function NotificationsPage() {
   const [showRead, setShowRead] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const notificationsPerPage = 10;
-  
+
   const { data: notifications, isLoading } = useQuery<Notification[]>({
     queryKey: ['/api/notifications'],
   });
-  
+
   // Mark notification as read mutation
-  const markAsReadMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest('POST', `/api/notifications/mark-read/${id}`, {});
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
-    },
-    onError: (error) => {
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to mark notification as read',
-        variant: 'destructive',
-      });
-    }
-  });
-  
   const markAsReadMutation = useMutation({
     mutationFn: async (id: string) => {
       return apiRequest('POST', `/api/notifications/mark-read/${id}`, {});
@@ -65,19 +49,20 @@ export default function NotificationsPage() {
     }
   });
 
+
   const handleMarkAsRead = (id: string) => {
     markAsReadMutation.mutate(id);
   };
-  
+
   const handleMarkAllAsRead = async () => {
     try {
       const unreadNotifications = notifications?.filter(n => !n.isRead) || [];
-      
+
       // Mark each unread notification as read
       for (const notification of unreadNotifications) {
         await markAsReadMutation.mutateAsync(notification.id);
       }
-      
+
       toast({
         title: 'Success',
         description: 'All notifications marked as read',
@@ -90,36 +75,36 @@ export default function NotificationsPage() {
       });
     }
   };
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Reset to first page when searching
     setCurrentPage(1);
   };
-  
+
   // Filter notifications based on search and show/hide read
   const filteredNotifications = notifications?.filter(notification => {
     const matchesSearch = searchQuery
       ? notification.message.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
-    
+
     const matchesReadFilter = showRead ? true : !notification.isRead;
-    
+
     return matchesSearch && matchesReadFilter;
   }) || [];
-  
+
   // Sort by date (newest first)
   const sortedNotifications = [...filteredNotifications].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
-  
+
   // Calculate pagination
   const totalPages = Math.ceil(sortedNotifications.length / notificationsPerPage);
   const startIndex = (currentPage - 1) * notificationsPerPage;
   const paginatedNotifications = sortedNotifications.slice(startIndex, startIndex + notificationsPerPage);
-  
+
   const hasUnreadNotifications = notifications?.some(notification => !notification.isRead);
-  
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
@@ -135,7 +120,7 @@ export default function NotificationsPage() {
           </Button>
         )}
       </div>
-      
+
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -145,7 +130,7 @@ export default function NotificationsPage() {
                 Stay updated with patient and system alerts
               </CardDescription>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <form onSubmit={handleSearch} className="relative w-full sm:w-auto">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -157,7 +142,7 @@ export default function NotificationsPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </form>
-              
+
               <div className="flex items-center space-x-2">
                 <Switch
                   id="show-read"
@@ -226,7 +211,7 @@ export default function NotificationsPage() {
                   </div>
                 ))}
               </div>
-              
+
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-between items-center mt-6">
@@ -241,7 +226,7 @@ export default function NotificationsPage() {
                           className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                         />
                       </PaginationItem>
-                      
+
                       {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
                         const page = i + 1;
                         return (
@@ -255,13 +240,13 @@ export default function NotificationsPage() {
                           </PaginationItem>
                         );
                       })}
-                      
+
                       {totalPages > 5 && currentPage < totalPages - 2 && (
                         <PaginationItem>
                           <span className="flex h-9 w-9 items-center justify-center">...</span>
                         </PaginationItem>
                       )}
-                      
+
                       {totalPages > 5 && (
                         <PaginationItem>
                           <PaginationLink
@@ -272,7 +257,7 @@ export default function NotificationsPage() {
                           </PaginationLink>
                         </PaginationItem>
                       )}
-                      
+
                       <PaginationItem>
                         <PaginationNext 
                           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
