@@ -92,7 +92,8 @@ export default function NotificationsPage() {
       ? notification.message.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
 
-    const matchesReadFilter = showRead ? true : !notification.isRead;
+    // Show read notifications when showRead is true, unread when false
+    const matchesReadFilter = showRead ? notification.isRead : !notification.isRead;
 
     return matchesSearch && matchesReadFilter;
   }) || [];
