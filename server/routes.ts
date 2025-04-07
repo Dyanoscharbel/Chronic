@@ -712,24 +712,33 @@ console.error('----------------------------------------');
     try {
       const resultId = req.params.id;
 
-      // Trouver le résultat avant de le supprimer pour avoir les infos
-      const result = await PatientLabResult.findById(resultId);
-      if (!result) {
-        return res.status(404).json({ message: 'Résultat non trouvé' });
+      // Démarrer une transaction
+      const session = await mongoose.startSession();
+      session.startTransaction();
+
+      try {
+        // Trouver le résultat avant de le supprimer
+        const result = await PatientLabResult.findById(resultId);
+        if (!result) {
+          return res.status(404).json({ message: 'Résultat non trouvé' });
+        }
+
+        // Supprimer les notifications associées
+        await Notification.deleteMany({ labTest: result.labTest }).session(session);
+
+        // Supprimer le résultat
+        await PatientLabResult.findByIdAndDelete(resultId).session(session);
+
+        // Valider la transaction
+        await session.commitTransaction();
+        res.json({ success: true });
+      } catch (error) {
+        // En cas d'erreur, annuler la transaction
+        await session.abortTransaction();
+        throw error;
+      } finally {
+        session.endSession();
       }
-
-      // Supprimer les notifications associées
-      await Notification.deleteMany({
-        $and: [
-          { patientId: result.patient },
-          { labTest: result.labTest }
-        ]
-      });
-
-      // Supprimer le résultat
-      await PatientLabResult.findByIdAndDelete(resultId);
-
-      res.json({ success: true });
     } catch (error) {
       console.error('Error deleting lab result:', error);
       res.status(500).json({ message: 'Server error' });
