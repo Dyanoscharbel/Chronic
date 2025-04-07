@@ -204,7 +204,7 @@ export default function NotificationsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleMarkAsRead(notification.id)}
+                          onClick={() => handleMarkAsRead(notification._id)}
                           className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                         >
                           <Check className="h-4 w-4 mr-1" />
