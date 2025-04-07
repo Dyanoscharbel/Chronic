@@ -667,7 +667,7 @@ console.error('----------------------------------------');
 
       // Rechercher d'abord les patients de ce docteur
       const patients = await Patient.find({ doctor: doctor._id });
-      
+
       // Puis trouver les résultats pour ces patients
       const results = await PatientLabResult.find({
         patient: { $in: patients.map(p => p._id) }
@@ -711,7 +711,7 @@ console.error('----------------------------------------');
   apiRouter.delete('/patient-lab-results/:id', authenticate, async (req, res) => {
     try {
       const resultId = req.params.id;
-      
+
       // Trouver le résultat avant de le supprimer pour avoir les infos
       const result = await PatientLabResult.findById(resultId);
       if (!result) {
@@ -765,13 +765,14 @@ console.error('----------------------------------------');
         // Calculer l'écart par rapport à la normale
         const normalValue = (labTest.normalMax + labTest.normalMin) / 2;
         const deviation = Math.abs((resultValue - normalValue) / normalValue);
-        
+        const isAbnormal = resultValue < labTest.normalMin || resultValue > labTest.normalMax;
+
         let message = '';
         if (deviation > 0.3) {
           message = resultValue < normalValue 
             ? `ALERTE: Niveau dangereusement bas pour ${labTest.testName}: ${resultValue} ${labTest.unit}`
             : `ALERTE: Niveau dangereusement élevé pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
-        } else if (resultValue < labTest.normalMin || resultValue > labTest.normalMax) {
+        } else if (isAbnormal) {
           message = `Attention: Résultat anormal pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
         } else {
           message = `Nouveau résultat normal pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
@@ -783,10 +784,11 @@ console.error('----------------------------------------');
           doctorId: doctor._id,
           labTest: labTestId,
           message: `Patient ${patient.user.firstName} ${patient.user.lastName}: ${message}`,
+          severity: deviation > 0.3 ? 'error' : isAbnormal ? 'warning' : 'info',
           isRead: false,
           createdAt: new Date()
         });
-        
+
         await newNotification.save();
       }
 
@@ -906,7 +908,7 @@ console.error('----------------------------------------');
   apiRouter.get('/notifications', authenticate, async (req, res) => {
     try {
       const userId = req.session.user?.id;
-      
+
       // Trouver le docteur connecté
       const doctor = await Doctor.findOne({ user: userId });
       if (!doctor) {
