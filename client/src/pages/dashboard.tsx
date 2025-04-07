@@ -29,8 +29,8 @@ export default function Dashboard() {
     refetchInterval: 5000,
   });
   
-  const { data: recentAlerts, isLoading: alertsLoading } = useQuery<Alert[]>({
-    queryKey: ['/api/dashboard/recent-alerts'],
+  const { data: notificationsData, isLoading: notificationsLoading } = useQuery<{ notifications: any[] }>({
+    queryKey: ['/api/notifications'],
     refetchInterval: 5000,
   });
 
@@ -39,7 +39,7 @@ export default function Dashboard() {
     refetchInterval: 5000,
   });
   
-  if (statsLoading || appointmentsLoading || alertsLoading) {
+  if (statsLoading || appointmentsLoading || notificationsLoading) {
     return (
       <div className="flex flex-col space-y-4">
         <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
@@ -126,7 +126,7 @@ export default function Dashboard() {
       {/* Appointments and Alerts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <AppointmentsList appointments={upcomingAppointments || []} />
-        <AlertsList alerts={recentAlerts || []} />
+        <AlertsList notifications={notificationsData?.notifications?.slice(0, 5) || []} />
       </div>
       
       {/* Workflow Modal */}
