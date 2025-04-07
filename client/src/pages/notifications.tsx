@@ -49,7 +49,23 @@ export default function NotificationsPage() {
     }
   });
   
-  const handleMarkAsRead = (id: number) => {
+  const markAsReadMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest('POST', `/api/notifications/mark-read/${id}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to mark notification as read',
+        variant: 'destructive',
+      });
+    }
+  });
+
+  const handleMarkAsRead = (id: string) => {
     markAsReadMutation.mutate(id);
   };
   

@@ -943,15 +943,20 @@ console.error('----------------------------------------');
 
   apiRouter.post('/notifications/mark-read/:id', authenticate, async (req, res) => {
     try {
-      const notificationId = parseInt(req.params.id, 10);
-      const updatedNotification = await storage.markNotificationAsRead(notificationId);
+      const notificationId = req.params.id;
+      const notification = await Notification.findByIdAndUpdate(
+        notificationId,
+        { isRead: true },
+        { new: true }
+      );
 
-      if (!updatedNotification) {
+      if (!notification) {
         return res.status(404).json({ message: 'Notification not found' });
       }
 
-      res.json(updatedNotification);
+      res.json(notification);
     } catch (error) {
+      console.error('Error marking notification as read:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
