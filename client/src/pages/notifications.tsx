@@ -61,7 +61,7 @@ export default function NotificationsPage() {
   const handleMarkAllAsRead = async () => {
     try {
       await apiRequest('POST', '/api/notifications/mark-all-read', {});
-      
+
       // Refresh notifications
       await queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
 
@@ -85,7 +85,7 @@ export default function NotificationsPage() {
   };
 
   // Filter notifications based on search and show/hide read
-  const filteredNotifications = data?.notifications?.filter(notification => {
+  const filteredNotifications = data?.notifications.filter(notification => {
     const matchesSearch = searchQuery
       ? notification.message.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
