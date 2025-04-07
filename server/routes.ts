@@ -961,6 +961,29 @@ console.error('----------------------------------------');
     }
   });
 
+  apiRouter.post('/notifications/mark-all-read', authenticate, async (req, res) => {
+    try {
+      const userId = req.session.user?.id;
+
+      // Trouver le docteur connecté
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found' });
+      }
+
+      // Mettre à jour toutes les notifications du docteur
+      const result = await Notification.updateMany(
+        { doctorId: doctor._id, isRead: false },
+        { isRead: true }
+      );
+
+      res.json({ success: true, modifiedCount: result.modifiedCount });
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
   apiRouter.post('/notifications', authenticate, async (req, res) => {
     try {
       const notification = await storage.createNotification(req.body);

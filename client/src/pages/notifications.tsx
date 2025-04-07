@@ -60,12 +60,10 @@ export default function NotificationsPage() {
 
   const handleMarkAllAsRead = async () => {
     try {
-      const unreadNotifications = notifications?.filter(n => !n.isRead) || [];
-
-      // Mark each unread notification as read
-      for (const notification of unreadNotifications) {
-        await markAsReadMutation.mutateAsync(notification.id);
-      }
+      await apiRequest('POST', '/api/notifications/mark-all-read', {});
+      
+      // Refresh notifications
+      await queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
 
       toast({
         title: 'Success',
