@@ -19,18 +19,13 @@ export default function Dashboard() {
     refetchInterval: 5000, // Rafraîchit toutes les 5 secondes
   });
 
-  const { data: notificationsData } = useQuery<{ notifications: any[], criticalCount: number }>({
+  const { data: notificationsData, isLoading: notificationsLoading } = useQuery<{ notifications: any[], criticalCount: number }>({
     queryKey: ['/api/notifications'],
     refetchInterval: 5000,
   });
   
   const { data: upcomingAppointments, isLoading: appointmentsLoading } = useQuery<Appointment[]>({
     queryKey: ['/api/dashboard/upcoming-appointments'],
-    refetchInterval: 5000,
-  });
-  
-  const { data: notificationsData, isLoading: notificationsLoading } = useQuery<{ notifications: any[] }>({
-    queryKey: ['/api/notifications'],
     refetchInterval: 5000,
   });
 
