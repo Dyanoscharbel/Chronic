@@ -390,18 +390,28 @@ console.error('----------------------------------------');
         });
 
       // Set doctor if missing
-      if (!patient.doctor || !patient.doctor._id) {
-        patient.doctor = doctor;
-        await patient.save();
+      if (!patient.doctor) {
+        try {
+          patient.doctor = doctor._id;
+          await patient.save();
 
-        // Reload patient with populated doctor data
-        await patient.populate({
-          path: 'doctor',
-          populate: {
-            path: 'user',
-            select: 'firstName lastName specialty'
-          }
-        });
+          // Reload patient with populated doctor data
+          await patient.populate([
+            {
+              path: 'user',
+              select: 'firstName lastName email role'
+            },
+            {
+              path: 'doctor',
+              populate: {
+                path: 'user',
+                select: 'firstName lastName specialty'
+              }
+            }
+          ]);
+        } catch (error) {
+          console.error('Error updating doctor:', error);
+        }
       }
 
       if (!patient) {
