@@ -29,7 +29,7 @@ import { AvatarName } from '@/components/ui/avatar-name';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Loader } from '@/components/ui/loader';
 import { Appointment, Patient, Doctor } from '@/lib/types';
-import { formatDate, formatTime, getStatusColor } from '@/lib/utils';
+import { formatDate, formatTime } from '@/lib/utils';
 import { apiRequest } from '@/lib/queryClient';
 
 export default function AppointmentsPage() {
@@ -139,9 +139,9 @@ export default function AppointmentsPage() {
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle>Appointments Calendar</CardTitle>
+              <CardTitle>Calendrier des rendez-vous</CardTitle>
               <CardDescription>
-                View and manage all scheduled appointments
+                Afficher et gérer tous les rendez-vous planifiés
               </CardDescription>
             </div>
 
@@ -150,7 +150,7 @@ export default function AppointmentsPage() {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
                   type="search"
-                  placeholder="Search patients or doctors..."
+                  placeholder="Rechercher des patients ou des médecins..."
                   className="pl-8 w-full sm:w-[250px]"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -164,14 +164,14 @@ export default function AppointmentsPage() {
                   onValueChange={setFilterStatus}
                 >
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder="Filtrer par statut" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="confirmed">Confirmed</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="all">Tous les statuts</SelectItem>
+                    <SelectItem value="pending">En attente</SelectItem>
+                    <SelectItem value="confirmed">Confirmé</SelectItem>
+                    <SelectItem value="cancelled">Annulé</SelectItem>
+                    <SelectItem value="completed">Terminé</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -186,8 +186,8 @@ export default function AppointmentsPage() {
           ) : filteredAppointments.length === 0 ? (
             <div className="h-60 flex flex-col items-center justify-center text-gray-500">
               <CalendarIcon className="h-12 w-12 mb-4" />
-              <h3 className="text-lg font-medium">No appointments found</h3>
-              <p className="text-sm">Try adjusting your search or filter criteria</p>
+              <h3 className="text-lg font-medium">Aucun rendez-vous trouvé</h3>
+              <p className="text-sm">Essayez d'ajuster vos critères de recherche ou de filtrage</p>
             </div>
           ) : (
             <>
@@ -195,19 +195,17 @@ export default function AppointmentsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Date & Time</TableHead>
+                      <TableHead>Date & Heure</TableHead>
                       <TableHead>Patient</TableHead>
-                      <TableHead>Doctor</TableHead>
-                      <TableHead>Purpose</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Médecin</TableHead>
+                      <TableHead>Objet</TableHead>
+                      <TableHead>Statut</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {paginatedAppointments.map((appointment) => {
                       const patient = getPatient(appointment.patientId);
-                      const doctor = getDoctor(appointment.doctorId);
-                      const statusColors = getStatusColor(appointment.status);
                       const isUpcoming = new Date(appointment.appointmentDate) >= new Date();
                       const isPending = appointment.status === 'pending';
                       const isConfirmed = appointment.status === 'confirmed';
@@ -228,25 +226,35 @@ export default function AppointmentsPage() {
                                 />
                               </Link>
                             ) : (
-                              <span className="text-gray-500">Unknown Patient</span>
+                              <span className="text-gray-500">Patient inconnu</span>
                             )}
                           </TableCell>
                           <TableCell>
-                            {doctor ? (
+                            {appointment.doctor ? (
                               <div>
-                                <div className="font-medium">Dr. {doctor.user.firstName} {doctor.user.lastName}</div>
-                                <div className="text-gray-500 text-sm">{doctor.specialty}</div>
+                                <div className="font-medium">Dr. {appointment.doctor.user.firstName} {appointment.doctor.user.lastName}</div>
+                                <div className="text-gray-500 text-sm">{appointment.doctor.specialty}</div>
                               </div>
                             ) : (
-                              <span className="text-gray-500">Unknown Doctor</span>
+                              <span className="text-gray-500">Docteur inconnu</span>
                             )}
                           </TableCell>
                           <TableCell>
-                            {appointment.purpose || 'General consultation'}
+                            {appointment.purpose || 'Consultation générale'}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline" className={`${statusColors.bg} ${statusColors.text}`}>
-                              {appointment.doctorStatus?.charAt(0).toUpperCase() + appointment.doctorStatus?.slice(1)}
+                            <Badge variant="outline" className={
+                              appointment.doctorStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                              appointment.doctorStatus === 'confirmed' ? 'bg-green-100 text-green-800' :
+                              appointment.doctorStatus === 'cancelled' ? 'bg-red-100 text-red-800' :
+                              appointment.doctorStatus === 'completed' ? 'bg-blue-100 text-blue-800' :
+                              ''
+                            }>
+                              {appointment.doctorStatus === 'pending' ? 'En attente' :
+                               appointment.doctorStatus === 'confirmed' ? 'Confirmé' :
+                               appointment.doctorStatus === 'cancelled' ? 'Annulé' :
+                               appointment.doctorStatus === 'completed' ? 'Terminé' :
+                               appointment.doctorStatus}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-right">
@@ -260,7 +268,7 @@ export default function AppointmentsPage() {
                                     onClick={() => handleStatusChange(appointment.id, 'confirmed')}
                                   >
                                     <Check className="h-4 w-4 mr-1" />
-                                    Confirm
+                                    Confirmer
                                   </Button>
                                 )}
 
@@ -272,7 +280,7 @@ export default function AppointmentsPage() {
                                     onClick={() => handleStatusChange(appointment.id, 'cancelled')}
                                   >
                                     <X className="h-4 w-4 mr-1" />
-                                    Cancel
+                                    Annuler
                                   </Button>
                                 )}
 
@@ -283,7 +291,7 @@ export default function AppointmentsPage() {
                                     onClick={() => handleStatusChange(appointment.id, 'completed')}
                                   >
                                     <Check className="h-4 w-4 mr-1" />
-                                    Complete
+                                    Terminer
                                   </Button>
                                 )}
                               </div>
@@ -300,7 +308,7 @@ export default function AppointmentsPage() {
               {totalPages > 1 && (
                 <div className="flex justify-between items-center mt-4">
                   <div className="text-sm text-gray-500">
-                    Showing {startIndex + 1} to {Math.min(startIndex + appointmentsPerPage, filteredAppointments.length)} of {filteredAppointments.length} appointments
+                    Affichage de {startIndex + 1} à {Math.min(startIndex + appointmentsPerPage, filteredAppointments.length)} sur {filteredAppointments.length} rendez-vous
                   </div>
                   <Pagination>
                     <PaginationContent>
