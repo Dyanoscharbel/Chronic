@@ -962,7 +962,7 @@ console.error('----------------------------------------');
       // Récupérer les notifications pour ce docteur
       const notifications = await Notification.find({ doctorId: doctor._id })
         .populate({
-          path: 'patientId,
+          path: 'patientId',
           populate: {
             path: 'user',
             select: 'firstName lastName'
