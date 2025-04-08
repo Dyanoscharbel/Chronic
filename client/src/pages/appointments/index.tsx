@@ -1,47 +1,20 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'wouter';
-import { useToast } from '@/hooks/use-toast';
-import { 
-  Plus, Search, Filter, Calendar, Check, X, Trash2,
-  Calendar as CalendarIcon, FileText 
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AvatarName } from '@/components/ui/avatar-name';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader } from '@/components/ui/loader';
+import { formatDate, formatTime, apiRequest } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 import { Appointment, Patient, Doctor } from '@/lib/types';
-import { formatDate, formatTime } from '@/lib/utils';
-import { apiRequest } from '@/lib/queryClient';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import { Plus } from 'lucide-react';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { CalendarIcon } from 'lucide-react';
 
 
 export default function AppointmentsPage() {
@@ -52,112 +25,43 @@ export default function AppointmentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const appointmentsPerPage = 10;
 
-  const { data: appointments, isLoading: appointmentsLoading } = useQuery<Appointment[]>({
+  const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
     queryKey: ['/api/appointments'],
   });
 
-  const { data: patients } = useQuery<Patient[]>({
+  const { data: patients = [] } = useQuery({
     queryKey: ['/api/patients'],
   });
 
-  const { data: doctors } = useQuery<Doctor[]>({
+  const { data: doctors = [] } = useQuery({
     queryKey: ['/api/doctors'],
   });
 
-  const getPatient = (patientId: number) => {
-    return patients?.find(p => p.id === patientId);
+  const getPatient = (patientId: string) => {
+    return patients?.find(p => p._id === patientId);
   };
 
-  const getDoctor = (doctorId: number) => {
-    return doctors?.find(d => d.id === doctorId);
+  const getDoctor = (doctorId: string) => {
+    return doctors?.find(d => d._id === doctorId);
   };
 
-  // Update appointment status mutation
-  const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: number, status: string }) => {
-      return apiRequest('PUT', `/api/appointments/${id}/status`, { status });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
-      toast({
-        title: 'Status updated',
-        description: 'The appointment status has been updated successfully',
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to update status',
-        variant: 'destructive',
-      });
-    }
+  const filteredAppointments = appointments.filter((appointment: any) => {
+    const patient = getPatient(appointment.patient);
+    const doctor = getDoctor(appointment.doctor);
+    const matchesSearch = searchQuery.trim() === "" || (patient?.user?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         patient?.user?.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (doctor && (doctor.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                     doctor.user.lastName.toLowerCase().includes(searchQuery.toLowerCase()))));
+    const matchesStatus = filterStatus === 'all' || appointment.doctorStatus === filterStatus;
+    return matchesSearch && matchesStatus;
   });
 
-  const handleStatusChange = (id: number, status: string) => {
-    updateStatusMutation.mutate({ id, status });
-  };
-
-  // Delete appointment mutation
-  const deleteAppointmentMutation = useMutation({
-    mutationFn: async (id: string) => {
-      return await apiRequest('DELETE', `/api/appointments/${id}`);
-    },
-    onSuccess: () => {
-      // Rafraîchir les données
-      queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/upcoming-appointments'] });
-      
-      toast({
-        title: 'Succès',
-        description: 'Le rendez-vous a été supprimé avec succès',
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: 'Erreur',
-        description: error instanceof Error ? error.message : 'Échec de la suppression du rendez-vous',
-        variant: 'destructive',
-      });
-    },
-  });
-
-
-  // Filter appointments based on search and filter
-  const filteredAppointments = appointments?.filter(appointment => {
-    const patient = getPatient(appointment.patientId);
-    const doctor = getDoctor(appointment.doctorId);
-
-    const matchesSearch = searchQuery ? (
-      patient && (
-        patient.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        patient.user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
-      ) ||
-      doctor && (
-        doctor.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doctor.user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
-      ) ||
-      appointment.purpose?.toLowerCase().includes(searchQuery.toLowerCase())
-    ) : true;
-
-    const matchesFilter = filterStatus === 'all' ? true : appointment.status === filterStatus;
-
-    return matchesSearch && matchesFilter;
-  }) || [];
-
-  // Sort by date (newest first)
-  const sortedAppointments = [...filteredAppointments].sort(
-    (a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime()
-  );
-
-  // Calculate pagination
-  const totalPages = Math.ceil(sortedAppointments.length / appointmentsPerPage);
+  const totalPages = Math.ceil(filteredAppointments.length / appointmentsPerPage);
   const startIndex = (currentPage - 1) * appointmentsPerPage;
-  const paginatedAppointments = sortedAppointments.slice(startIndex, startIndex + appointmentsPerPage);
+  const paginatedAppointments = filteredAppointments.slice(startIndex, startIndex + appointmentsPerPage);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Reset to first page when searching
     setCurrentPage(1);
   };
 
@@ -185,7 +89,6 @@ export default function AppointmentsPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <form onSubmit={handleSearch} className="relative w-full sm:w-auto">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
                   type="search"
                   placeholder="Rechercher des patients ou des médecins..."
@@ -195,24 +98,21 @@ export default function AppointmentsPage() {
                 />
               </form>
 
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-gray-500" />
-                <Select
-                  value={filterStatus}
-                  onValueChange={setFilterStatus}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filtrer par statut" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous les statuts</SelectItem>
-                    <SelectItem value="pending">En attente</SelectItem>
-                    <SelectItem value="confirmed">Confirmé</SelectItem>
-                    <SelectItem value="cancelled">Annulé</SelectItem>
-                    <SelectItem value="completed">Terminé</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select
+                value={filterStatus}
+                onValueChange={setFilterStatus}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filtrer par statut" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les statuts</SelectItem>
+                  <SelectItem value="pending">En attente</SelectItem>
+                  <SelectItem value="confirmed">Confirmé</SelectItem>
+                  <SelectItem value="cancelled">Annulé</SelectItem>
+                  <SelectItem value="completed">Terminé</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardHeader>
@@ -238,25 +138,22 @@ export default function AppointmentsPage() {
                       <TableHead>Médecin</TableHead>
                       <TableHead>Objet</TableHead>
                       <TableHead>Statut</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedAppointments.map((appointment) => {
-                      const patient = getPatient(appointment.patientId);
-                      const isUpcoming = new Date(appointment.appointmentDate) >= new Date();
-                      const isPending = appointment.status === 'pending';
-                      const isConfirmed = appointment.status === 'confirmed';
+                    {paginatedAppointments.map((appointment: any) => {
+                      const patient = getPatient(appointment.patient);
+                      const doctor = getDoctor(appointment.doctor);
 
                       return (
-                        <TableRow key={appointment.id}>
+                        <TableRow key={appointment._id}>
                           <TableCell>
                             <div className="font-medium">{formatDate(appointment.appointmentDate)}</div>
                             <div className="text-gray-500 text-sm">{formatTime(appointment.appointmentDate)}</div>
                           </TableCell>
                           <TableCell>
-                            {patient ? (
-                              <Link href={`/patients/${patient.id}`}>
+                            {patient?.user ? (
+                              <Link href={`/patients/${patient._id}`}>
                                 <AvatarName
                                   firstName={patient.user.firstName}
                                   lastName={patient.user.lastName}
@@ -268,13 +165,13 @@ export default function AppointmentsPage() {
                             )}
                           </TableCell>
                           <TableCell>
-                            {appointment.doctor ? (
+                            {doctor?.user ? (
                               <div>
-                                <div className="font-medium">Dr. {appointment.doctor.user.firstName} {appointment.doctor.user.lastName}</div>
-                                <div className="text-gray-500 text-sm">{appointment.doctor.specialty}</div>
+                                <div className="font-medium">Dr. {doctor.user.firstName} {doctor.user.lastName}</div>
+                                <div className="text-gray-500 text-sm">{doctor.specialty}</div>
                               </div>
                             ) : (
-                              <span className="text-gray-500">Docteur inconnu</span>
+                              <span className="text-gray-500">Médecin inconnu</span>
                             )}
                           </TableCell>
                           <TableCell>
@@ -295,73 +192,6 @@ export default function AppointmentsPage() {
                                appointment.doctorStatus}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              {isUpcoming && (
-                                <>
-                                  {isPending && (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                      onClick={() => handleStatusChange(appointment.id, 'confirmed')}
-                                    >
-                                      <Check className="h-4 w-4 mr-1" />
-                                      Confirmer
-                                    </Button>
-                                  )}
-
-                                  {(isPending || isConfirmed) && (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                      onClick={() => handleStatusChange(appointment.id, 'cancelled')}
-                                    >
-                                      <X className="h-4 w-4 mr-1" />
-                                      Annuler
-                                    </Button>
-                                  )}
-
-                                  {isConfirmed && !isUpcoming && (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => handleStatusChange(appointment.id, 'completed')}
-                                    >
-                                      <Check className="h-4 w-4 mr-1" />
-                                      Terminer
-                                    </Button>
-                                  )}
-                                </>
-                              )}
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button variant="destructive" size="sm">
-                                    <Trash2 className="h-4 w-4 mr-1" />
-                                    Supprimer
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Êtes-vous sûr de vouloir supprimer ce rendez-vous ? Cette action ne peut pas être annulée.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Annuler</AlertDialogCancel>
-                                    <AlertDialogAction 
-                                      onClick={() => deleteAppointmentMutation.mutate(appointment._id)}
-                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                    >
-                                      Supprimer
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          </TableCell>
                         </TableRow>
                       );
                     })}
@@ -378,7 +208,7 @@ export default function AppointmentsPage() {
                   <Pagination>
                     <PaginationContent>
                       <PaginationItem>
-                        <PaginationPrevious 
+                        <PaginationPrevious
                           onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                           className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                         />
@@ -416,7 +246,7 @@ export default function AppointmentsPage() {
                       )}
 
                       <PaginationItem>
-                        <PaginationNext 
+                        <PaginationNext
                           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                           className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
                         />
