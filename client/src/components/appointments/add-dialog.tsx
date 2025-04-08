@@ -121,7 +121,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                     <FormLabel>Patient</FormLabel>
                     <Select 
                       onValueChange={field.onChange}
-                      defaultValue=""
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
