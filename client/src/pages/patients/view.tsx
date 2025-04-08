@@ -61,7 +61,6 @@ export default function PatientView({ id }: PatientViewProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const patientId = id?.toString();
 
   // Dialog states
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
@@ -69,14 +68,14 @@ export default function PatientView({ id }: PatientViewProps) {
 
   // Query for patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
-    queryKey: [`/api/patients/${patientId}`],
-    enabled: !!patientId,
+    queryKey: [`/api/patients/${id}`],
+    enabled: !!id,
     queryFn: async () => {
-      if (!patientId || patientId === 'undefined') {
+      if (!id || id === 'undefined') {
         setLocation('/patients');
         throw new Error('Invalid patient ID');
       }
-      const response = await apiRequest('GET', `/api/patients/${patientId}`);
+      const response = await apiRequest('GET', `/api/patients/${id}`);
       return response;
     },
   });
@@ -91,7 +90,7 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  if (!patient || !patientId) {
+  if (!patient || !id) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
@@ -171,7 +170,7 @@ export default function PatientView({ id }: PatientViewProps) {
       return apiRequest('POST', '/api/patient-lab-results', newResult);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/patient-lab-results/patient/${patientId}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/patient-lab-results/patient/${id}`] });
       toast({
         title: 'Lab result added',
         description: 'Lab result has been added successfully',
@@ -194,7 +193,7 @@ export default function PatientView({ id }: PatientViewProps) {
       return apiRequest('POST', '/api/appointments', newAppointment);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/appointments/patient/${patientId}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/appointments/patient/${id}`] });
       toast({
         title: 'Appointment scheduled',
         description: 'The appointment has been scheduled successfully',
