@@ -78,9 +78,7 @@ export default function PatientView({ id }: PatientViewProps) {
         setLocation('/patients');
         throw new Error('Invalid patient ID');
       }
-      console.log('Fetching patient data for ID:', patientId); // Debug log
       const response = await apiRequest('GET', `/api/patients/${patientId}`);
-      console.log('Patient data received:', response); // Debug log
       return response;
     },
   });
@@ -950,3 +948,4 @@ export default function PatientView({ id }: PatientViewProps) {
       status: 'pending'
     });
   };
+}
