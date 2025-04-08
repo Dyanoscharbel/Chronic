@@ -198,7 +198,7 @@ export default function PatientView({ id }: PatientViewProps) {
   };
 
   // Loading state for initial data fetch
-  if (patientLoading || !patientId) {
+  if (patientLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh]">
         <Loader size="lg" />
@@ -207,7 +207,7 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  if (!patient) {
+  if (!patient || !patientId) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
