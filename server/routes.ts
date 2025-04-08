@@ -390,8 +390,8 @@ console.error('----------------------------------------');
         });
 
       // Set doctor if missing
-      if (!patient.doctor) {
-        patient.doctor = doctor._id;
+      if (!patient.doctor || !patient.doctor._id) {
+        patient.doctor = doctor;
         await patient.save();
 
         // Reload patient with populated doctor data
