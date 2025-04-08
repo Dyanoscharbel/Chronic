@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -82,7 +81,9 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
         title: 'Success',
         description: 'Patient has been created successfully',
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/patients'] });
+      // Invalider les requêtes des patients et du dashboard
+      queryClient.invalidateQueries(['/api/patients']);
+      queryClient.invalidateQueries(['/api/dashboard/stats']);
       onClose();
     },
     onError: (error) => {
@@ -104,7 +105,8 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
         description: 'Patient updated successfully',
       });
       queryClient.invalidateQueries({ queryKey: [`/api/patients/${patient?._id}`] });
-      queryClient.invalidateQueries({ queryKey: ['/api/patients'] });
+      queryClient.invalidateQueries(['/api/patients']);
+      queryClient.invalidateQueries(['/api/dashboard/stats']);
       onClose();
     },
     onError: (error) => {
