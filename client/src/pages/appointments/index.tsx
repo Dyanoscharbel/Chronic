@@ -319,10 +319,9 @@ export default function AppointmentsPage() {
                                   )}
                                 </>
                               )}
-                              <Button
-                                variant="outline"
+                              <Button 
+                                variant="destructive" 
                                 size="sm"
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 onClick={() => {
                                   if (confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) {
                                     deleteAppointmentMutation.mutate(appointment.id);
