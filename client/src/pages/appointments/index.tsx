@@ -108,7 +108,7 @@ export default function AppointmentsPage() {
       queryClient.refetchQueries({ queryKey: ['/api/appointments'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/upcoming-appointments'] });
-      
+
       toast({
         title: 'Rendez-vous supprimé',
         description: 'Le rendez-vous a été supprimé avec succès',
