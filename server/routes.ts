@@ -869,28 +869,88 @@ console.error('----------------------------------------');
   apiRouter.post('/appointments', authenticate, async (req, res) => {
     try {
       const { patientId, appointmentDate, purpose } = req.body;
-      const userId = req.session.user?.id;
-
-      // Trouver le docteur connecté
-      const doctor = await Doctor.findOne({ user: userId });
-      if (!doctor) {
-        return res.status(403).json({ message: 'Doctor not found' });
+      
+      // Validation des données
+      if (!patientId || !appointmentDate || !purpose) {
+        return res.status(400).json({ 
+          message: 'Données manquantes',
+          details: {
+            patientId: !patientId ? 'ID du patient requis' : null,
+            appointmentDate: !appointmentDate ? 'Date du rendez-vous requise' : null,
+            purpose: !purpose ? 'Motif du rendez-vous requis' : null
+          }
+        });
       }
 
+      const userId = req.session.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Utilisateur non authentifié' });
+      }
+
+      // Vérifier le docteur
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        console.error('Doctor not found for user:', userId);
+        return res.status(403).json({ message: 'Médecin non trouvé' });
+      }
+
+      // Vérifier le patient
+      const patient = await Patient.findById(patientId);
+      if (!patient) {
+        console.error('Patient not found:', patientId);
+        return res.status(404).json({ message: 'Patient non trouvé' });
+      }
+
+      // Vérifier si la date est dans le passé
+      const appointmentDateTime = new Date(appointmentDate);
+      if (appointmentDateTime < new Date()) {
+        return res.status(400).json({ message: 'La date du rendez-vous ne peut pas être dans le passé' });
+      }
+
+      // Créer le rendez-vous
       const newAppointment = new Appointment({
         patient: patientId,
         doctor: doctor._id,
-        appointmentDate,
+        appointmentDate: appointmentDateTime,
         purpose,
-        status: 'pending'
+        doctorStatus: 'pending',
+        patientStatus: 'pending'
       });
 
       await newAppointment.save();
 
-      res.status(201).json(newAppointment);
+      // Récupérer le rendez-vous avec les informations complètes
+      const savedAppointment = await Appointment.findById(newAppointment._id)
+        .populate({
+          path: 'patient',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName email'
+          }
+        })
+        .populate({
+          path: 'doctor',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName specialty'
+          }
+        });
+
+      console.log('Appointment created successfully:', savedAppointment._id);
+      res.status(201).json(savedAppointment);
+
     } catch (error) {
       console.error('Error creating appointment:', error);
-      res.status(500).json({ message: 'Server error' });
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ 
+          message: 'Erreur de validation',
+          details: Object.keys(error.errors).reduce((acc, key) => {
+            acc[key] = error.errors[key].message;
+            return acc;
+          }, {})
+        });
+      }
+      res.status(500).json({ message: 'Erreur serveur lors de la création du rendez-vous' });
     }
   });
 
