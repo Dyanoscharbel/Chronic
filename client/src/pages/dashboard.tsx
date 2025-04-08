@@ -24,9 +24,11 @@ export default function Dashboard() {
     refetchInterval: 5000,
   });
   
-  const { data: upcomingAppointments, isLoading: appointmentsLoading } = useQuery<Appointment[]>({
+  const { data: upcomingAppointments, isLoading: appointmentsLoading, error: appointmentsError } = useQuery<Appointment[]>({
     queryKey: ['/api/dashboard/upcoming-appointments'],
     refetchInterval: 5000,
+    onSuccess: (data) => console.log("Appointments fetched successfully:", data),
+    onError: (error) => console.error("Error fetching appointments:", error)
   });
 
   const { data: labResults } = useQuery<any[]>({

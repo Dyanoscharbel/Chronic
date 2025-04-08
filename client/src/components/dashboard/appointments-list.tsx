@@ -10,9 +10,15 @@ interface AppointmentsListProps {
 }
 
 export function AppointmentsList({ appointments }: AppointmentsListProps) {
-  console.log("Appointments received:", appointments); // Added for debugging
+  console.log("Raw appointments received:", appointments);
+  console.log("Appointments type:", appointments ? typeof appointments : 'undefined');
+  
+  if (!Array.isArray(appointments)) {
+    console.error("Appointments is not an array:", appointments);
+    return null;
+  }
 
-  const upcomingAppointments = appointments?.filter(apt => {
+  const upcomingAppointments = appointments.filter(apt => {
     const appointmentDate = new Date(apt.appointmentDate);
     const now = new Date();
     return appointmentDate > now && apt.doctorStatus !== 'cancelled';

@@ -838,7 +838,7 @@ console.error('----------------------------------------');
 
       // Log for debugging with complete data
       console.log('Appointments found:', JSON.stringify(appointments, null, 2));
-      
+
       // Check and update status for past appointments
       const now = new Date();
       const updatedAppointments = await Promise.all(appointments.map(async (appointment) => {
@@ -1327,8 +1327,14 @@ console.error('----------------------------------------');
         return res.status(403).json({ message: 'Doctor not found' });
       }
 
+      console.log('Fetching appointments for doctor:', doctor._id);
+
       // Get appointments for this doctor only
-      const appointments = await Appointment.find({ doctor: doctor._id, doctorStatus: { $ne: 'cancelled' } })
+      const appointments = await Appointment.find({ 
+        doctor: doctor._id,
+        doctorStatus: { $ne: 'cancelled' },
+        appointmentDate: { $gt: new Date() }
+      })
         .populate({
           path: 'patient',
           populate: {
