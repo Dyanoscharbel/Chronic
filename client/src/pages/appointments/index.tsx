@@ -353,7 +353,7 @@ export default function AppointmentsPage() {
                                   <AlertDialogFooter>
                                     <AlertDialogCancel>Annuler</AlertDialogCancel>
                                     <AlertDialogAction 
-                                      onClick={() => deleteAppointmentMutation.mutate(appointment.id)}
+                                      onClick={() => deleteAppointmentMutation.mutate(appointment._id)}
                                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                     >
                                       Supprimer
