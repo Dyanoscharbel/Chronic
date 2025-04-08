@@ -76,10 +76,10 @@ export default function PatientView({ id }: PatientViewProps) {
         throw new Error('Invalid patient ID');
       }
       const response = await apiRequest('GET', `/api/patients/${id}`);
-      if (!response || !response._id) {
+      if (!response) {
         throw new Error('Patient data not found');
       }
-      return response;
+      return response.data || response;
     },
   });
 
