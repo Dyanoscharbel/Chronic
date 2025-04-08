@@ -269,9 +269,8 @@ export default function AppointmentsPage() {
                         </TableRow>
                       );
                     })}
-                          <TableCell>
-                            <div className="font-medium">{formatDate(appointment.appointmentDate)}</div>
-                            <div className="text-gray-500 text-sm">{formatTime(appointment.appointmentDate)}</div>
+                  </TableBody>
+                </Table>
                           </TableCell>
                           <TableCell>
                             {patient ? (
