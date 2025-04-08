@@ -68,6 +68,23 @@ export default function PatientView({ id }: PatientViewProps) {
   // Dialog states
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
+
+  // Fetch patient data
+  const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
+    queryKey: [`/api/patients/${patientId}`],
+    enabled: !!patientId && patientId !== 'undefined',
+    queryFn: async () => {
+      if (!patientId || patientId === 'undefined') {
+        setLocation('/patients');
+        throw new Error('Invalid patient ID');
+      }
+      console.log('Fetching patient data for ID:', patientId); // Debug log
+      const response = await apiRequest('GET', `/api/patients/${patientId}`);
+      console.log('Patient data received:', response); // Debug log
+      return response;
+    },
+  });
+
   // Si les données sont en cours de chargement, afficher un loader
   if (patientLoading) {
     return (
