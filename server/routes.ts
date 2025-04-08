@@ -698,10 +698,20 @@ console.error('----------------------------------------');
 
   apiRouter.get('/patient-lab-results/patient/:patientId', authenticate, async (req, res) => {
     try {
-      const patientId = parseInt(req.params.patientId, 10);
-      const results = await storage.getPatientLabResultsByPatientId(patientId);
+      const patientId = req.params.patientId;
+      const results = await PatientLabResult.find({ patient: patientId })
+        .populate('labTest')
+        .populate({
+          path: 'doctor',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName'
+          }
+        })
+        .sort({ resultDate: -1 });
       res.json(results);
     } catch (error) {
+      console.error('Error fetching patient lab results:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
