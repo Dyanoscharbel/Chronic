@@ -44,6 +44,13 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
       purpose: '',
     },
   });
+
+  // Reset form when dialog is closed
+  useEffect(() => {
+    if (!isOpen) {
+      form.reset();
+    }
+  }, [isOpen, form]);
   
   const createAppointmentMutation = useMutation({
     mutationFn: async (data: AppointmentFormData) => {
