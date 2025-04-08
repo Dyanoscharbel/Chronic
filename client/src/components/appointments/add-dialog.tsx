@@ -115,8 +115,12 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   <FormItem>
                     <FormLabel>Patient</FormLabel>
                     <Select 
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        console.log("Selected patient ID:", value);
+                        field.onChange(value);
+                      }}
                       value={field.value}
+                      defaultValue=""
                     >
                       <FormControl>
                         <SelectTrigger>
