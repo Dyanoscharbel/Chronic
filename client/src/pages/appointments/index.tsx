@@ -268,10 +268,7 @@ export default function AppointmentsPage() {
                           </TableCell>
                         </TableRow>
                       );
-                    })} === 'confirmed';
-
-                      return (
-                        <TableRow key={appointment.id}>
+                    })}
                           <TableCell>
                             <div className="font-medium">{formatDate(appointment.appointmentDate)}</div>
                             <div className="text-gray-500 text-sm">{formatTime(appointment.appointmentDate)}</div>
