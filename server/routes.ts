@@ -835,7 +835,11 @@ console.error('----------------------------------------');
             select: 'firstName lastName specialty'
           }
         })
+        .lean()
         .sort({ appointmentDate: 1 });
+
+      // Log for debugging
+      console.log('Appointments found:', appointments);
 
       // Check and update status for past appointments
       const now = new Date();
