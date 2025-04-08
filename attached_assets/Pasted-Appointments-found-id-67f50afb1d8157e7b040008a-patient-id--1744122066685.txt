@@ -1,0 +1,88 @@
+Appointments found: [
+  {
+    "_id": "67f50afb1d8157e7b040008a",
+    "patient": {
+      "_id": "67f40af2bf545f6b024e3fb0",
+      "user": {
+        "_id": "67f40af2bf545f6b024e3fad",
+        "firstName": "JOHN",
+        "lastName": "Doe",
+        "email": "pio@gmail.com"
+      },
+      "doctor": "67efcd42a3e5e42ab1682b55",
+      "birthDate": "2025-04-07T00:00:00.000Z",
+      "gender": "M",
+      "address": "uhjij",
+      "phone": "23444",
+      "ckdStage": "Stage 3A",
+      "createdAt": "2025-04-07T17:27:14.345Z",
+      "__v": 0
+    },
+    "doctor": {
+      "_id": "67efcd42a3e5e42ab1682b55",
+      "user": {
+        "_id": "67efcd42a3e5e42ab1682b53",
+        "firstName": "Charbel",
+        "lastName": "SANNI"
+      },
+      "specialty": "",
+      "hospital": "",
+      "__v": 0
+    },
+    "appointmentDate": "2025-04-08T14:00:00.000Z",
+    "purpose": "kl",
+    "doctorStatus": "pending",
+    "patientStatus": "pending",
+    "__v": 0
+  },
+  {
+    "_id": "67f5282e46e3669a3a795ef9",
+    "patient": {
+      "_id": "67f40af2bf545f6b024e3fb0",
+      "user": {
+        "_id": "67f40af2bf545f6b024e3fad",
+        "firstName": "JOHN",
+        "lastName": "Doe",
+        "email": "pio@gmail.com"
+      },
+      "doctor": "67efcd42a3e5e42ab1682b55",
+      "birthDate": "2025-04-07T00:00:00.000Z",
+      "gender": "M",
+      "address": "uhjij",
+      "phone": "23444",
+      "ckdStage": "Stage 3A",
+      "createdAt": "2025-04-07T17:27:14.345Z",
+      "__v": 0
+    },
+    "doctor": {
+      "_id": "67efcd42a3e5e42ab1682b55",
+      "user": {
+        "_id": "67efcd42a3e5e42ab1682b53",
+        "firstName": "Charbel",
+        "lastName": "SANNI"
+      },
+      "specialty": "",
+      "hospital": "",
+      "__v": 0
+    },
+    "appointmentDate": "2025-04-08T21:00:00.000Z",
+    "purpose": "rrr",
+    "doctorStatus": "pending",
+    "patientStatus": "pending",
+    "__v": 0
+  }
+]
+node:_http_outgoing:655
+    throw new ERR_HTTP_HEADERS_SENT('set');
+          ^
+
+Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    at ServerResponse.setHeader (node:_http_outgoing:655:11)
+    at ServerResponse.header (/home/runner/workspace/node_modules/express/lib/response.js:794:10)
+    at ServerResponse.send (/home/runner/workspace/node_modules/express/lib/response.js:174:12)
+    at ServerResponse.json (/home/runner/workspace/node_modules/express/lib/response.js:278:15)
+    at ServerResponse.res.json (/home/runner/workspace/server/index.ts:18:28)
+    at <anonymous> (/home/runner/workspace/server/routes.ts:860:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  code: 'ERR_HTTP_HEADERS_SENT'
+}
