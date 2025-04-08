@@ -894,35 +894,6 @@ console.error('----------------------------------------');
     }
   });
 
-  apiRouter.delete('/appointments/:id', authenticate, async (req, res) => {
-    try {
-      const appointmentId = req.params.id;
-      const userId = req.session.user?.id;
-
-      // Vérifier que le docteur est autorisé
-      const doctor = await Doctor.findOne({ user: userId });
-      if (!doctor) {
-        return res.status(403).json({ message: 'Not authorized' });
-      }
-
-      const appointment = await Appointment.findById(appointmentId);
-      if (!appointment) {
-        return res.status(404).json({ message: 'Appointment not found' });
-      }
-
-      // Vérifier que le docteur est bien celui qui a créé le rendez-vous
-      if (!appointment.doctor.equals(doctor._id)) {
-        return res.status(403).json({ message: 'Not authorized to delete this appointment' });
-      }
-
-      await Appointment.findByIdAndDelete(appointmentId);
-      res.json({ success: true });
-    } catch (error) {
-      console.error('Error deleting appointment:', error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
-
   apiRouter.put('/appointments/:id/status', authenticate, async (req, res) => {
     try {
       const appointmentId = req.params.id;

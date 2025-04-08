@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { 
-  Plus, Search, Filter, Calendar, Check, X, Trash2,
+  Plus, Search, Filter, Calendar, Check, X, 
   Calendar as CalendarIcon, FileText 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -83,57 +83,6 @@ export default function AppointmentsPage() {
 
   const handleStatusChange = (id: number, status: string) => {
     updateStatusMutation.mutate({ id, status });
-  };
-
-  // Delete doctor mutation
-  const deleteDoctorMutation = useMutation({
-    mutationFn: async (doctorId: number) => {
-      return apiRequest('DELETE', `/api/doctors/${doctorId}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/doctors'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/appointments'] }); //Invalidate appointments as well
-      toast({
-        title: 'Doctor deleted',
-        description: 'The doctor has been deleted successfully',
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to delete doctor',
-        variant: 'destructive',
-      });
-    }
-  });
-
-  const handleDeleteDoctor = (doctorId: number) => {
-    deleteDoctorMutation.mutate(doctorId);
-  };
-
-  // Delete appointment mutation
-  const deleteAppointmentMutation = useMutation({
-    mutationFn: async (appointmentId: string) => {
-      return apiRequest('DELETE', `/api/appointments/${appointmentId}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
-      toast({
-        title: 'Rendez-vous supprimé',
-        description: 'Le rendez-vous a été supprimé avec succès',
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: 'Erreur',
-        description: error instanceof Error ? error.message : 'Erreur lors de la suppression du rendez-vous',
-        variant: 'destructive',
-      });
-    }
-  });
-
-  const handleDeleteAppointment = (appointmentId: string) => {
-    deleteAppointmentMutation.mutate(appointmentId);
   };
 
   // Filter appointments based on search and filter
@@ -260,7 +209,6 @@ export default function AppointmentsPage() {
                       const isUpcoming = new Date(appointment.appointmentDate) >= new Date();
                       const isPending = appointment.status === 'pending';
                       const isConfirmed = appointment.status === 'confirmed';
-                      const doctor = getDoctor(appointment.doctorId);
 
                       return (
                         <TableRow key={appointment.id}>
@@ -282,10 +230,10 @@ export default function AppointmentsPage() {
                             )}
                           </TableCell>
                           <TableCell>
-                            {doctor ? (
+                            {appointment.doctor ? (
                               <div>
-                                <div className="font-medium">Dr. {doctor.user.firstName} {doctor.user.lastName}</div>
-                                <div className="text-gray-500 text-sm">{doctor.specialty}</div>
+                                <div className="font-medium">Dr. {appointment.doctor.user.firstName} {appointment.doctor.user.lastName}</div>
+                                <div className="text-gray-500 text-sm">{appointment.doctor.specialty}</div>
                               </div>
                             ) : (
                               <span className="text-gray-500">Docteur inconnu</span>
@@ -346,26 +294,6 @@ export default function AppointmentsPage() {
                                     Terminer
                                   </Button>
                                 )}
-                                {doctor && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                    onClick={() => handleDeleteDoctor(doctor.id)}
-                                  >
-                                    <Trash2 className="h-4 w-4 mr-1" />
-                                    Supprimer Docteur
-                                  </Button>
-                                )}
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                    onClick={() => handleDeleteAppointment(appointment.id.toString())}
-                                  >
-                                    <Trash2 className="h-4 w-4 mr-1" />
-                                    Supprimer RDV
-                                  </Button>
                               </div>
                             )}
                           </TableCell>
