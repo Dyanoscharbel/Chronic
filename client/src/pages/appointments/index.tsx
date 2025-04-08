@@ -111,6 +111,30 @@ export default function AppointmentsPage() {
     deleteDoctorMutation.mutate(doctorId);
   };
 
+  // Delete appointment mutation
+  const deleteAppointmentMutation = useMutation({
+    mutationFn: async (appointmentId: string) => {
+      return apiRequest('DELETE', `/api/appointments/${appointmentId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
+      toast({
+        title: 'Rendez-vous supprimé',
+        description: 'Le rendez-vous a été supprimé avec succès',
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: 'Erreur',
+        description: error instanceof Error ? error.message : 'Erreur lors de la suppression du rendez-vous',
+        variant: 'destructive',
+      });
+    }
+  });
+
+  const handleDeleteAppointment = (appointmentId: string) => {
+    deleteAppointmentMutation.mutate(appointmentId);
+  };
 
   // Filter appointments based on search and filter
   const filteredAppointments = appointments?.filter(appointment => {
@@ -330,9 +354,18 @@ export default function AppointmentsPage() {
                                     onClick={() => handleDeleteDoctor(doctor.id)}
                                   >
                                     <Trash2 className="h-4 w-4 mr-1" />
-                                    Supprimer
+                                    Supprimer Docteur
                                   </Button>
                                 )}
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={() => handleDeleteAppointment(appointment.id.toString())}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    Supprimer RDV
+                                  </Button>
                               </div>
                             )}
                           </TableCell>
