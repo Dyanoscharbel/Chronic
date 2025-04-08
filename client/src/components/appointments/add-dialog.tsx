@@ -47,7 +47,12 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
   // Reset form when dialog is closed
   useEffect(() => {
     if (!isOpen) {
-      form.reset();
+      form.reset({
+        patientId: '',
+        appointmentDate: new Date().toISOString().split('T')[0],
+        appointmentTime: '09:00',
+        purpose: ''
+      });
     }
   }, [isOpen, form]);
 
@@ -115,11 +120,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   <FormItem>
                     <FormLabel>Patient</FormLabel>
                     <Select 
-                      onValueChange={(value) => {
-                        console.log("Selected patient ID:", value);
-                        field.onChange(value);
-                      }}
-                      value={field.value}
+                      onValueChange={field.onChange}
                       defaultValue=""
                     >
                       <FormControl>
