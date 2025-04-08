@@ -58,12 +58,16 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
 
   const createAppointmentMutation = useMutation({
     mutationFn: async (data: AppointmentFormData) => {
+      if (!data.patientId || !data.appointmentDate || !data.appointmentTime || !data.purpose) {
+        throw new Error('Veuillez remplir tous les champs obligatoires');
+      }
+
       const dateTime = new Date(`${data.appointmentDate}T${data.appointmentTime}`);
 
       return apiRequest('POST', '/api/appointments', {
         patientId: data.patientId,
         appointmentDate: dateTime.toISOString(),
-        purpose: data.purpose
+        purpose: data.purpose || 'Consultation générale'
       });
     },
     onSuccess: () => {
