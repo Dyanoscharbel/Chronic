@@ -72,12 +72,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
         throw new Error('Veuillez indiquer le motif du rendez-vous');
       }
 
-      console.log('Données du formulaire:', {
-        patientId: data.patientId,
-        date: data.appointmentDate,
-        time: data.appointmentTime,
-        purpose: data.purpose
-      });
+      console.log('Patient sélectionné:', data.patientId);
 
       const dateTime = new Date(`${data.appointmentDate}T${data.appointmentTime}`);
       
@@ -86,9 +81,9 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
         throw new Error('La date du rendez-vous ne peut pas être dans le passé');
       }
 
-      // Envoyer la requête
+      // Envoyer la requête avec l'ID MongoDB
       const response = await apiRequest('POST', '/api/appointments', {
-        patientId: data.patientId.toString(), // Assurer que l'ID est une chaîne
+        patientId: data.patientId, // Utiliser l'ID MongoDB directement
         appointmentDate: dateTime.toISOString(),
         purpose: data.purpose.trim()
       });
