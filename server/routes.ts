@@ -835,11 +835,15 @@ console.error('----------------------------------------');
             select: 'firstName lastName specialty'
           }
         })
-        .lean()
         .sort({ appointmentDate: 1 });
 
-      // Log for debugging
-      console.log('Appointments found:', appointments);
+      const populatedAppointments = appointments.map(appointment => {
+        return {
+          ...appointment.toObject(),
+          patient: appointment.patient,
+          doctor: appointment.doctor
+        };
+      });
 
       // Log for debugging
       console.log('Appointments found:', appointments);
