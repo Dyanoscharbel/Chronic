@@ -976,4 +976,3 @@ export default function PatientView({ id }: PatientViewProps) {
       status: 'pending'
     });
   };
-}
