@@ -64,17 +64,17 @@ export default function AppointmentsPage() {
     queryKey: ['/api/doctors'],
   });
 
-  const getPatient = (patientId: number) => {
-    return patients?.find(p => p.id === patientId);
+  const getPatient = (patientId: string) => {
+    return patients?.find(p => p._id === patientId);
   };
 
-  const getDoctor = (doctorId: number) => {
-    return doctors?.find(d => d.id === doctorId);
+  const getDoctor = (doctorId: string) => {
+    return doctors?.find(d => d._id === doctorId);
   };
 
   // Update appointment status mutation
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: number, status: string }) => {
+    mutationFn: async ({ id, status }: { id: string, status: string }) => {
       return apiRequest('PUT', `/api/appointments/${id}/status`, { status });
     },
     onSuccess: () => {
@@ -93,7 +93,7 @@ export default function AppointmentsPage() {
     }
   });
 
-  const handleStatusChange = (id: number, status: string) => {
+  const handleStatusChange = (id: string, status: string) => {
     updateStatusMutation.mutate({ id, status });
   };
 
@@ -107,7 +107,7 @@ export default function AppointmentsPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/upcoming-appointments'] });
-      
+
       toast({
         title: 'Succès',
         description: 'Le rendez-vous a été supprimé avec succès',
@@ -125,8 +125,8 @@ export default function AppointmentsPage() {
 
   // Filter appointments based on search and filter
   const filteredAppointments = appointments?.filter(appointment => {
-    const patient = getPatient(appointment.patientId);
-    const doctor = getDoctor(appointment.doctorId);
+    const patient = getPatient(appointment.patient);
+    const doctor = getDoctor(appointment.doctor);
 
     const matchesSearch = searchQuery ? (
       patient && (
@@ -159,6 +159,10 @@ export default function AppointmentsPage() {
     e.preventDefault();
     // Reset to first page when searching
     setCurrentPage(1);
+  };
+
+  const deleteAppointment = (id: string) => {
+    deleteAppointmentMutation.mutate(id);
   };
 
   return (
@@ -243,7 +247,8 @@ export default function AppointmentsPage() {
                   </TableHeader>
                   <TableBody>
                     {paginatedAppointments.map((appointment) => {
-                      const patient = appointment.patient?.user;
+                      const patient = getPatient(appointment.patient);
+                      const doctor = getDoctor(appointment.doctor);
                       const isUpcoming = new Date(appointment.appointmentDate) >= new Date();
                       const isPending = appointment.doctorStatus === 'pending';
                       const isConfirmed = appointment.doctorStatus === 'confirmed';
@@ -253,29 +258,8 @@ export default function AppointmentsPage() {
                             {formatDate(appointment.appointmentDate)} {formatTime(appointment.appointmentDate)}
                           </TableCell>
                           <TableCell>
-                            {patient ? `${patient.firstName} ${patient.lastName}` : 'Patient inconnu'}
-                          </TableCell>
-                          <TableCell>{appointment.purpose || 'Consultation générale'}</TableCell>
-                          <TableCell>
-                            <Badge variant={isPending ? 'outline' : isConfirmed ? 'default' : 'secondary'}>
-                              {isPending ? 'En attente' : isConfirmed ? 'Confirmé' : 'Complété'}
-                            </Badge>  
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="sm" onClick={() => deleteAppointment(appointment._id)}>
-                              Supprimer
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-
-              {/* Pagination section */}
-              {totalPages > 1 && (
-                              <Link href={`/patients/${patient.id}`}>
+                            {patient ? (
+                              <Link href={`/patients/${patient._id}`}>
                                 <AvatarName
                                   firstName={patient.user.firstName}
                                   lastName={patient.user.lastName}
@@ -287,10 +271,10 @@ export default function AppointmentsPage() {
                             )}
                           </TableCell>
                           <TableCell>
-                            {appointment.doctor ? (
+                            {doctor ? (
                               <div>
-                                <div className="font-medium">Dr. {appointment.doctor.user.firstName} {appointment.doctor.user.lastName}</div>
-                                <div className="text-gray-500 text-sm">{appointment.doctor.specialty}</div>
+                                <div className="font-medium">Dr. {doctor.user.firstName} {doctor.user.lastName}</div>
+                                <div className="text-gray-500 text-sm">{doctor.specialty}</div>
                               </div>
                             ) : (
                               <span className="text-gray-500">Docteur inconnu</span>
@@ -323,7 +307,7 @@ export default function AppointmentsPage() {
                                       variant="outline"
                                       size="sm"
                                       className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                      onClick={() => handleStatusChange(appointment.id, 'confirmed')}
+                                      onClick={() => handleStatusChange(appointment._id, 'confirmed')}
                                     >
                                       <Check className="h-4 w-4 mr-1" />
                                       Confirmer
@@ -335,7 +319,7 @@ export default function AppointmentsPage() {
                                       variant="outline"
                                       size="sm"
                                       className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                      onClick={() => handleStatusChange(appointment.id, 'cancelled')}
+                                      onClick={() => handleStatusChange(appointment._id, 'cancelled')}
                                     >
                                       <X className="h-4 w-4 mr-1" />
                                       Annuler
@@ -346,7 +330,7 @@ export default function AppointmentsPage() {
                                     <Button
                                       variant="outline"
                                       size="sm"
-                                      onClick={() => handleStatusChange(appointment.id, 'completed')}
+                                      onClick={() => handleStatusChange(appointment._id, 'completed')}
                                     >
                                       <Check className="h-4 w-4 mr-1" />
                                       Terminer
