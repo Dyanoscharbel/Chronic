@@ -68,6 +68,31 @@ export default function PatientView({ id }: PatientViewProps) {
   // Dialog states
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (patient) {
+      setIsLoading(false);
+    }
+  }, [patient]);
+
+  // Si les données sont en cours de chargement, afficher un loader
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader size="lg" />
+      </div>
+    );
+  }
+
+  // Si le patient n'existe pas après le chargement, afficher un message d'erreur
+  if (!patient || !patient.user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p className="text-xl font-semibold">Patient non trouvé</p>
+      </div>
+    );
+  }
   const [patientDetailsDialogOpen, setPatientDetailsDialogOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState('lab-results');
 
