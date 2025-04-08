@@ -103,7 +103,12 @@ export default function AppointmentsPage() {
       return apiRequest('DELETE', `/api/appointments/${id}`);
     },
     onSuccess: () => {
+      // Invalider et rafraîchir immédiatement les données
       queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
+      queryClient.refetchQueries({ queryKey: ['/api/appointments'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/upcoming-appointments'] });
+      
       toast({
         title: 'Rendez-vous supprimé',
         description: 'Le rendez-vous a été supprimé avec succès',
