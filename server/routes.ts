@@ -835,7 +835,6 @@ console.error('----------------------------------------');
             select: 'firstName lastName specialty'
           }
         })
-        .lean()
         .sort({ appointmentDate: 1 });
 
       // Log for debugging
@@ -882,7 +881,7 @@ console.error('----------------------------------------');
   apiRouter.post('/appointments', authenticate, async (req, res) => {
     try {
       const { patientId, appointmentDate, purpose } = req.body;
-      
+
       // Validation des données
       if (!patientId || !appointmentDate || !purpose) {
         return res.status(400).json({ 
