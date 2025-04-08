@@ -319,19 +319,19 @@ export default function PatientView({ id }: PatientViewProps) {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-500">Date de naissance</span>
-                <span>{patient.birthDate ? formatDate(patient.birthDate) : 'Non défini'}</span>
+                <span>{formatDate(patient.birthDate)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Genre</span>
-                <span>{patient.gender ? (patient.gender === 'M' ? 'Masculin' : 'Féminin') : 'Non défini'}</span>
+                <span>{patient.gender === 'M' ? 'Masculin' : 'Féminin'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Téléphone</span>
-                <span>{patient.phone || 'Non défini'}</span>
+                <span>{patient.phone}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Adresse</span>
-                <span>{patient.address || 'Non défini'}</span>
+                <span>{patient.address}</span>
               </div>
             </div>
           </div>
@@ -340,11 +340,11 @@ export default function PatientView({ id }: PatientViewProps) {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-500">Médecin traitant</span>
-                <span>{patient.doctor?.user ? `Dr. ${patient.doctor.user.firstName} ${patient.doctor.user.lastName}` : 'Non défini'}</span>
+                <span>Dr. {patient.doctor?.user.firstName} {patient.doctor?.user.lastName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Stade IRC</span>
-                <span>{patient.ckdStage || 'Non défini'}</span>
+                <span>{patient.ckdStage}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">eGFR</span>
