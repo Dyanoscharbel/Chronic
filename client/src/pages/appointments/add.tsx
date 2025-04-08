@@ -157,7 +157,7 @@ export default function AppointmentAdd() {
                         </FormControl>
                         <SelectContent>
                           {patients?.map((patient) => (
-                            <SelectItem key={patient.id} value={patient.id.toString()}>
+                            <SelectItem key={patient._id} value={patient._id.toString()}>
                               {patient.user.firstName} {patient.user.lastName}
                             </SelectItem>
                           ))}
@@ -185,7 +185,7 @@ export default function AppointmentAdd() {
                         </FormControl>
                         <SelectContent>
                           {doctors?.map((doctor) => (
-                            <SelectItem key={doctor.id} value={doctor.id.toString()}>
+                            <SelectItem key={doctor._id} value={doctor._id.toString()}>
                               Dr. {doctor.user.firstName} {doctor.user.lastName} ({doctor.specialty})
                             </SelectItem>
                           ))}
