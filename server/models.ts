@@ -44,6 +44,15 @@ const patientLabResultSchema = new mongoose.Schema({
   resultDate: { type: Date, required: true }
 });
 
+const appointmentSchema = new mongoose.Schema({
+  patient: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
+  doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
+  appointmentDate: { type: Date, required: true },
+  purpose: String,
+  status: { type: String, enum: ['pending', 'doctor_confirmed', 'patient_confirmed', 'confirmed', 'cancelled'], default: 'pending' }
+});
+
+export const Appointment = mongoose.model('Appointment', appointmentSchema);
 export const User = mongoose.model('User', userSchema);
 export const Patient = mongoose.model('Patient', patientSchema);
 export const Doctor = mongoose.model('Doctor', doctorSchema);

@@ -12,7 +12,7 @@ import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import MemoryStore from 'memorystore';
 import bcrypt from 'bcrypt';
-import { User, Doctor, Patient, LabTest, PatientLabResult, Notification } from './models';
+import { User, Doctor, Patient, LabTest, PatientLabResult, Notification, Appointment } from './models';
 
 const MemoryStoreSession = MemoryStore(session);
 
@@ -840,46 +840,26 @@ console.error('----------------------------------------');
 
   apiRouter.post('/appointments', authenticate, async (req, res) => {
     try {
-      const appointment = await storage.createAppointment(req.body);
+      const { patientId, appointmentDate, purpose } = req.body;
+      const userId = req.session.user?.id;
 
-      // Récupérer les informations du patient et du médecin
-      const patient = await storage.getPatientById(appointment.patientId);
-      const doctor = await storage.getDoctorById(appointment.doctorId);
-
-      if (patient && doctor) {
-        // Créer notification en base de données
-        await storage.createNotification({
-          userId: patient.userId,
-          message: `New appointment scheduled for ${new Date(appointment.appointmentDate).toLocaleDateString()} with Dr. ${doctor.user.lastName}`,
-          isRead: false
-        });
-
-        // Envoyer email au patient
-        const emailSubject = "Nouveau rendez-vous médical";
-        const emailHtml = `
-          <h2>Bonjour ${patient.user.firstName} ${patient.user.lastName},</h2>
-          <p>Un nouveau rendez-vous a été programmé pour vous:</p>
-          <ul>
-            <li><strong>Date:</strong> ${new Date(appointment.appointmentDate).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}</li>
-            <li><strong>Médecin:</strong> Dr. ${doctor.user.firstName} ${doctor.user.lastName} (${doctor.specialty})</li>
-            <li><strong>Lieu:</strong> ${doctor.hospital || 'Non précisé'}</li>
-            <li><strong>Motif:</strong> ${appointment.purpose || 'Consultation générale'}</li>
-          </ul>
-          <p>Pour annuler ou reporter ce rendez-vous, veuillez contacter le secrétariat médical.</p>
-          <p>Bien cordialement,<br>L'équipe médicale</p>
-        `;
-
-        // Envoyer SMS au patient si un numéro de téléphone est disponible
-        if (patient.phone) {
-          const smsBody = `Bonjour ${patient.user.firstName}, un RDV médical est programmé le ${new Date(appointment.appointmentDate).toLocaleDateString('fr-FR')} avec Dr. ${doctor.user.lastName}. Pour plus d'infos, vérifiez votre email.`;
-          await notificationService.sendSMS(patient.phone, smsBody);
-        }
-
-        // Envoyer l'email si une adresse email est disponible
-        await notificationService.sendEmail(patient.user.email, emailSubject, emailHtml);
+      // Trouver le docteur connecté
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found' });
       }
 
-      res.status(201).json(appointment);
+      const newAppointment = new Appointment({
+        patient: patientId,
+        doctor: doctor._id,
+        appointmentDate,
+        purpose,
+        status: 'pending'
+      });
+
+      await newAppointment.save();
+
+      res.status(201).json(newAppointment);
     } catch (error) {
       console.error('Error creating appointment:', error);
       res.status(500).json({ message: 'Server error' });
@@ -888,27 +868,42 @@ console.error('----------------------------------------');
 
   apiRouter.put('/appointments/:id/status', authenticate, async (req, res) => {
     try {
-      const appointmentId = parseInt(req.params.id, 10);
-      const { status } = req.body;
+      const appointmentId = req.params.id;
+      const { status, userType } = req.body;
+      const userId = req.session.user?.id;
 
-      const updatedAppointment = await storage.updateAppointmentStatus(appointmentId, status);
-
-      if (!updatedAppointment) {
+      const appointment = await Appointment.findById(appointmentId);
+      if (!appointment) {
         return res.status(404).json({ message: 'Appointment not found' });
       }
 
-      // Create notification about status change
-      const patient = await storage.getPatientById(updatedAppointment.patientId);
-      if (patient) {
-        await storage.createNotification({
-          userId: patient.userId,
-          message: `Your appointment on ${new Date(updatedAppointment.appointmentDate).toLocaleDateString()} has been ${status}`,
-          isRead: false
-        });
+      if (userType === 'doctor') {
+        const doctor = await Doctor.findOne({ user: userId });
+        if (!doctor || !doctor._id.equals(appointment.doctor)) {
+          return res.status(403).json({ message: 'Not authorized' });
+        }
+        appointment.status = 'doctor_confirmed';
+      } else if (userType === 'patient') {
+        const patient = await Patient.findOne({ user: userId });
+        if (!patient || !patient._id.equals(appointment.patient)) {
+          return res.status(403).json({ message: 'Not authorized' });
+        }
+        appointment.status = 'patient_confirmed';
       }
 
-      res.json(updatedAppointment);
+      // Si les deux ont confirmé
+      if (appointment.status === 'doctor_confirmed' || appointment.status === 'patient_confirmed') {
+        const existingStatus = appointment.status;
+        if ((existingStatus === 'doctor_confirmed' && userType === 'patient') ||
+            (existingStatus === 'patient_confirmed' && userType === 'doctor')) {
+          appointment.status = 'confirmed';
+        }
+      }
+
+      await appointment.save();
+      res.json(appointment);
     } catch (error) {
+      console.error('Error updating appointment status:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
