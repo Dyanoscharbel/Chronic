@@ -95,20 +95,19 @@ export default function PatientView({ id }: PatientViewProps) {
   // Set doctor if missing
   useEffect(() => {
     const updateDoctor = async () => {
-      if (patient && !patient.doctor && user) {
+      if (patient?._id && !patient.doctor && user?.id) {
         try {
           await apiRequest('PUT', `/api/patients/${patient._id}`, {
-            ...patient,
-            doctor: user.id
+            doctorId: user.id
           });
-          queryClient.invalidateQueries({ queryKey: [`/api/patients/${id}`] });
+          queryClient.invalidateQueries({ queryKey: [`/api/patients/${patient._id}`] });
         } catch (error) {
           console.error('Failed to update doctor:', error);
         }
       }
     };
     updateDoctor();
-  }, [patient, user, id, queryClient]);
+  }, [patient, user, queryClient]);
 
   // Fetch lab results
   const { data: labResults, isLoading: labResultsLoading } = useQuery<PatientLabResult[]>({
