@@ -84,7 +84,7 @@ export default function Dashboard() {
           icon={<AlertTriangle className="h-6 w-6 text-white" />}
           iconBgColor="bg-yellow-500"
           title="Résultats Anormaux"
-          value={notificationsData?.notifications?.filter(n => n.type === 'ABNORMAL_RESULT').length || 0}
+          value={notificationsData?.notifications?.filter(n => n.severity === 'warning' || n.severity === 'error').length || 0}
           footerLink="/notifications"
           footerText="Voir toutes les alertes"
           footerLinkColor="text-yellow-600 hover:text-yellow-500"
