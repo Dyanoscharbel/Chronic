@@ -1,0 +1,112 @@
+{
+    _id: new ObjectId('67f50afb1d8157e7b040008a'),
+    patient: {
+      _id: new ObjectId('67f40af2bf545f6b024e3fb0'),
+      user: [Object],
+      doctor: new ObjectId('67efcd42a3e5e42ab1682b55'),
+      birthDate: 2025-04-07T00:00:00.000Z,
+      gender: 'M',
+      address: 'uhjij',
+      phone: '23444',
+      ckdStage: 'Stage 3A',
+      createdAt: 2025-04-07T17:27:14.345Z,
+      __v: 0
+    },
+    doctor: {
+      _id: new ObjectId('67efcd42a3e5e42ab1682b55'),
+      user: [Object],
+      specialty: '',
+      hospital: '',
+      __v: 0
+    },
+    appointmentDate: 2025-04-08T14:00:00.000Z,
+    purpose: 'kl',
+    doctorStatus: 'pending',
+    patientStatus: 'pending',
+    __v: 0
+  },
+  {
+    _id: new ObjectId('67f5282e46e3669a3a795ef9'),
+    patient: {
+      _id: new ObjectId('67f40af2bf545f6b024e3fb0'),
+      user: [Object],
+      doctor: new ObjectId('67efcd42a3e5e42ab1682b55'),
+      birthDate: 2025-04-07T00:00:00.000Z,
+      gender: 'M',
+      address: 'uhjij',
+      phone: '23444',
+      ckdStage: 'Stage 3A',
+      createdAt: 2025-04-07T17:27:14.345Z,
+      __v: 0
+    },
+    doctor: {
+      _id: new ObjectId('67efcd42a3e5e42ab1682b55'),
+      user: [Object],
+      specialty: '',
+      hospital: '',
+      __v: 0
+    },
+    appointmentDate: 2025-04-08T21:00:00.000Z,
+    purpose: 'rrr',
+    doctorStatus: 'pending',
+    patientStatus: 'pending',
+    __v: 0
+  }
+]
+Appointments found: [
+  {
+    _id: new ObjectId('67f50afb1d8157e7b040008a'),
+    patient: {
+      _id: new ObjectId('67f40af2bf545f6b024e3fb0'),
+      user: [Object],
+      doctor: new ObjectId('67efcd42a3e5e42ab1682b55'),
+      birthDate: 2025-04-07T00:00:00.000Z,
+      gender: 'M',
+      address: 'uhjij',
+      phone: '23444',
+      ckdStage: 'Stage 3A',
+      createdAt: 2025-04-07T17:27:14.345Z,
+      __v: 0
+    },
+    doctor: {
+      _id: new ObjectId('67efcd42a3e5e42ab1682b55'),
+      user: [Object],
+      specialty: '',
+      hospital: '',
+      __v: 0
+    },
+    appointmentDate: 2025-04-08T14:00:00.000Z,
+    purpose: 'kl',
+    doctorStatus: 'pending',
+    patientStatus: 'pending',
+    __v: 0
+  },
+  {
+    _id: new ObjectId('67f5282e46e3669a3a795ef9'),
+    patient: {
+      _id: new ObjectId('67f40af2bf545f6b024e3fb0'),
+      user: [Object],
+      doctor: new ObjectId('67efcd42a3e5e42ab1682b55'),
+      birthDate: 2025-04-07T00:00:00.000Z,
+      gender: 'M',
+      address: 'uhjij',
+      phone: '23444',
+      ckdStage: 'Stage 3A',
+      createdAt: 2025-04-07T17:27:14.345Z,
+      __v: 0
+    },
+    doctor: {
+      _id: new ObjectId('67efcd42a3e5e42ab1682b55'),
+      user: [Object],
+      specialty: '',
+      hospital: '',
+      __v: 0
+    },
+    appointmentDate: 2025-04-08T21:00:00.000Z,
+    purpose: 'rrr',
+    doctorStatus: 'pending',
+    patientStatus: 'pending',
+    __v: 0
+  }
+]
+2:06:07 PM [express] GET /api/appointments 304 in 426ms :: [{"_id":"67f50afb1d8157e7b040008a","patie…
