@@ -50,7 +50,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
       const dateTime = new Date(`${data.appointmentDate}T${data.appointmentTime}`);
       
       return apiRequest('POST', '/api/appointments', {
-        patient: data.patientId, // Changé de patientId à patient pour correspondre au modèle
+        patientId: data.patientId,
         appointmentDate: dateTime.toISOString(),
         purpose: data.purpose
       });
