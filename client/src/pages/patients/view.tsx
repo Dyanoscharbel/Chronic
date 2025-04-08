@@ -86,7 +86,7 @@ export default function PatientView({ id }: PatientViewProps) {
   console.log('Current patient data:', patient);
 
   // Si les données sont en cours de chargement, afficher un loader
-  if (patientLoading || !patient) {
+  if (patientLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh]">
         <Loader size="lg" />
@@ -95,7 +95,7 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  if (!id) {
+  if (!id || !patient || !patient.user) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
