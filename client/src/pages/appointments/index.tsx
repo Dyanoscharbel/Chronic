@@ -39,27 +39,27 @@ export default function AppointmentsPage() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const appointmentsPerPage = 10;
-  
+
   const { data: appointments, isLoading: appointmentsLoading } = useQuery<Appointment[]>({
     queryKey: ['/api/appointments'],
   });
-  
+
   const { data: patients } = useQuery<Patient[]>({
     queryKey: ['/api/patients'],
   });
-  
+
   const { data: doctors } = useQuery<Doctor[]>({
     queryKey: ['/api/doctors'],
   });
-  
+
   const getPatient = (patientId: number) => {
     return patients?.find(p => p.id === patientId);
   };
-  
+
   const getDoctor = (doctorId: number) => {
     return doctors?.find(d => d.id === doctorId);
   };
-  
+
   // Update appointment status mutation
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number, status: string }) => {
@@ -80,16 +80,16 @@ export default function AppointmentsPage() {
       });
     }
   });
-  
+
   const handleStatusChange = (id: number, status: string) => {
     updateStatusMutation.mutate({ id, status });
   };
-  
+
   // Filter appointments based on search and filter
   const filteredAppointments = appointments?.filter(appointment => {
     const patient = getPatient(appointment.patientId);
     const doctor = getDoctor(appointment.doctorId);
-    
+
     const matchesSearch = searchQuery ? (
       patient && (
         patient.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -101,28 +101,28 @@ export default function AppointmentsPage() {
       ) ||
       appointment.purpose?.toLowerCase().includes(searchQuery.toLowerCase())
     ) : true;
-    
+
     const matchesFilter = filterStatus === 'all' ? true : appointment.status === filterStatus;
-    
+
     return matchesSearch && matchesFilter;
   }) || [];
-  
+
   // Sort by date (newest first)
   const sortedAppointments = [...filteredAppointments].sort(
     (a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime()
   );
-  
+
   // Calculate pagination
   const totalPages = Math.ceil(sortedAppointments.length / appointmentsPerPage);
   const startIndex = (currentPage - 1) * appointmentsPerPage;
   const paginatedAppointments = sortedAppointments.slice(startIndex, startIndex + appointmentsPerPage);
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Reset to first page when searching
     setCurrentPage(1);
   };
-  
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
@@ -134,7 +134,7 @@ export default function AppointmentsPage() {
           </Button>
         </Link>
       </div>
-      
+
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -144,7 +144,7 @@ export default function AppointmentsPage() {
                 View and manage all scheduled appointments
               </CardDescription>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <form onSubmit={handleSearch} className="relative w-full sm:w-auto">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -156,7 +156,7 @@ export default function AppointmentsPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </form>
-              
+
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-gray-500" />
                 <Select
@@ -211,7 +211,7 @@ export default function AppointmentsPage() {
                       const isUpcoming = new Date(appointment.appointmentDate) >= new Date();
                       const isPending = appointment.status === 'pending';
                       const isConfirmed = appointment.status === 'confirmed';
-                      
+
                       return (
                         <TableRow key={appointment.id}>
                           <TableCell>
@@ -245,9 +245,14 @@ export default function AppointmentsPage() {
                             {appointment.purpose || 'General consultation'}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline" className={`${statusColors.bg} ${statusColors.text}`}>
-                              {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
-                            </Badge>
+                            <div className="space-y-1">
+                              <Badge variant="outline" className={`${statusColors.bg} ${statusColors.text}`}>
+                                Doctor: {appointment.doctorStatus?.charAt(0).toUpperCase() + appointment.doctorStatus?.slice(1)}
+                              </Badge>
+                              <Badge variant="outline" className={`${statusColors.bg} ${statusColors.text}`}>
+                                Patient: {appointment.patientStatus?.charAt(0).toUpperCase() + appointment.patientStatus?.slice(1)}
+                              </Badge>
+                            </div>
                           </TableCell>
                           <TableCell className="text-right">
                             {isUpcoming && (
@@ -263,7 +268,7 @@ export default function AppointmentsPage() {
                                     Confirm
                                   </Button>
                                 )}
-                                
+
                                 {(isPending || isConfirmed) && (
                                   <Button
                                     variant="outline"
@@ -275,7 +280,7 @@ export default function AppointmentsPage() {
                                     Cancel
                                   </Button>
                                 )}
-                                
+
                                 {isConfirmed && !isUpcoming && (
                                   <Button
                                     variant="outline"
@@ -295,7 +300,7 @@ export default function AppointmentsPage() {
                   </TableBody>
                 </Table>
               </div>
-              
+
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-between items-center mt-4">
@@ -310,7 +315,7 @@ export default function AppointmentsPage() {
                           className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                         />
                       </PaginationItem>
-                      
+
                       {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
                         const page = i + 1;
                         return (
@@ -324,13 +329,13 @@ export default function AppointmentsPage() {
                           </PaginationItem>
                         );
                       })}
-                      
+
                       {totalPages > 5 && currentPage < totalPages - 2 && (
                         <PaginationItem>
                           <span className="flex h-9 w-9 items-center justify-center">...</span>
                         </PaginationItem>
                       )}
-                      
+
                       {totalPages > 5 && (
                         <PaginationItem>
                           <PaginationLink
@@ -341,7 +346,7 @@ export default function AppointmentsPage() {
                           </PaginationLink>
                         </PaginationItem>
                       )}
-                      
+
                       <PaginationItem>
                         <PaginationNext 
                           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
