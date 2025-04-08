@@ -1321,14 +1321,30 @@ console.error('----------------------------------------');
   // Upcoming appointments for dashboard
   apiRouter.get('/dashboard/upcoming-appointments', authenticate, async (req, res) => {
     try {
-      const appointments = await storage.getAppointments();
+      const userId = req.session.user?.id;
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found' });
+      }
 
-      // Get future appointments that aren't cancelled
-      const now = new Date();
-      const upcomingAppointments = appointments
-        .filter(apt => new Date(apt.appointmentDate) > now && apt.status !== 'cancelled')
-        .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
-        .slice(0, 3); // Get the next 3
+      // Get appointments for this doctor only
+      const appointments = await Appointment.find({ doctor: doctor._id, doctorStatus: { $ne: 'cancelled' } })
+        .populate({
+          path: 'patient',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName email'
+          }
+        })
+        .populate({
+          path: 'doctor',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName specialty'
+          }
+        })
+        .sort({ appointmentDate: 1 })
+        .limit(3);
 
       // Augment with patient and doctor details
       const enhancedAppointments = await Promise.all(upcomingAppointments.map(async apt => {
