@@ -33,7 +33,6 @@ import { apiRequest } from '@/lib/queryClient';
 
 const formSchema = z.object({
   patientId: z.string().min(1, { message: 'Please select a patient' }),
-  doctorId: z.string().min(1, { message: 'Please select a doctor' }),
   appointmentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Please enter a valid date (YYYY-MM-DD)' }),
   appointmentTime: z.string().regex(/^\d{2}:\d{2}$/, { message: 'Please enter a valid time (HH:MM)' }),
   purpose: z.string().optional(),
@@ -58,7 +57,6 @@ export default function AppointmentAdd() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       patientId: '',
-      doctorId: '',
       appointmentDate: new Date().toISOString().split('T')[0],
       appointmentTime: '09:00',
       purpose: '',
@@ -168,33 +166,7 @@ export default function AppointmentAdd() {
                   )}
                 />
                 
-                <FormField
-                  control={form.control}
-                  name="doctorId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Doctor</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a doctor" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {doctors?.map((doctor) => (
-                            <SelectItem key={doctor._id} value={doctor._id.toString()}>
-                              Dr. {doctor.user.firstName} {doctor.user.lastName} ({doctor.specialty})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
