@@ -837,16 +837,11 @@ console.error('----------------------------------------');
         })
         .sort({ appointmentDate: 1 });
 
-      const populatedAppointments = appointments.map(appointment => {
-        return {
-          ...appointment.toObject(),
-          patient: appointment.patient,
-          doctor: appointment.doctor
-        };
-      });
-
       // Log for debugging
       console.log('Appointments found:', appointments);
+      
+      // Return appointments directly
+      res.json(appointments);
 
       // Check and update status for past appointments
       const now = new Date();

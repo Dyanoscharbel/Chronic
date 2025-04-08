@@ -125,8 +125,8 @@ export default function AppointmentsPage() {
 
   // Filter appointments based on search and filter
   const filteredAppointments = appointments?.filter(appointment => {
-    const patient = getPatient(appointment.patient);
-    const doctor = getDoctor(appointment.doctor);
+    const patient = appointment.patient; //Updated
+    const doctor = appointment.doctor; //Updated
 
     const matchesSearch = searchQuery ? (
       patient && (
@@ -247,8 +247,8 @@ export default function AppointmentsPage() {
                   </TableHeader>
                   <TableBody>
                     {paginatedAppointments.map((appointment) => {
-                      const patient = getPatient(appointment.patient);
-                      const doctor = getDoctor(appointment.doctor);
+                      const patient = appointment.patient; //Updated
+                      const doctor = appointment.doctor; //Updated
                       const isUpcoming = new Date(appointment.appointmentDate) >= new Date();
                       const isPending = appointment.doctorStatus === 'pending';
                       const isConfirmed = appointment.doctorStatus === 'confirmed';
