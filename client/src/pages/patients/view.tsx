@@ -63,6 +63,8 @@ export default function PatientView({ id }: PatientViewProps) {
   const { user } = useAuth();
   const patientId = id?.toString();
 
+  console.log('Patient ID:', patientId); // Debug log
+
   // Dialog states
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
@@ -80,14 +82,16 @@ export default function PatientView({ id }: PatientViewProps) {
 
   // Fetch patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
-    queryKey: [`/api/patients/${id}`],
-    enabled: !!id && id !== 'undefined',
+    queryKey: [`/api/patients/${patientId}`],
+    enabled: !!patientId && patientId !== 'undefined',
     queryFn: async () => {
-      if (!id || id === 'undefined') {
+      if (!patientId || patientId === 'undefined') {
         setLocation('/patients');
         throw new Error('Invalid patient ID');
       }
-      const response = await apiRequest('GET', `/api/patients/${id}`);
+      console.log('Fetching patient data for ID:', patientId); // Debug log
+      const response = await apiRequest('GET', `/api/patients/${patientId}`);
+      console.log('Patient data received:', response); // Debug log
       return response;
     },
   });
