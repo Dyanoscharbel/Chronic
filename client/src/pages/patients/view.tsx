@@ -159,11 +159,6 @@ export default function PatientView({ id }: PatientViewProps) {
     enabled: !!patient?._id,
   });
 
-  // Fetch lab tests for dropdown
-  const { data: labTests } = useQuery<LabTest[]>({
-    queryKey: ['/api/lab-tests'],
-  });
-
   // Fetch doctors for dropdown
   const { data: doctors } = useQuery<Doctor[]>({
     queryKey: ['/api/doctors'],
