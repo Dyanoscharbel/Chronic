@@ -835,7 +835,11 @@ console.error('----------------------------------------');
             select: 'firstName lastName specialty'
           }
         })
+        .lean()
         .sort({ appointmentDate: 1 });
+
+      // Log for debugging
+      console.log('Appointments found:', appointments);
 
       // Log for debugging
       console.log('Appointments found:', appointments);
