@@ -271,9 +271,10 @@ export default function AppointmentsPage() {
                     })}
                   </TableBody>
                 </Table>
-                          </TableCell>
-                          <TableCell>
-                            {patient ? (
+              </div>
+
+              {/* Pagination section */}
+              {totalPages > 1 && (
                               <Link href={`/patients/${patient.id}`}>
                                 <AvatarName
                                   firstName={patient.user.firstName}
