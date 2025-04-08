@@ -95,7 +95,7 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  if (!id || !patient || !patient.user) {
+  if (!id || !patient?.user?.firstName) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
