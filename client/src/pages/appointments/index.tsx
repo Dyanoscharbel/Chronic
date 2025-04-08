@@ -100,11 +100,7 @@ export default function AppointmentsPage() {
   // Delete appointment mutation
   const deleteAppointmentMutation = useMutation({
     mutationFn: async (id: string) => {
-      const response = await apiRequest('DELETE', `/api/appointments/${id}`);
-      if (!response.success) {
-        throw new Error('Échec de la suppression');
-      }
-      return response;
+      return await apiRequest('DELETE', `/api/appointments/${id}`);
     },
     onSuccess: () => {
       // Rafraîchir les données
@@ -117,6 +113,13 @@ export default function AppointmentsPage() {
         description: 'Le rendez-vous a été supprimé avec succès',
       });
     },
+    onError: (error: any) => {
+      toast({
+        title: 'Erreur',
+        description: "Une erreur est survenue lors de la suppression",
+        variant: 'destructive',
+      });
+    }
     onError: (error) => {
       toast({
         title: 'Erreur',
