@@ -69,7 +69,7 @@ export default function PatientView({ id }: PatientViewProps) {
   // Query for patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${id}`],
-    enabled: !!id,
+    enabled: !!id && id !== 'undefined',
     queryFn: async () => {
       if (!id || id === 'undefined') {
         setLocation('/patients');
@@ -143,8 +143,14 @@ export default function PatientView({ id }: PatientViewProps) {
 
   // Fetch lab results
   const { data: labResults, isLoading: labResultsLoading } = useQuery<PatientLabResult[]>({
-    queryKey: [`/api/patient-lab-results/patient/${patient?._id}`],
-    enabled: !!patient?._id,
+    queryKey: [`/api/patient-lab-results/patient/${id}`],
+    enabled: !!id,
+  });
+
+  // Fetch lab tests for context
+  const { data: labTests } = useQuery<LabTest[]>({
+    queryKey: ['/api/lab-tests'],
+    enabled: !!id,
   });
 
   // Fetch appointments
