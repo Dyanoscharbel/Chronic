@@ -78,6 +78,20 @@ export default function PatientView({ id }: PatientViewProps) {
   });
 
   // Dialog states
+  // Query for patient data
+  const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
+    queryKey: [`/api/patients/${patientId}`],
+    enabled: !!patientId && patientId !== 'undefined',
+    queryFn: async () => {
+      if (!patientId || patientId === 'undefined') {
+        setLocation('/patients');
+        throw new Error('Invalid patient ID');
+      }
+      const response = await apiRequest('GET', `/api/patients/${patientId}`);
+      return response;
+    },
+  });
+
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
 
