@@ -841,8 +841,6 @@ console.error('----------------------------------------');
       // Log for debugging with complete data
       console.log('Appointments found:', JSON.stringify(appointments, null, 2));
       
-      res.json(appointments);
-
       // Check and update status for past appointments
       const now = new Date();
       const updatedAppointments = await Promise.all(appointments.map(async (appointment) => {
