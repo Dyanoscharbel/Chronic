@@ -68,16 +68,8 @@ export default function PatientView({ id }: PatientViewProps) {
   // Dialog states
   const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
   const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (patient) {
-      setIsLoading(false);
-    }
-  }, [patient]);
-
   // Si les données sont en cours de chargement, afficher un loader
-  if (isLoading) {
+  if (patientLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader size="lg" />
