@@ -827,7 +827,7 @@ console.error('----------------------------------------');
             select: 'firstName lastName specialty'
           }
         });
-      
+
       // Check and update status for past appointments
       const now = new Date();
       const updatedAppointments = await Promise.all(appointments.map(async (appointment) => {
@@ -927,6 +927,27 @@ console.error('----------------------------------------');
     }
   });
 
+  apiRouter.delete('/appointments/:id', authenticate, async (req, res) => {
+    try {
+      const appointmentId = req.params.id;
+
+      // Vérifier si le rendez-vous existe
+      const appointment = await Appointment.findById(appointmentId);
+      if (!appointment) {
+        return res.status(404).json({ message: 'Rendez-vous non trouvé' });
+      }
+
+      // Supprimer le rendez-vous
+      await Appointment.findByIdAndDelete(appointmentId);
+
+      // Répondre avec succès
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting appointment:', error);
+      res.status(500).json({ message: 'Erreur serveur lors de la suppression' });
+    }
+  });
+
   // Notifications routes
   apiRouter.get('/notifications', authenticate, async (req, res) => {
     try {
@@ -941,7 +962,7 @@ console.error('----------------------------------------');
       // Récupérer les notifications pour ce docteur
       const notifications = await Notification.find({ doctorId: doctor._id })
         .populate({
-          path: 'patientId',
+          path: 'patientId,
           populate: {
             path: 'user',
             select: 'firstName lastName'

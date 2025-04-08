@@ -99,18 +99,21 @@ export default function AppointmentsPage() {
 
   // Delete appointment mutation
   const deleteAppointmentMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest('DELETE', `/api/appointments/${id}`);
+    mutationFn: async (id: string) => {
+      const response = await apiRequest('DELETE', `/api/appointments/${id}`);
+      if (!response.success) {
+        throw new Error('Échec de la suppression');
+      }
+      return response;
     },
     onSuccess: () => {
-      // Invalider et rafraîchir immédiatement les données
+      // Rafraîchir les données
       queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
-      queryClient.refetchQueries({ queryKey: ['/api/appointments'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/upcoming-appointments'] });
-
+      
       toast({
-        title: 'Rendez-vous supprimé',
+        title: 'Succès',
         description: 'Le rendez-vous a été supprimé avec succès',
       });
     },
