@@ -1322,7 +1322,13 @@ console.error('----------------------------------------');
   apiRouter.get('/dashboard/upcoming-appointments', authenticate, async (req, res) => {
     try {
       const userId = req.session.user?.id;
-      const doctor = await Doctor.findOne({ user: userId });
+      console.log('Looking for doctor with user ID:', userId);
+      const doctor = await Doctor.findOne({ user: userId }).select('_id');
+      if (!doctor) {
+        console.log('No doctor found for user ID:', userId);
+      } else {
+        console.log('Found doctor:', doctor._id);
+      }
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found' });
       }

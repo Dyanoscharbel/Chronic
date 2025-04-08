@@ -11,11 +11,14 @@ interface AppointmentsListProps {
 
 export function AppointmentsList({ appointments }: AppointmentsListProps) {
   console.log("Raw appointments received:", appointments);
-  console.log("Appointments type:", appointments ? typeof appointments : 'undefined');
   
-  if (!Array.isArray(appointments)) {
-    console.error("Appointments is not an array:", appointments);
-    return null;
+  // Convert Mongoose document to plain object if needed
+  const appointmentsArray = Array.isArray(appointments) 
+    ? appointments.map(apt => apt.toObject ? apt.toObject() : apt)
+    : [];
+  
+  if (!appointmentsArray.length) {
+    console.log("No appointments found");
   }
 
   const upcomingAppointments = appointments.filter(apt => {
