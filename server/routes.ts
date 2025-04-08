@@ -835,12 +835,12 @@ console.error('----------------------------------------');
             select: 'firstName lastName specialty'
           }
         })
+        .lean()
         .sort({ appointmentDate: 1 });
 
-      // Log for debugging
-      console.log('Appointments found:', appointments);
+      // Log for debugging with complete data
+      console.log('Appointments found:', JSON.stringify(appointments, null, 2));
       
-      // Return appointments directly
       res.json(appointments);
 
       // Check and update status for past appointments
