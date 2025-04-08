@@ -63,13 +63,7 @@ export default function PatientView({ id }: PatientViewProps) {
   const { user } = useAuth();
   const patientId = id?.toString();
 
-  console.log('Patient ID:', patientId); // Debug log
-
-  // Dialog states
-  const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
-  const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
-
-  // Fetch patient data
+  // Query for patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${patientId}`],
     enabled: !!patientId && patientId !== 'undefined',
@@ -83,23 +77,58 @@ export default function PatientView({ id }: PatientViewProps) {
     },
   });
 
+  // Dialog states
+  const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
+  const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
+
   // Si les données sont en cours de chargement, afficher un loader
   if (patientLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center h-[80vh]">
         <Loader size="lg" />
+        <p className="mt-4 text-gray-600">Chargement des données patient...</p>
       </div>
     );
   }
 
-  // Si le patient n'existe pas après le chargement, afficher un message d'erreur
-  if (!patient || !patient.user) {
+  if (!patient || !patientId) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <p className="text-xl font-semibold">Patient non trouvé</p>
+      <div className="h-full flex flex-col items-center justify-center p-8">
+        <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Patient introuvable</h1>
+        <p className="text-gray-600 mb-4">Le patient que vous recherchez n'existe pas ou a été supprimé.</p>
+        <Button onClick={() => setLocation('/patients')}>
+          Retour à la liste des patients
+        </Button>
       </div>
     );
   }
+
+  // Ensure user data exists
+  if (!patient.user) {
+    return <PageLoader />;
+  }
+
+  // Wait for additional data to load
+  if (!labTests || !doctors) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <Loader size="lg" />
+        <p className="mt-4 text-gray-600">Chargement des données complémentaires...</p>
+      </div>
+    );
+  }
+
+  // Wait for additional data to load
+  if (!labTests || !doctors) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <Loader size="lg" />
+        <p className="mt-4 text-gray-600">Chargement des données complémentaires...</p>
+      </div>
+    );
+  }
+
   const [patientDetailsDialogOpen, setPatientDetailsDialogOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState('lab-results');
 
@@ -824,8 +853,7 @@ export default function PatientView({ id }: PatientViewProps) {
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="appointment-date" className="text-right">
+            <div className="grid grid-cols-4 items-center gap-4"><Label htmlFor="appointment-date" className="text-right">
                 Date
               </Label>
               <Input
@@ -948,3 +976,4 @@ export default function PatientView({ id }: PatientViewProps) {
       status: 'pending'
     });
   };
+}
