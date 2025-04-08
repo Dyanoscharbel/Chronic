@@ -1347,7 +1347,7 @@ console.error('----------------------------------------');
         .limit(3);
 
       // Augment with patient and doctor details
-      const enhancedAppointments = await Promise.all(upcomingAppointments.map(async apt => {
+      const enhancedAppointments = await Promise.all(appointments.map(async apt => {
         const patient = await storage.getPatientById(apt.patientId);
         const doctor = await storage.getDoctorById(apt.doctorId);
 
