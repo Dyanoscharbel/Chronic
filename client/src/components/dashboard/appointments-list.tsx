@@ -28,13 +28,9 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
       
       <CardContent className="p-0">
         <ul className="divide-y divide-gray-200">
-          {appointments
-            .filter(apt => new Date(apt.appointmentDate) > new Date())
-            .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
-            .slice(0, 3)
-            .length > 0 ? (
+          {appointments && appointments.length > 0 ? (
             appointments
-              .filter(apt => new Date(apt.appointmentDate) > new Date())
+              .filter(apt => new Date(apt.appointmentDate) > new Date() && apt.doctorStatus !== 'cancelled')
               .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
               .slice(0, 3)
               .map((appointment) => (
