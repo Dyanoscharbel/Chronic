@@ -656,9 +656,7 @@ console.error('----------------------------------------');
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
       const userId = req.session.user?.id;
-
-      // Trouver le docteur correspondant à l'utilisateur connecté
-      const doctor = await Doctor.findOne({ user: userId });
+      const doctor = await Doctor.findOne({ user: userId }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
@@ -1025,9 +1023,7 @@ console.error('----------------------------------------');
   apiRouter.get('/notifications', authenticate, async (req, res) => {
     try {
       const userId = req.session.user?.id;
-
-      // Trouver le docteur connecté
-      const doctor = await Doctor.findOne({ user: userId });
+      const doctor = await Doctor.findOne({ user: userId }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found' });
       }
@@ -1195,11 +1191,8 @@ console.error('----------------------------------------');
   // Dashboard statistics
   apiRouter.get('/dashboard/stats', authenticate, async (req, res) => {
     try {
-      // Get the connected user's ID from the session
       const userId = req.session.user?.id;
-
-      // Find the doctor associated with the connected user
-      const doctor = await Doctor.findOne({ user: userId });
+      const doctor = await Doctor.findOne({ user: userId }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
