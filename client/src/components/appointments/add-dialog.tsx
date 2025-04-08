@@ -16,9 +16,9 @@ import { Patient, AppointmentFormData } from '@/lib/types';
 import { apiRequest } from '@/lib/queryClient';
 
 const formSchema = z.object({
-  patientId: z.string().min(1, { message: 'Please select a patient' }),
-  appointmentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Please enter a valid date (YYYY-MM-DD)' }),
-  appointmentTime: z.string().regex(/^\d{2}:\d{2}$/, { message: 'Please enter a valid time (HH:MM)' }),
+  patientId: z.string().min(1, { message: 'Veuillez sélectionner un patient' }),
+  appointmentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Veuillez entrer une date valide (AAAA-MM-JJ)' }),
+  appointmentTime: z.string().regex(/^\d{2}:\d{2}$/, { message: 'Veuillez entrer une heure valide (HH:MM)' }),
   purpose: z.string().optional(),
 });
 
@@ -58,8 +58,8 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
     },
     onSuccess: () => {
       toast({
-        title: 'Success',
-        description: 'Appointment has been scheduled successfully',
+        title: 'Succès',
+        description: 'Le rendez-vous a été programmé avec succès',
       });
       queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
       onClose();
@@ -67,8 +67,8 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
     },
     onError: (error) => {
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to schedule appointment',
+        title: 'Erreur',
+        description: error instanceof Error ? error.message : 'Échec de la programmation du rendez-vous',
         variant: 'destructive',
       });
     }
@@ -90,9 +90,9 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Schedule Appointment</DialogTitle>
+          <DialogTitle>Programmer un rendez-vous</DialogTitle>
           <DialogDescription>
-            Schedule a new appointment for a patient
+            Programmer un nouveau rendez-vous pour un patient
           </DialogDescription>
         </DialogHeader>
 
@@ -115,7 +115,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a patient" />
+                          <SelectValue placeholder="Sélectionner un patient" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -151,7 +151,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   name="appointmentTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Time</FormLabel>
+                      <FormLabel>Heure</FormLabel>
                       <FormControl>
                         <Input type="time" {...field} />
                       </FormControl>
@@ -165,7 +165,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                 <div className="rounded-md bg-yellow-50 p-4">
                   <div className="flex">
                     <div className="text-yellow-700">
-                      <p>Warning: You are scheduling an appointment in the past.</p>
+                      <p>Attention : Vous programmez un rendez-vous dans le passé.</p>
                     </div>
                   </div>
                 </div>
@@ -176,16 +176,16 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                 name="purpose"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Purpose</FormLabel>
+                    <FormLabel>Motif</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Describe the reason for this appointment"
+                        placeholder="Décrivez le motif de ce rendez-vous"
                         className="resize-none h-24"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      Include any relevant details about the appointment purpose.
+                      Incluez tous les détails pertinents concernant le motif du rendez-vous.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -198,7 +198,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   variant="outline"
                   onClick={onClose}
                 >
-                  Cancel
+                  Annuler
                 </Button>
                 <Button 
                   type="submit"
@@ -207,7 +207,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   {createAppointmentMutation.isPending && (
                     <Loader color="white" size="sm" className="mr-2" />
                   )}
-                  Schedule Appointment
+                  Programmer le rendez-vous
                 </Button>
               </DialogFooter>
             </form>
