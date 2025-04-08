@@ -75,7 +75,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
       console.log('Patient sélectionné:', data.patientId);
 
       const dateTime = new Date(`${data.appointmentDate}T${data.appointmentTime}`);
-      
+
       // Vérifier si la date est dans le passé
       if (dateTime < new Date()) {
         throw new Error('La date du rendez-vous ne peut pas être dans le passé');
@@ -154,11 +154,17 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {patients?.map((patient) => (
-                          <SelectItem key={patient._id} value={patient._id.toString()}>
-                            {patient.user.firstName} {patient.user.lastName}
-                          </SelectItem>
-                        ))}
+                        {patients?.map((patient) => {
+                          console.log('Patient dans la liste:', patient._id);
+                          return (
+                            <SelectItem 
+                              key={patient._id} 
+                              value={patient._id.toString()}
+                            >
+                              {`${patient.user.firstName} ${patient.user.lastName} (${patient._id})`}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                     <FormMessage />
