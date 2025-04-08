@@ -245,14 +245,9 @@ export default function AppointmentsPage() {
                             {appointment.purpose || 'General consultation'}
                           </TableCell>
                           <TableCell>
-                            <div className="space-y-1">
-                              <Badge variant="outline" className={`${statusColors.bg} ${statusColors.text}`}>
-                                Doctor: {appointment.doctorStatus?.charAt(0).toUpperCase() + appointment.doctorStatus?.slice(1)}
-                              </Badge>
-                              <Badge variant="outline" className={`${statusColors.bg} ${statusColors.text}`}>
-                                Patient: {appointment.patientStatus?.charAt(0).toUpperCase() + appointment.patientStatus?.slice(1)}
-                              </Badge>
-                            </div>
+                            <Badge variant="outline" className={`${statusColors.bg} ${statusColors.text}`}>
+                              {appointment.doctorStatus?.charAt(0).toUpperCase() + appointment.doctorStatus?.slice(1)}
+                            </Badge>
                           </TableCell>
                           <TableCell className="text-right">
                             {isUpcoming && (

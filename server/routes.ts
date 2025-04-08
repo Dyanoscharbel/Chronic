@@ -811,8 +811,22 @@ console.error('----------------------------------------');
   // Appointments routes
   apiRouter.get('/appointments', authenticate, async (req, res) => {
     try {
-      // Get all appointments
-      const appointments = await Appointment.find().populate('patient').populate('doctor');
+      // Get all appointments with full patient and doctor information
+      const appointments = await Appointment.find()
+        .populate({
+          path: 'patient',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName email'
+          }
+        })
+        .populate({
+          path: 'doctor',
+          populate: {
+            path: 'user',
+            select: 'firstName lastName specialty'
+          }
+        });
       
       // Check and update status for past appointments
       const now = new Date();
