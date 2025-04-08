@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'wouter';
 import { AvatarName } from '@/components/ui/avatar-name';
@@ -10,31 +11,36 @@ interface AppointmentsListProps {
 }
 
 export function AppointmentsList({ appointments }: AppointmentsListProps) {
+  const upcomingAppointments = appointments
+    .filter(apt => {
+      const appointmentDate = new Date(apt.appointmentDate);
+      const now = new Date();
+      return appointmentDate > now && apt.doctorStatus !== 'cancelled';
+    })
+    .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
+    .slice(0, 3);
+
   return (
     <Card className="bg-white shadow rounded-lg">
       <CardHeader className="py-4 px-6 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-medium text-gray-900">
-            Upcoming Appointments
+            Rendez-vous à venir
           </CardTitle>
           <Link 
             href="/appointments" 
             className="text-sm font-medium text-primary hover:text-primary-dark"
           >
-            View all
+            Voir tout
           </Link>
         </div>
       </CardHeader>
       
       <CardContent className="p-0">
         <ul className="divide-y divide-gray-200">
-          {appointments && appointments.length > 0 ? (
-            appointments
-              .filter(apt => new Date(apt.appointmentDate) > new Date() && apt.doctorStatus !== 'cancelled')
-              .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
-              .slice(0, 3)
-              .map((appointment) => (
-              <li key={appointment.id}>
+          {upcomingAppointments.length > 0 ? (
+            upcomingAppointments.map((appointment) => (
+              <li key={appointment._id}>
                 <div className="px-6 py-4 flex items-center">
                   <div className="min-w-0 flex-1 flex items-center">
                     {appointment.patient?.user && (
@@ -49,10 +55,10 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
                         <p className="text-sm font-medium text-gray-900 truncate">
                           {appointment.patient?.user
                             ? `${appointment.patient.user.firstName} ${appointment.patient.user.lastName}`
-                            : 'Unknown Patient'}
+                            : 'Patient inconnu'}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {appointment.purpose || 'General consultation'}
+                          {appointment.purpose || 'Consultation générale'}
                         </p>
                       </div>
                     </div>
@@ -72,12 +78,12 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
             ))
           ) : (
             <li className="px-6 py-8 text-center">
-              <p className="text-sm text-gray-500">No upcoming appointments</p>
+              <p className="text-sm text-gray-500">Aucun rendez-vous à venir</p>
               <Link 
                 href="/appointments/add" 
                 className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary-dark"
               >
-                Schedule an appointment
+                Planifier un rendez-vous
               </Link>
             </li>
           )}
