@@ -63,6 +63,10 @@ export default function PatientView({ id }: PatientViewProps) {
   const { user } = useAuth();
   const patientId = id?.toString();
 
+  // Dialog states
+  const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
+  const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
+
   // Query for patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${patientId}`],
@@ -76,9 +80,6 @@ export default function PatientView({ id }: PatientViewProps) {
       return response;
     },
   });
-
-  const [addLabResultDialogOpen, setAddLabResultDialogOpen] = useState(false);
-  const [addAppointmentDialogOpen, setAddAppointmentDialogOpen] = useState(false);
 
   // Si les données sont en cours de chargement, afficher un loader
   if (patientLoading) {
@@ -106,26 +107,6 @@ export default function PatientView({ id }: PatientViewProps) {
   // Ensure user data exists
   if (!patient.user) {
     return <PageLoader />;
-  }
-
-  // Wait for additional data to load
-  if (!labTests || !doctors) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[80vh]">
-        <Loader size="lg" />
-        <p className="mt-4 text-gray-600">Chargement des données complémentaires...</p>
-      </div>
-    );
-  }
-
-  // Wait for additional data to load
-  if (!labTests || !doctors) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[80vh]">
-        <Loader size="lg" />
-        <p className="mt-4 text-gray-600">Chargement des données complémentaires...</p>
-      </div>
-    );
   }
 
   const [patientDetailsDialogOpen, setPatientDetailsDialogOpen] = useState(false);
@@ -244,44 +225,6 @@ export default function PatientView({ id }: PatientViewProps) {
     setDoctorId('');
     setPurpose('');
   };
-
-  // Loading state for initial data fetch
-  if (patientLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[80vh]">
-        <Loader size="lg" />
-        <p className="mt-4 text-gray-600">Chargement des données patient...</p>
-      </div>
-    );
-  }
-
-  if (!patient || !patientId) {
-    return (
-      <div className="h-full flex flex-col items-center justify-center p-8">
-        <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Patient introuvable</h1>
-        <p className="text-gray-600 mb-4">Le patient que vous recherchez n'existe pas ou a été supprimé.</p>
-        <Button onClick={() => setLocation('/patients')}>
-          Retour à la liste des patients
-        </Button>
-      </div>
-    );
-  }
-
-  // Ensure user data exists
-  if (!patient.user) {
-    return <PageLoader />;
-  }
-
-  // Wait for additional data to load
-  if (!labTests || !doctors) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[80vh]">
-        <Loader size="lg" />
-        <p className="mt-4 text-gray-600">Chargement des données complémentaires...</p>
-      </div>
-    );
-  }
 
   // Wait for additional data to load
   if (!labTests || !doctors) {
@@ -936,42 +879,42 @@ export default function PatientView({ id }: PatientViewProps) {
 }
 
 // Functions that need access to component state
-  const handleLabResultSubmit = () => {
-    if (!labTestId || !resultValue || !resultDate || !patient?._id) {
-      toast({
-        title: 'Error',
-        description: 'Please fill all required fields',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    addLabResultMutation.mutate({
-      patient: patient._id,
-      doctor: user?.id,
-      labTest: labTestId,
-      resultValue: parseFloat(resultValue),
-      resultDate
+const handleLabResultSubmit = () => {
+  if (!labTestId || !resultValue || !resultDate || !patient?._id) {
+    toast({
+      title: 'Error',
+      description: 'Please fill all required fields',
+      variant: 'destructive',
     });
-  };
+    return;
+  }
 
-  const handleAppointmentSubmit = () => {
-    if (!appointmentDate || !appointmentTime || !doctorId || !purpose || !patient?._id) {
-      toast({
-        title: 'Error',
-        description: 'Please fill all required fields',
-        variant: 'destructive',
-      });
-      return;
-    }
+  addLabResultMutation.mutate({
+    patient: patient._id,
+    doctor: user?.id,
+    labTest: labTestId,
+    resultValue: parseFloat(resultValue),
+    resultDate
+  });
+};
 
-    const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
-
-    addAppointmentMutation.mutate({
-      patientId: patient._id,
-      doctorId,
-      appointmentDate: dateTime.toISOString(),
-      purpose,
-      status: 'pending'
+const handleAppointmentSubmit = () => {
+  if (!appointmentDate || !appointmentTime || !doctorId || !purpose || !patient?._id) {
+    toast({
+      title: 'Error',
+      description: 'Please fill all required fields',
+      variant: 'destructive',
     });
-  };
+    return;
+  }
+
+  const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
+
+  addAppointmentMutation.mutate({
+    patientId: patient._id,
+    doctorId,
+    appointmentDate: dateTime.toISOString(),
+    purpose,
+    status: 'pending'
+  });
+};
