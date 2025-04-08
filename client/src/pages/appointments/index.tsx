@@ -243,10 +243,32 @@ export default function AppointmentsPage() {
                   </TableHeader>
                   <TableBody>
                     {paginatedAppointments.map((appointment) => {
-                      const patient = getPatient(appointment.patientId);
+                      const patient = appointment.patient?.user;
                       const isUpcoming = new Date(appointment.appointmentDate) >= new Date();
-                      const isPending = appointment.status === 'pending';
-                      const isConfirmed = appointment.status === 'confirmed';
+                      const isPending = appointment.doctorStatus === 'pending';
+                      const isConfirmed = appointment.doctorStatus === 'confirmed';
+                      return (
+                        <TableRow key={appointment._id}>
+                          <TableCell>
+                            {formatDate(appointment.appointmentDate)} {formatTime(appointment.appointmentDate)}
+                          </TableCell>
+                          <TableCell>
+                            {patient ? `${patient.firstName} ${patient.lastName}` : 'Patient inconnu'}
+                          </TableCell>
+                          <TableCell>{appointment.purpose || 'Consultation générale'}</TableCell>
+                          <TableCell>
+                            <Badge variant={isPending ? 'outline' : isConfirmed ? 'default' : 'secondary'}>
+                              {isPending ? 'En attente' : isConfirmed ? 'Confirmé' : 'Complété'}
+                            </Badge>  
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="ghost" size="sm" onClick={() => deleteAppointment(appointment._id)}>
+                              Supprimer
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })} === 'confirmed';
 
                       return (
                         <TableRow key={appointment.id}>
