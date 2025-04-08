@@ -10,6 +10,8 @@ interface AppointmentsListProps {
 }
 
 export function AppointmentsList({ appointments }: AppointmentsListProps) {
+  console.log("Appointments received:", appointments); // Added for debugging
+
   const upcomingAppointments = appointments?.filter(apt => {
     const appointmentDate = new Date(apt.appointmentDate);
     const now = new Date();
@@ -38,7 +40,7 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
         <ul className="divide-y divide-gray-200">
           {upcomingAppointments?.length > 0 ? (
             upcomingAppointments.map((appointment) => (
-              <li key={appointment.id}>
+              <li key={appointment.id}> {/* Changed key to appointment.id */}
                 <div className="px-6 py-4 flex items-center">
                   <div className="min-w-0 flex-1 flex items-center">
                     {appointment.patient?.user && (
