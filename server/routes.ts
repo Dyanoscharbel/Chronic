@@ -811,8 +811,16 @@ console.error('----------------------------------------');
   // Appointments routes
   apiRouter.get('/appointments', authenticate, async (req, res) => {
     try {
-      // Get all appointments with full patient and doctor information
-      const appointments = await Appointment.find()
+      const userId = req.session.user?.id;
+
+      // Find the doctor associated with the connected user
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found for the connected user' });
+      }
+
+      // Get appointments for this doctor only
+      const appointments = await Appointment.find({ doctor: doctor._id })
         .populate({
           path: 'patient',
           populate: {
