@@ -835,14 +835,7 @@ console.error('----------------------------------------');
             select: 'firstName lastName specialty'
           }
         })
-        .sort({ appointmentDate: 1 })
-        .populate({
-          path: 'doctor',
-          populate: {
-            path: 'user',
-            select: 'firstName lastName specialty'
-          }
-        });
+        .sort({ appointmentDate: 1 });
 
       // Check and update status for past appointments
       const now = new Date();
