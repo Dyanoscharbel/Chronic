@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { 
-  Plus, Search, Filter, Calendar, Check, X, 
+  Plus, Search, Filter, Calendar, Check, X, Trash2,
   Calendar as CalendarIcon, FileText 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -84,6 +84,28 @@ export default function AppointmentsPage() {
   const handleStatusChange = (id: number, status: string) => {
     updateStatusMutation.mutate({ id, status });
   };
+
+  // Delete appointment mutation
+  const deleteAppointmentMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest('DELETE', `/api/appointments/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/appointments'] });
+      toast({
+        title: 'Rendez-vous supprimé',
+        description: 'Le rendez-vous a été supprimé avec succès',
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: 'Erreur',
+        description: error instanceof Error ? error.message : 'Échec de la suppression du rendez-vous',
+        variant: 'destructive',
+      });
+    },
+  });
+
 
   // Filter appointments based on search and filter
   const filteredAppointments = appointments?.filter(appointment => {
@@ -258,44 +280,59 @@ export default function AppointmentsPage() {
                             </Badge>
                           </TableCell>
                           <TableCell className="text-right">
-                            {isUpcoming && (
-                              <div className="flex justify-end gap-2">
-                                {isPending && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                    onClick={() => handleStatusChange(appointment.id, 'confirmed')}
-                                  >
-                                    <Check className="h-4 w-4 mr-1" />
-                                    Confirmer
-                                  </Button>
-                                )}
+                            <div className="flex justify-end gap-2">
+                              {isUpcoming && (
+                                <>
+                                  {isPending && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                      onClick={() => handleStatusChange(appointment.id, 'confirmed')}
+                                    >
+                                      <Check className="h-4 w-4 mr-1" />
+                                      Confirmer
+                                    </Button>
+                                  )}
 
-                                {(isPending || isConfirmed) && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                    onClick={() => handleStatusChange(appointment.id, 'cancelled')}
-                                  >
-                                    <X className="h-4 w-4 mr-1" />
-                                    Annuler
-                                  </Button>
-                                )}
+                                  {(isPending || isConfirmed) && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                      onClick={() => handleStatusChange(appointment.id, 'cancelled')}
+                                    >
+                                      <X className="h-4 w-4 mr-1" />
+                                      Annuler
+                                    </Button>
+                                  )}
 
-                                {isConfirmed && !isUpcoming && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleStatusChange(appointment.id, 'completed')}
-                                  >
-                                    <Check className="h-4 w-4 mr-1" />
-                                    Terminer
-                                  </Button>
-                                )}
-                              </div>
-                            )}
+                                  {isConfirmed && !isUpcoming && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleStatusChange(appointment.id, 'completed')}
+                                    >
+                                      <Check className="h-4 w-4 mr-1" />
+                                      Terminer
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                onClick={() => {
+                                  if (confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) {
+                                    deleteAppointmentMutation.mutate(appointment.id);
+                                  }
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                Supprimer
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       );
