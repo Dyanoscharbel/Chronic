@@ -130,7 +130,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                       </FormControl>
                       <SelectContent>
                         {patients?.map((patient) => (
-                          <SelectItem key={patient._id} value={patient._id}>
+                          <SelectItem key={patient._id} value={patient._id.toString()}>
                             {patient.user.firstName} {patient.user.lastName}
                           </SelectItem>
                         ))}
