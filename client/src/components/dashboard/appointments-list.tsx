@@ -28,8 +28,16 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
       
       <CardContent className="p-0">
         <ul className="divide-y divide-gray-200">
-          {appointments.length > 0 ? (
-            appointments.map((appointment) => (
+          {appointments
+            .filter(apt => new Date(apt.appointmentDate) > new Date())
+            .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
+            .slice(0, 3)
+            .length > 0 ? (
+            appointments
+              .filter(apt => new Date(apt.appointmentDate) > new Date())
+              .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
+              .slice(0, 3)
+              .map((appointment) => (
               <li key={appointment.id}>
                 <div className="px-6 py-4 flex items-center">
                   <div className="min-w-0 flex-1 flex items-center">
