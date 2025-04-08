@@ -300,44 +300,6 @@ export default function AppointmentsPage() {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
-                              {isUpcoming && (
-                                <>
-                                  {isPending && (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                      onClick={() => handleStatusChange(appointment._id, 'confirmed')}
-                                    >
-                                      <Check className="h-4 w-4 mr-1" />
-                                      Confirmer
-                                    </Button>
-                                  )}
-
-                                  {(isPending || isConfirmed) && (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                      onClick={() => handleStatusChange(appointment._id, 'cancelled')}
-                                    >
-                                      <X className="h-4 w-4 mr-1" />
-                                      Annuler
-                                    </Button>
-                                  )}
-
-                                  {isConfirmed && !isUpcoming && (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => handleStatusChange(appointment._id, 'completed')}
-                                    >
-                                      <Check className="h-4 w-4 mr-1" />
-                                      Terminer
-                                    </Button>
-                                  )}
-                                </>
-                              )}
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                   <Button variant="destructive" size="sm">
