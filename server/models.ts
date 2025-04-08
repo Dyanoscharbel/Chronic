@@ -49,8 +49,8 @@ const appointmentSchema = new mongoose.Schema({
   doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
   appointmentDate: { type: Date, required: true },
   purpose: String,
-  doctorStatus: { type: String, enum: ['pending', 'confirmed', 'cancelled'], default: 'pending' },
-  patientStatus: { type: String, enum: ['pending', 'confirmed', 'cancelled'], default: 'pending' }
+  doctorStatus: { type: String, enum: ['pending', 'confirmed', 'cancelled', 'completed'], default: 'pending' },
+  patientStatus: { type: String, enum: ['pending', 'confirmed', 'cancelled', 'completed'], default: 'pending' }
 });
 
 export const Appointment = mongoose.model('Appointment', appointmentSchema);

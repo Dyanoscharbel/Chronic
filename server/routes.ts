@@ -811,8 +811,22 @@ console.error('----------------------------------------');
   // Appointments routes
   apiRouter.get('/appointments', authenticate, async (req, res) => {
     try {
-      const appointments = await storage.getAppointments();
-      res.json(appointments);
+      // Get all appointments
+      const appointments = await Appointment.find().populate('patient').populate('doctor');
+      
+      // Check and update status for past appointments
+      const now = new Date();
+      const updatedAppointments = await Promise.all(appointments.map(async (appointment) => {
+        if (appointment.doctorStatus === 'confirmed' && appointment.patientStatus === 'confirmed' && 
+            new Date(appointment.appointmentDate) < now) {
+          appointment.doctorStatus = 'completed';
+          appointment.patientStatus = 'completed';
+          await appointment.save();
+        }
+        return appointment;
+      }));
+
+      res.json(updatedAppointments);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
     }
