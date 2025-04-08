@@ -58,17 +58,43 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
 
   const createAppointmentMutation = useMutation({
     mutationFn: async (data: AppointmentFormData) => {
-      if (!data.patientId || !data.appointmentDate || !data.appointmentTime || !data.purpose) {
-        throw new Error('Veuillez remplir tous les champs obligatoires');
+      // Validation des données
+      if (!data.patientId) {
+        throw new Error('Veuillez sélectionner un patient');
+      }
+      if (!data.appointmentDate) {
+        throw new Error('Veuillez choisir une date');
+      }
+      if (!data.appointmentTime) {
+        throw new Error('Veuillez choisir une heure');
+      }
+      if (!data.purpose) {
+        throw new Error('Veuillez indiquer le motif du rendez-vous');
       }
 
-      const dateTime = new Date(`${data.appointmentDate}T${data.appointmentTime}`);
-
-      return apiRequest('POST', '/api/appointments', {
+      console.log('Données du formulaire:', {
         patientId: data.patientId,
-        appointmentDate: dateTime.toISOString(),
-        purpose: data.purpose || 'Consultation générale'
+        date: data.appointmentDate,
+        time: data.appointmentTime,
+        purpose: data.purpose
       });
+
+      const dateTime = new Date(`${data.appointmentDate}T${data.appointmentTime}`);
+      
+      // Vérifier si la date est dans le passé
+      if (dateTime < new Date()) {
+        throw new Error('La date du rendez-vous ne peut pas être dans le passé');
+      }
+
+      // Envoyer la requête
+      const response = await apiRequest('POST', '/api/appointments', {
+        patientId: data.patientId.toString(), // Assurer que l'ID est une chaîne
+        appointmentDate: dateTime.toISOString(),
+        purpose: data.purpose.trim()
+      });
+
+      console.log('Réponse du serveur:', response);
+      return response;
     },
     onSuccess: () => {
       toast({
