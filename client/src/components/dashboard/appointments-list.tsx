@@ -33,18 +33,18 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
               <li key={appointment.id}>
                 <div className="px-6 py-4 flex items-center">
                   <div className="min-w-0 flex-1 flex items-center">
-                    {appointment.patient && (
+                    {appointment.patient?.user && (
                       <AvatarName
-                        firstName={appointment.patient.firstName}
-                        lastName={appointment.patient.lastName}
-                        initials={appointment.patient.initials}
+                        firstName={appointment.patient.user.firstName}
+                        lastName={appointment.patient.user.lastName}
+                        initials={`${appointment.patient.user.firstName[0]}${appointment.patient.user.lastName[0]}`}
                       />
                     )}
                     <div className="min-w-0 flex-1 px-4">
                       <div>
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {appointment.patient
-                            ? `${appointment.patient.firstName} ${appointment.patient.lastName}`
+                          {appointment.patient?.user
+                            ? `${appointment.patient.user.firstName} ${appointment.patient.user.lastName}`
                             : 'Unknown Patient'}
                         </p>
                         <p className="text-sm text-gray-500">
