@@ -75,13 +75,17 @@ export default function PatientView({ id }: PatientViewProps) {
         setLocation('/patients');
         throw new Error('Invalid patient ID');
       }
+      console.log('Fetching patient data for ID:', id);
       const response = await apiRequest('GET', `/api/patients/${id}`);
+      console.log('Patient data received:', response);
       return response;
     },
   });
 
+  console.log('Current patient data:', patient);
+
   // Si les données sont en cours de chargement, afficher un loader
-  if (patientLoading) {
+  if (patientLoading || !patient) {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh]">
         <Loader size="lg" />
@@ -90,7 +94,7 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  if (!patient || !id) {
+  if (!id) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
