@@ -882,22 +882,13 @@ console.error('----------------------------------------');
         if (!doctor || !doctor._id.equals(appointment.doctor)) {
           return res.status(403).json({ message: 'Not authorized' });
         }
-        appointment.status = 'doctor_confirmed';
+        appointment.doctorStatus = status;
       } else if (userType === 'patient') {
         const patient = await Patient.findOne({ user: userId });
         if (!patient || !patient._id.equals(appointment.patient)) {
           return res.status(403).json({ message: 'Not authorized' });
         }
-        appointment.status = 'patient_confirmed';
-      }
-
-      // Si les deux ont confirmé
-      if (appointment.status === 'doctor_confirmed' || appointment.status === 'patient_confirmed') {
-        const existingStatus = appointment.status;
-        if ((existingStatus === 'doctor_confirmed' && userType === 'patient') ||
-            (existingStatus === 'patient_confirmed' && userType === 'doctor')) {
-          appointment.status = 'confirmed';
-        }
+        appointment.patientStatus = status;
       }
 
       await appointment.save();
