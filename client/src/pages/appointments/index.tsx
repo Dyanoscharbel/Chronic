@@ -113,13 +113,6 @@ export default function AppointmentsPage() {
         description: 'Le rendez-vous a été supprimé avec succès',
       });
     },
-    onError: (error: any) => {
-      toast({
-        title: 'Erreur',
-        description: "Une erreur est survenue lors de la suppression",
-        variant: 'destructive',
-      });
-    }
     onError: (error) => {
       toast({
         title: 'Erreur',
