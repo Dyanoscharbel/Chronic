@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link, useLocation } from 'wouter';
+import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { apiRequest } from '@/lib/queryClient';
@@ -51,6 +51,7 @@ import {
   getStatusColor,
 } from '@/lib/utils';
 import { determineProgressionRisk } from '@/lib/ckd-utils';
+import { Link } from 'wouter';
 
 interface PatientViewProps {
   id: string;
@@ -69,21 +70,17 @@ export default function PatientView({ id }: PatientViewProps) {
   // Query for patient data
   const { data: patient, isLoading: patientLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${id}`],
-    enabled: !!id && id !== 'undefined',
+    enabled: !!id,
     queryFn: async () => {
-      if (!id || id === 'undefined') {
+      if (!id) {
         setLocation('/patients');
         throw new Error('Invalid patient ID');
       }
       const response = await apiRequest('GET', `/api/patients/${id}`);
-      if (!response) {
-        throw new Error('Patient data not found');
-      }
-      return response.data || response;
+      return response.data;
     },
   });
 
-  console.log('Current patient data:', patient);
 
   // Si les données sont en cours de chargement, afficher un loader
   if (patientLoading) {
@@ -95,7 +92,7 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  if (!id || !patient || Object.keys(patient).length === 0) {
+  if (!patient || !patient.user) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8">
         <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
@@ -108,10 +105,6 @@ export default function PatientView({ id }: PatientViewProps) {
     );
   }
 
-  // Ensure user data exists
-  if (!patient.user) {
-    return <PageLoader />;
-  }
 
   const [patientDetailsDialogOpen, setPatientDetailsDialogOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState('lab-results');
@@ -291,7 +284,7 @@ export default function PatientView({ id }: PatientViewProps) {
           <Link href={`/patients/edit/${patient._id}`}>
             <Button variant="outline" className="flex items-center gap-2">
               <Edit className="h-4 w-4" />
-              <span>Edit Profile</span>
+              <span>Modifier le profil</span>
             </Button>
           </Link>
         </div>
@@ -321,7 +314,7 @@ export default function PatientView({ id }: PatientViewProps) {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-500">Date de naissance</span>
-                <span>{formatDate(patient.birthDate)}</span>
+                <span>{formatDate(patient.birthDate)} ({age} ans)</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Genre</span>
@@ -346,7 +339,7 @@ export default function PatientView({ id }: PatientViewProps) {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Stade IRC</span>
-                <span>{patient.ckdStage}</span>
+                <span>{patient.ckdStage || 'Non défini'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">eGFR</span>
@@ -434,7 +427,9 @@ export default function PatientView({ id }: PatientViewProps) {
                       <p className="font-semibold">{formatDate(appointment.appointmentDate)} à {formatTime(appointment.appointmentDate)}</p>
                       <p className="text-gray-500">{appointment.purpose}</p>
                     </div>
-                    <Badge className={`${getStatusColor(appointment.status).bg} ${getStatusColor(appointment.status).text}`}>{appointment.status}</Badge>
+                    <Badge className={`${getStatusColor(appointment.status).bg} ${getStatusColor(appointment.status).text}`}>
+                      {appointment.status}
+                    </Badge>
                   </div>
                 </div>
               ))}
@@ -447,7 +442,9 @@ export default function PatientView({ id }: PatientViewProps) {
                       <p className="font-semibold">{formatDate(appointment.appointmentDate)} à {formatTime(appointment.appointmentDate)}</p>
                       <p className="text-gray-500">{appointment.purpose}</p>
                     </div>
-                    <Badge className={`${getStatusColor(appointment.status).bg} ${getStatusColor(appointment.status).text}`}>{appointment.status}</Badge>
+                    <Badge className={`${getStatusColor(appointment.status).bg} ${getStatusColor(appointment.status).text}`}>
+                      {appointment.status}
+                    </Badge>
                   </div>
                 </div>
               ))}
