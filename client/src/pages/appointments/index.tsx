@@ -31,6 +31,18 @@ import { Loader } from '@/components/ui/loader';
 import { Appointment, Patient, Doctor } from '@/lib/types';
 import { formatDate, formatTime } from '@/lib/utils';
 import { apiRequest } from '@/lib/queryClient';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
 
 export default function AppointmentsPage() {
   const { toast } = useToast();
@@ -319,18 +331,31 @@ export default function AppointmentsPage() {
                                   )}
                                 </>
                               )}
-                              <Button 
-                                variant="destructive" 
-                                size="sm"
-                                onClick={() => {
-                                  if (confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) {
-                                    deleteAppointmentMutation.mutate(appointment.id);
-                                  }
-                                }}
-                              >
-                                <Trash2 className="h-4 w-4 mr-1" />
-                                Supprimer
-                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="destructive" size="sm">
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    Supprimer
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Êtes-vous sûr de vouloir supprimer ce rendez-vous ? Cette action ne peut pas être annulée.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => deleteAppointmentMutation.mutate(appointment.id)}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                      Supprimer
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                           </TableCell>
                         </TableRow>
