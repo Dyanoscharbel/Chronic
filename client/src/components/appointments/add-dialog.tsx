@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
@@ -30,11 +29,11 @@ interface AddAppointmentDialogProps {
 export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointmentDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  
+
   const { data: patients, isLoading: patientsLoading } = useQuery<Patient[]>({
     queryKey: ['/api/patients'],
   });
-  
+
   const form = useForm<AppointmentFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,11 +50,11 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
       form.reset();
     }
   }, [isOpen, form]);
-  
+
   const createAppointmentMutation = useMutation({
     mutationFn: async (data: AppointmentFormData) => {
       const dateTime = new Date(`${data.appointmentDate}T${data.appointmentTime}`);
-      
+
       return apiRequest('POST', '/api/appointments', {
         patientId: data.patientId,
         appointmentDate: dateTime.toISOString(),
@@ -79,16 +78,16 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
       });
     }
   });
-  
+
   const onSubmit = (data: AppointmentFormData) => {
     createAppointmentMutation.mutate(data);
   };
-  
+
   const isPastDate = (date: string, time: string) => {
     const selectedDate = new Date(`${date}T${time}`);
     return selectedDate < new Date();
   };
-  
+
   const watchDate = form.watch('appointmentDate');
   const watchTime = form.watch('appointmentTime');
 
@@ -136,7 +135,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   </FormItem>
                 )}
               />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -151,7 +150,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="appointmentTime"
@@ -166,7 +165,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   )}
                 />
               </div>
-              
+
               {isPastDate(watchDate, watchTime) && (
                 <div className="rounded-md bg-yellow-50 p-4">
                   <div className="flex">
@@ -176,7 +175,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   </div>
                 </div>
               )}
-              
+
               <FormField
                 control={form.control}
                 name="purpose"
@@ -197,7 +196,7 @@ export default function AddAppointmentDialog({ isOpen, onClose }: AddAppointment
                   </FormItem>
                 )}
               />
-            
+
               <DialogFooter>
                 <Button
                   type="button"
