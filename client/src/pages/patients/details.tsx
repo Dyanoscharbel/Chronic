@@ -195,7 +195,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                         return <Badge variant="secondary">Non défini</Badge>;
                       })()}
                     </TableCell>
-                    <TableCell className="text-gray-500">{result.comment || '-'}</TableCell>
+                    <TableCell className="text-gray-500">{result.comment || ''}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
