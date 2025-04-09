@@ -1,4 +1,3 @@
-
 import React, { ReactNode } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Link } from 'wouter';
