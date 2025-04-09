@@ -80,12 +80,6 @@ export function AppointmentsList() {
           ) : (
             <li className="px-6 py-8 text-center">
               <p className="text-sm text-gray-500">Aucun résultat de laboratoire disponible</p>
-              <Link 
-                href="/lab-results/add" 
-                className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary-dark"
-              >
-                Ajouter un nouveau résultat
-              </Link>
             </li>
           )}
         </ul>
