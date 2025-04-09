@@ -320,11 +320,8 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
                           <Input
                             className="w-24"
                             value={req.alert.unit}
-                            onChange={(e) => {
-                              const updated = [...workflowData.requirements];
-                              updated[index].alert.unit = e.target.value;
-                              setWorkflowData({ ...workflowData, requirements: updated });
-                            }}
+                            readOnly
+                            disabled
                             placeholder="Unité"
                           />
                         </div>
@@ -344,7 +341,6 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
                           <SelectContent>
                             <SelectItem value="Notification">Notification</SelectItem>
                             <SelectItem value="Email">Email</SelectItem>
-                            <SelectItem value="SMS">SMS</SelectItem>
                           </SelectContent>
                         </Select>
                       </TableCell>
