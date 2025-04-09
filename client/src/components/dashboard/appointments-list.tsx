@@ -1,31 +1,42 @@
-
 import React from 'react';
 import { Link } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDate } from '@/lib/utils';
 import { PatientLabResult } from '@/lib/types';
+import { useQuery } from '@tanstack/react-query'; // Import useQuery
+import Loader from '@/components/Loader'; //Import Loader component
+
 
 interface LabResultsListProps {
   labResults: PatientLabResult[];
 }
 
-export function AppointmentsList({ labResults }: LabResultsListProps) {
+export function AppointmentsList() {
+  const { data: labResults, isLoading } = useQuery({
+    queryKey: ['/api/patient-lab-results'],
+    refetchInterval: 5000
+  });
+
   const recentResults = labResults?.sort((a, b) => 
     new Date(b.resultDate).getTime() - new Date(a.resultDate).getTime()
   ).slice(0, 3) || [];
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Card className="bg-white shadow rounded-lg">
       <CardHeader className="py-4 px-6 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-medium text-gray-900">
-            Recent Lab Results
+            Derniers résultats de laboratoire
           </CardTitle>
           <Link 
             href="/lab-results" 
             className="text-sm font-medium text-primary hover:text-primary-dark"
           >
-            View all
+            Voir tous
           </Link>
         </div>
       </CardHeader>
@@ -62,8 +73,8 @@ export function AppointmentsList({ labResults }: LabResultsListProps) {
                       result.resultValue < result.labTest.normalMin ? 'text-red-600' :
                       'text-green-600'
                     }`}>
-                      {result.resultValue > result.labTest.normalMax ? 'Above Normal' :
-                       result.resultValue < result.labTest.normalMin ? 'Below Normal' :
+                      {result.resultValue > result.labTest.normalMax ? 'Au-dessus de la normale' :
+                       result.resultValue < result.labTest.normalMin ? 'En dessous de la normale' :
                        'Normal'}
                     </p>
                   </div>
@@ -72,12 +83,12 @@ export function AppointmentsList({ labResults }: LabResultsListProps) {
             ))
           ) : (
             <li className="px-6 py-8 text-center">
-              <p className="text-sm text-gray-500">No lab results available</p>
+              <p className="text-sm text-gray-500">Aucun résultat de laboratoire disponible</p>
               <Link 
                 href="/lab-results/add" 
                 className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary-dark"
               >
-                Add new lab result
+                Ajouter un nouveau résultat
               </Link>
             </li>
           )}
