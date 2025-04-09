@@ -1157,27 +1157,23 @@ console.error('----------------------------------------');
       const userId = (req as any).session.user?.id || (req as any).user.id;
       const doctor = await Doctor.findOne({ user: userId });
 
-      const workflow = await storage.createWorkflow({
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found' });
+      }
+
+      const workflow = new Workflow({
         name,
         description,
         ckdStage,
-        createdBy: doctor._id
+        createdBy: doctor._id,
+        requirements
       });
 
-      // Add requirements if provided
-      const createdRequirements = [];
-      if (requirements && Array.isArray(requirements)) {
-        for (const req of requirements) {
-          const requirement = await storage.addWorkflowRequirement({
-            ...req,
-            workflowId: workflow.id
-          });
-          createdRequirements.push(requirement);
-        }
-      }
+      await workflow.save();
 
-      res.status(201).json({ ...workflow, requirements: createdRequirements });
+      res.status(201).json(workflow);
     } catch (error) {
+      console.error('Error creating workflow:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });

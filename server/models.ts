@@ -70,3 +70,23 @@ const notificationSchema = new mongoose.Schema({
 });
 
 export const Notification = mongoose.model('Notification', notificationSchema);
+
+const workflowSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: String,
+  ckdStage: { type: String, enum: ['Stage 1', 'Stage 2', 'Stage 3A', 'Stage 3B', 'Stage 4', 'Stage 5'] },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
+  requirements: [{
+    testName: { type: String, required: true },
+    frequency: { type: String, required: true },
+    alert: {
+      type: { type: String, enum: ['Inférieur à', 'Supérieur à'], required: true },
+      value: { type: String, required: true },
+      unit: String
+    },
+    action: { type: String, enum: ['Notification', 'Email'], required: true }
+  }],
+  createdAt: { type: Date, default: Date.now }
+});
+
+export const Workflow = mongoose.model('Workflow', workflowSchema);
