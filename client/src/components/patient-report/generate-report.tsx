@@ -30,11 +30,11 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
   const [open, setOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [reportSections, setReportSections] = useState<ReportSection[]>([
-    { id: "personalInfo", name: "Personal Information", enabled: true },
-    { id: "medicalHistory", name: "Medical History", enabled: true },
-    { id: "labResults", name: "Laboratory Results", enabled: true },
-    { id: "appointments", name: "Appointments", enabled: true },
-    { id: "riskAssessment", name: "Risk Assessment", enabled: true }
+    { id: "personalInfo", name: "Informations personnelles", enabled: true },
+    { id: "medicalHistory", name: "Historique médical", enabled: true },
+    { id: "labResults", name: "Résultats de laboratoire", enabled: true },
+    { id: "appointments", name: "Rendez-vous", enabled: true },
+    { id: "riskAssessment", name: "Évaluation des risques", enabled: true }
   ]);
   const [reportGenerated, setReportGenerated] = useState(false);
 
@@ -364,25 +364,25 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
         {trigger || (
           <Button variant="outline" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
-            <span>Generate Report</span>
+            <span>Générer un rapport</span>
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Generate Patient Report</DialogTitle>
+          <DialogTitle>Générer un rapport patient</DialogTitle>
           <DialogDescription>
             {patient.user ? (
-              <>Create a comprehensive PDF report for <span className="font-medium text-foreground">{patient.user.firstName} {patient.user.lastName}</span></>
+              <>Créer un rapport PDF complet pour <span className="font-medium text-foreground">{patient.user.firstName} {patient.user.lastName}</span></>
             ) : (
-              'Create a comprehensive patient report'
+              'Créer un rapport patient complet'
             )}
           </DialogDescription>
         </DialogHeader>
 
         <div className="mt-4 space-y-6">
           <div>
-            <h3 className="mb-4 text-sm font-medium leading-none">Report Sections:</h3>
+            <h3 className="mb-4 text-sm font-medium leading-none">Sections du rapport :</h3>
             <div className="rounded-md border bg-card p-4 space-y-4">
               {reportSections.map((section) => (
                 <div key={section.id} className="flex items-center space-x-3">
@@ -426,16 +426,16 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
             onClick={() => setOpen(false)}
             disabled={generating}
           >
-            Cancel
+            Annuler
           </Button>
           <Button type="submit" onClick={generatePDF} disabled={generating}>
             {generating ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Generating...
+                Génération en cours...
               </>
             ) : (
-              'Generate Report'
+              'Générer le rapport'
             )}
           </Button>
         </DialogFooter>
