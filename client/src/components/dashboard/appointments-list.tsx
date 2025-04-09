@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'wouter';
 import { AvatarName } from '@/components/ui/avatar-name';
@@ -10,24 +11,14 @@ interface AppointmentsListProps {
 }
 
 export function AppointmentsList({ appointments }: AppointmentsListProps) {
-  console.log("Raw appointments received:", appointments);
-  
-  // Convert Mongoose document to plain object if needed
-  const appointmentsArray = Array.isArray(appointments) 
-    ? appointments.map(apt => apt.toObject ? apt.toObject() : apt)
-    : [];
-  
-  if (!appointmentsArray.length) {
-    console.log("No appointments found");
-  }
-
-  const upcomingAppointments = appointments.filter(apt => {
-    const appointmentDate = new Date(apt.appointmentDate);
-    const now = new Date();
-    return appointmentDate > now && apt.doctorStatus !== 'cancelled';
-  })
-  .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
-  .slice(0, 3);
+  const upcomingAppointments = appointments
+    .filter(apt => {
+      const appointmentDate = new Date(apt.appointmentDate);
+      const now = new Date();
+      return appointmentDate > now && apt.doctorStatus !== 'cancelled';
+    })
+    .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
+    .slice(0, 3);
 
   return (
     <Card className="bg-white shadow rounded-lg">
@@ -49,7 +40,7 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
         <ul className="divide-y divide-gray-200">
           {upcomingAppointments?.length > 0 ? (
             upcomingAppointments.map((appointment) => (
-              <li key={appointment.id}> {/* Changed key to appointment.id */}
+              <li key={appointment._id}>
                 <div className="px-6 py-4 flex items-center">
                   <div className="min-w-0 flex-1 flex items-center">
                     {appointment.patient?.user && (
