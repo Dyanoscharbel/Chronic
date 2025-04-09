@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getCKDStageColor, calculateAge, formatDate, formatTime } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { GenerateReport } from '@/components/patient-report/generate-report';
 
 interface PatientDetailsProps {
   id: string;
@@ -54,10 +55,13 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            {patient.user.firstName} {patient.user.lastName}
-          </h1>
-          <p className="text-gray-500">ID: P-{patient._id.toString().padStart(5, '0')}</p>
+          <div className="flex flex-col">
+            <h1 className="text-3xl font-bold text-gray-900">
+              {patient.user.firstName} {patient.user.lastName}
+            </h1>
+            <p className="text-gray-500">ID: P-{patient._id.toString().padStart(5, '0')}</p>
+          </div>
+          <GenerateReport patient={patient} />
         </div>
       </div>
 
