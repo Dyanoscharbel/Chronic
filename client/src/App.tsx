@@ -9,6 +9,7 @@ import Dashboard from "@/pages/dashboard";
 import PatientsPage from "@/pages/patients/index";
 
 import PatientAddEdit from "@/pages/patients/add-edit";
+import PatientDetails from "@/pages/patients/details";
 import LabResultsPage from "@/pages/lab-results/index";
 import LabResultAdd from "@/pages/lab-results/add";
 import AppointmentsPage from "@/pages/appointments/index";
