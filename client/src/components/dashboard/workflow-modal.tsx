@@ -21,6 +21,10 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  const { data: labTests } = useQuery<LabTest[]>({
+    queryKey: ['/api/lab-tests'],
+  });
+
   const [workflowData, setWorkflowData] = useState<{
     name: string;
     type: string;
@@ -41,12 +45,12 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
     description: '',
     requirements: [
       {
-        testName: 'DFG (eGFR)',
+        testName: '',
         frequency: 'Tous les 3 mois',
         alert: {
           type: 'Inférieur à',
-          value: '30',
-          unit: 'mL/min/1.73m²'
+          value: '',
+          unit: ''
         },
         action: 'Notification'
       }
@@ -228,15 +232,42 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
                   {workflowData.requirements.map((req, index) => (
                     <TableRow key={index}>
                       <TableCell>
-                        <Input
+                        <Select
                           value={req.testName}
-                          onChange={(e) => {
+                          onValueChange={(value) => {
                             const updated = [...workflowData.requirements];
-                            updated[index].testName = e.target.value;
+                            const selectedTest = labTests?.find(test => test.testName === value);
+                            updated[index] = {
+                              ...updated[index],
+                              testName: value,
+                              alert: {
+                                ...updated[index].alert,
+                                unit: selectedTest?.unit || ''
+                              }
+                            };
                             setWorkflowData({ ...workflowData, requirements: updated });
                           }}
-                          placeholder="Nom du test"
-                        />
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner un test" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {labTests?.map((test) => (
+                              <SelectItem 
+                                key={test._id} 
+                                value={test.testName}
+                                className="flex flex-col items-start py-3"
+                              >
+                                <div className="font-medium">{test.testName}</div>
+                                {test.description && (
+                                  <div className="text-sm text-gray-500 mt-1">
+                                    {test.description}
+                                  </div>
+                                )}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </TableCell>
                       <TableCell>
                         <Select
