@@ -1,17 +1,17 @@
+
 import React from 'react';
 import { Link } from 'wouter';
-import { AvatarName } from '@/components/ui/avatar-name';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatDate, formatTime } from '@/lib/utils';
-import { Appointment } from '@/lib/types';
+import { formatDate } from '@/lib/utils';
+import { PatientLabResult } from '@/lib/types';
 
-interface AppointmentsListProps {
-  appointments: Appointment[];
+interface LabResultsListProps {
+  labResults: PatientLabResult[];
 }
 
-export function AppointmentsList({ appointments }: AppointmentsListProps) {
-  const upcomingAppointments = appointments?.sort((a, b) => 
-    new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime()
+export function AppointmentsList({ labResults }: LabResultsListProps) {
+  const recentResults = labResults?.sort((a, b) => 
+    new Date(b.resultDate).getTime() - new Date(a.resultDate).getTime()
   ).slice(0, 3) || [];
 
   return (
@@ -19,10 +19,10 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
       <CardHeader className="py-4 px-6 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-medium text-gray-900">
-            Upcoming Appointments
+            Recent Lab Results
           </CardTitle>
           <Link 
-            href="/appointments" 
+            href="/lab-results" 
             className="text-sm font-medium text-primary hover:text-primary-dark"
           >
             View all
@@ -32,49 +32,39 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
 
       <CardContent className="p-0">
         <ul className="divide-y divide-gray-200">
-          {upcomingAppointments?.length > 0 ? (
-            upcomingAppointments.map((appointment) => (
-              <li key={appointment._id} className="hover:bg-gray-50"> {/* Added unique key */}
+          {recentResults?.length > 0 ? (
+            recentResults.map((result) => (
+              <li key={result._id} className="hover:bg-gray-50">
                 <div className="px-6 py-4 flex items-center">
                   <div className="min-w-0 flex-1 flex items-center">
-                    {appointment.patient && appointment.patient.user && (
-                      <AvatarName
-                        firstName={appointment.patient.user.firstName}
-                        lastName={appointment.patient.user.lastName}
-                        initials={`${appointment.patient.user.firstName[0]}${appointment.patient.user.lastName[0]}`}
-                      />
-                    )}
-                    <div className="min-w-0 flex-1 px-4">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {appointment.patient && appointment.patient.user ? (
-                            `${appointment.patient.user.firstName} ${appointment.patient.user.lastName}`
-                          ) : (
-                            'Unknown Patient'
-                          )}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {appointment.purpose || 'General consultation'}
-                        </p>
+                    {result.patient && result.patient.user && (
+                      <div className="min-w-0 flex-1 px-4">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {result.patient.user.firstName} {result.patient.user.lastName}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {result.labTest.testName}
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                   <div className="ml-6 flex flex-col items-end">
                     <p className="text-sm font-medium text-gray-900">
-                      {formatDate(appointment.appointmentDate)}
+                      {result.resultValue} {result.labTest.unit}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {formatTime(appointment.appointmentDate)}
+                      {formatDate(result.resultDate)}
                     </p>
                     <p className={`text-xs mt-1 ${
-                      appointment.doctorStatus === 'confirmed' ? 'text-green-600' :
-                      appointment.doctorStatus === 'cancelled' ? 'text-red-600' :
-                      'text-yellow-600'
-                    }`}> {/* Changed status to doctorStatus */}
-                      {appointment.doctorStatus ? 
-                        appointment.doctorStatus.charAt(0).toUpperCase() + appointment.doctorStatus.slice(1)
-                        : 'Pending'
-                      }
+                      result.resultValue > result.labTest.normalMax ? 'text-red-600' :
+                      result.resultValue < result.labTest.normalMin ? 'text-red-600' :
+                      'text-green-600'
+                    }`}>
+                      {result.resultValue > result.labTest.normalMax ? 'Above Normal' :
+                       result.resultValue < result.labTest.normalMin ? 'Below Normal' :
+                       'Normal'}
                     </p>
                   </div>
                 </div>
@@ -82,12 +72,12 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
             ))
           ) : (
             <li className="px-6 py-8 text-center">
-              <p className="text-sm text-gray-500">No upcoming appointments</p>
+              <p className="text-sm text-gray-500">No lab results available</p>
               <Link 
-                href="/appointments/add" 
+                href="/lab-results/add" 
                 className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary-dark"
               >
-                Schedule an appointment
+                Add new lab result
               </Link>
             </li>
           )}
