@@ -28,7 +28,12 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
     enabled: !!id,
   });
 
-  if (patientLoading || resultsLoading) {
+  const { data: appointments = [], isLoading: appointmentsLoading } = useQuery<Appointment[]>({
+    queryKey: [`/api/appointments/patient/${id}`],
+    enabled: !!id,
+  });
+
+  if (patientLoading || resultsLoading || appointmentsLoading) {
     return <PageLoader />;
   }
 
@@ -137,6 +142,66 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-primary" />
+            <CardTitle>Rendez-vous</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Heure</TableHead>
+                <TableHead>Motif</TableHead>
+                <TableHead>Statut</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {appointments?.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center text-gray-500">
+                    Aucun rendez-vous programmé
+                  </TableCell>
+                </TableRow>
+              ) : (
+                appointments?.map((appointment) => (
+                  <TableRow key={appointment._id}>
+                    <TableCell>{formatDate(appointment.appointmentDate)}</TableCell>
+                    <TableCell>{formatTime(appointment.appointmentDate)}</TableCell>
+                    <TableCell>{appointment.purpose}</TableCell>
+                    <TableCell>
+                      {appointment.doctorStatus === 'pending' && (
+                        <Badge variant="outline" className="bg-yellow-50 text-yellow-600">
+                          En attente
+                        </Badge>
+                      )}
+                      {appointment.doctorStatus === 'confirmed' && (
+                        <Badge variant="outline" className="bg-green-50 text-green-600">
+                          Confirmé
+                        </Badge>
+                      )}
+                      {appointment.doctorStatus === 'cancelled' && (
+                        <Badge variant="outline" className="bg-red-50 text-red-600">
+                          Annulé
+                        </Badge>
+                      )}
+                      {appointment.doctorStatus === 'completed' && (
+                        <Badge variant="outline" className="bg-blue-50 text-blue-600">
+                          Terminé
+                        </Badge>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
