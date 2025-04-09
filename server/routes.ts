@@ -1154,19 +1154,14 @@ console.error('----------------------------------------');
     try {
       const { name, description, ckdStage, requirements } = req.body;
 
-      // Get doctor ID (assuming the authenticated user is a doctor)
       const userId = (req as any).session.user?.id || (req as any).user.id;
-      const doctor = await storage.getDoctorByUserId(userId);
-
-      if (!doctor) {
-        return res.status(403).json({ message: 'Only doctors can create workflows' });
-      }
+      const doctor = await Doctor.findOne({ user: userId });
 
       const workflow = await storage.createWorkflow({
         name,
         description,
         ckdStage,
-        createdBy: doctor.id
+        createdBy: doctor._id
       });
 
       // Add requirements if provided
