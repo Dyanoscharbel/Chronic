@@ -12,7 +12,7 @@ interface AppointmentsListProps {
 
 export function AppointmentsList({ appointments }: AppointmentsListProps) {
   const upcomingAppointments = appointments?.sort((a, b) => 
-    new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime()
+    new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime()
   ).slice(0, 3) || [];
 
   return (
@@ -38,7 +38,7 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
               <li key={appointment._id}>
                 <div className="px-6 py-4 flex items-center">
                   <div className="min-w-0 flex-1 flex items-center">
-                    {appointment.patient?.user && (
+                    {appointment.patient && appointment.patient.user && (
                       <AvatarName
                         firstName={appointment.patient.user.firstName}
                         lastName={appointment.patient.user.lastName}
@@ -48,12 +48,12 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
                     <div className="min-w-0 flex-1 px-4">
                       <div>
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {appointment.patient?.user
+                          {appointment.patient && appointment.patient.user
                             ? `${appointment.patient.user.firstName} ${appointment.patient.user.lastName}`
                             : 'Unknown Patient'}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {appointment.purpose || 'General consultation'}
+                          {appointment.purpose || 'Consultation générale'}
                         </p>
                       </div>
                     </div>
