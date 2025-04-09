@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, X } from 'lucide-react';
-import { Workflow, WorkflowRequirement } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -28,68 +28,53 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
     requirements: {
       testName: string;
       frequency: string;
-      alertThresholdType: string;
-      alertThresholdValue: string;
-      alertThresholdUnit: string;
+      alert: {
+        type: string;
+        value: string;
+        unit: string;
+      };
       action: string;
     }[];
   }>({
     name: '',
-    type: 'CKD Stage 3A Monitoring',
+    type: 'Stage 3A',
     description: '',
     requirements: [
       {
-        testName: 'eGFR',
-        frequency: 'Every 3 months',
-        alertThresholdType: 'Below',
-        alertThresholdValue: '30',
-        alertThresholdUnit: 'mL/min',
-        action: 'Alert Only'
-      },
-      {
-        testName: 'Urine Albumin-to-Creatinine',
-        frequency: 'Every 6 months',
-        alertThresholdType: 'Above',
-        alertThresholdValue: '300',
-        alertThresholdUnit: 'mg/g',
-        action: 'Alert Only'
-      },
-      {
-        testName: 'Blood Pressure',
-        frequency: 'Every visit',
-        alertThresholdType: 'Above',
-        alertThresholdValue: '140/90',
-        alertThresholdUnit: 'mmHg',
-        action: 'Alert Only'
+        testName: 'DFG (eGFR)',
+        frequency: 'Tous les 3 mois',
+        alert: {
+          type: 'Inférieur à',
+          value: '30',
+          unit: 'mL/min/1.73m²'
+        },
+        action: 'Notification'
       }
     ]
   });
   
   const saveWorkflowMutation = useMutation({
     mutationFn: async (workflow: any) => {
-      // Format the requirements data properly
-      const requirementsData = workflow.requirements.map((req: any) => ({
-        testName: req.testName,
-        frequency: req.frequency,
-        alertThreshold: `${req.alertThresholdType} ${req.alertThresholdValue} ${req.alertThresholdUnit}`,
-        action: req.action
-      }));
-      
-      const ckdStage = workflow.type.includes('Stage') 
-        ? workflow.type.replace('Monitoring', '').trim() 
-        : undefined;
-      
       return await apiRequest('POST', '/api/workflows', {
         name: workflow.name,
         description: workflow.description,
-        ckdStage,
-        requirements: requirementsData
+        ckdStage: workflow.type,
+        requirements: workflow.requirements.map((req: any) => ({
+          testName: req.testName,
+          frequency: req.frequency,
+          alert: {
+            type: req.alert.type,
+            value: req.alert.value,
+            unit: req.alert.unit
+          },
+          action: req.action
+        }))
       });
     },
     onSuccess: () => {
       toast({
-        title: 'Workflow created',
-        description: 'Your workflow has been saved successfully',
+        title: 'Workflow créé',
+        description: 'Le workflow a été enregistré avec succès',
       });
       queryClient.invalidateQueries({ queryKey: ['/api/workflows'] });
       onClose();
@@ -97,18 +82,18 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
     },
     onError: (error) => {
       toast({
-        title: 'Failed to create workflow',
-        description: error instanceof Error ? error.message : 'An error occurred',
+        title: 'Erreur',
+        description: error instanceof Error ? error.message : 'Une erreur est survenue',
         variant: 'destructive',
       });
     }
   });
-  
+
   const handleSaveWorkflow = () => {
     if (!workflowData.name.trim()) {
       toast({
-        title: 'Required field missing',
-        description: 'Please provide a name for the workflow',
+        title: 'Champ requis manquant',
+        description: 'Veuillez donner un nom au workflow',
         variant: 'destructive',
       });
       return;
@@ -116,41 +101,27 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
     
     saveWorkflowMutation.mutate(workflowData);
   };
-  
+
   const resetForm = () => {
     setWorkflowData({
       name: '',
-      type: 'CKD Stage 3A Monitoring',
+      type: 'Stage 3A',
       description: '',
       requirements: [
         {
-          testName: 'eGFR',
-          frequency: 'Every 3 months',
-          alertThresholdType: 'Below',
-          alertThresholdValue: '30',
-          alertThresholdUnit: 'mL/min',
-          action: 'Alert Only'
-        },
-        {
-          testName: 'Urine Albumin-to-Creatinine',
-          frequency: 'Every 6 months',
-          alertThresholdType: 'Above',
-          alertThresholdValue: '300',
-          alertThresholdUnit: 'mg/g',
-          action: 'Alert Only'
-        },
-        {
-          testName: 'Blood Pressure',
-          frequency: 'Every visit',
-          alertThresholdType: 'Above',
-          alertThresholdValue: '140/90',
-          alertThresholdUnit: 'mmHg',
-          action: 'Alert Only'
+          testName: 'DFG (eGFR)',
+          frequency: 'Tous les 3 mois',
+          alert: {
+            type: 'Inférieur à',
+            value: '30',
+            unit: 'mL/min/1.73m²'
+          },
+          action: 'Notification'
         }
       ]
     });
   };
-  
+
   const addNewRequirement = () => {
     setWorkflowData({
       ...workflowData,
@@ -158,16 +129,18 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
         ...workflowData.requirements,
         {
           testName: '',
-          frequency: 'Every 3 months',
-          alertThresholdType: 'Below',
-          alertThresholdValue: '',
-          alertThresholdUnit: '',
-          action: 'Alert Only'
+          frequency: 'Tous les 3 mois',
+          alert: {
+            type: 'Inférieur à',
+            value: '',
+            unit: ''
+          },
+          action: 'Notification'
         }
       ]
     });
   };
-  
+
   const removeRequirement = (index: number) => {
     const updatedRequirements = [...workflowData.requirements];
     updatedRequirements.splice(index, 1);
@@ -176,55 +149,46 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
       requirements: updatedRequirements
     });
   };
-  
-  const updateRequirement = (index: number, field: string, value: string) => {
-    const updatedRequirements = [...workflowData.requirements];
-    (updatedRequirements[index] as any)[field] = value;
-    setWorkflowData({
-      ...workflowData,
-      requirements: updatedRequirements
-    });
-  };
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Customize Patient Workflow</DialogTitle>
+          <DialogTitle>Personnaliser le Workflow Patient</DialogTitle>
           <DialogDescription>
-            Create a standardized monitoring workflow for patients based on their CKD stage.
+            Créez un protocole de suivi standardisé pour les patients selon leur stade d'IRC.
           </DialogDescription>
         </DialogHeader>
         
         <div className="mt-4">
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             <div className="sm:col-span-3">
-              <Label htmlFor="workflow-name">Workflow Name</Label>
+              <Label htmlFor="workflow-name">Nom du Workflow</Label>
               <Input
                 id="workflow-name"
                 className="mt-1"
-                placeholder="Stage 3 CKD Monitoring"
+                placeholder="Suivi Stage 3 IRC"
                 value={workflowData.name}
                 onChange={(e) => setWorkflowData({ ...workflowData, name: e.target.value })}
               />
             </div>
 
             <div className="sm:col-span-3">
-              <Label htmlFor="workflow-type">Type</Label>
+              <Label htmlFor="workflow-type">Stade IRC</Label>
               <Select 
                 value={workflowData.type}
                 onValueChange={(value) => setWorkflowData({ ...workflowData, type: value })}
               >
                 <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select workflow type" />
+                  <SelectValue placeholder="Sélectionner le stade" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="CKD Stage 2 Monitoring">CKD Stage 2 Monitoring</SelectItem>
-                  <SelectItem value="CKD Stage 3A Monitoring">CKD Stage 3A Monitoring</SelectItem>
-                  <SelectItem value="CKD Stage 3B Monitoring">CKD Stage 3B Monitoring</SelectItem>
-                  <SelectItem value="CKD Stage 4 Monitoring">CKD Stage 4 Monitoring</SelectItem>
-                  <SelectItem value="CKD Stage 5 Monitoring">CKD Stage 5 Monitoring</SelectItem>
-                  <SelectItem value="Custom Workflow">Custom Workflow</SelectItem>
+                  <SelectItem value="Stage 1">Stage 1</SelectItem>
+                  <SelectItem value="Stage 2">Stage 2</SelectItem>
+                  <SelectItem value="Stage 3A">Stage 3A</SelectItem>
+                  <SelectItem value="Stage 3B">Stage 3B</SelectItem>
+                  <SelectItem value="Stage 4">Stage 4</SelectItem>
+                  <SelectItem value="Stage 5">Stage 5</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -235,141 +199,150 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
                 id="workflow-description" 
                 className="mt-1"
                 rows={3}
-                placeholder="Monitoring protocol for patients with moderately decreased kidney function"
+                placeholder="Protocole de suivi pour les patients avec fonction rénale modérément diminuée"
                 value={workflowData.description}
                 onChange={(e) => setWorkflowData({ ...workflowData, description: e.target.value })}
               />
             </div>
-          </div>
 
-          <div className="mt-6">
-            <h4 className="text-md font-medium text-gray-900">Monitoring Requirements</h4>
-            <div className="mt-3 border border-gray-200 rounded-md">
+            <div className="sm:col-span-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Tests et Seuils</h3>
+                <Button onClick={addNewRequirement} variant="outline" size="sm">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Ajouter un Test
+                </Button>
+              </div>
+
               <Table>
-                <TableHeader className="bg-gray-50">
+                <TableHeader>
                   <TableRow>
-                    <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Test / Procedure
-                    </TableHead>
-                    <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Frequency
-                    </TableHead>
-                    <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Alert Threshold
-                    </TableHead>
-                    <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Action
-                    </TableHead>
-                    <TableHead className="w-10"></TableHead>
+                    <TableHead>Test</TableHead>
+                    <TableHead>Fréquence</TableHead>
+                    <TableHead>Seuil d'Alerte</TableHead>
+                    <TableHead>Action</TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="bg-white divide-y divide-gray-200">
+                <TableBody>
                   {workflowData.requirements.map((req, index) => (
                     <TableRow key={index}>
-                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {index < 3 ? (
-                          req.testName
-                        ) : (
-                          <Input
-                            value={req.testName}
-                            onChange={(e) => updateRequirement(index, 'testName', e.target.value)}
-                            placeholder="Test name"
-                          />
-                        )}
+                      <TableCell>
+                        <Input
+                          value={req.testName}
+                          onChange={(e) => {
+                            const updated = [...workflowData.requirements];
+                            updated[index].testName = e.target.value;
+                            setWorkflowData({ ...workflowData, requirements: updated });
+                          }}
+                          placeholder="Nom du test"
+                        />
                       </TableCell>
-                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <Select 
+                      <TableCell>
+                        <Select
                           value={req.frequency}
-                          onValueChange={(value) => updateRequirement(index, 'frequency', value)}
+                          onValueChange={(value) => {
+                            const updated = [...workflowData.requirements];
+                            updated[index].frequency = value;
+                            setWorkflowData({ ...workflowData, requirements: updated });
+                          }}
                         >
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Every 3 months">Every 3 months</SelectItem>
-                            <SelectItem value="Every 6 months">Every 6 months</SelectItem>
-                            <SelectItem value="Every 12 months">Every 12 months</SelectItem>
-                            <SelectItem value="Every visit">Every visit</SelectItem>
-                            <SelectItem value="Custom...">Custom...</SelectItem>
+                            <SelectItem value="Tous les mois">Tous les mois</SelectItem>
+                            <SelectItem value="Tous les 3 mois">Tous les 3 mois</SelectItem>
+                            <SelectItem value="Tous les 6 mois">Tous les 6 mois</SelectItem>
+                            <SelectItem value="Tous les ans">Tous les ans</SelectItem>
                           </SelectContent>
                         </Select>
                       </TableCell>
-                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Select 
-                            value={req.alertThresholdType}
-                            onValueChange={(value) => updateRequirement(index, 'alertThresholdType', value)}
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Select
+                            value={req.alert.type}
+                            onValueChange={(value) => {
+                              const updated = [...workflowData.requirements];
+                              updated[index].alert.type = value;
+                              setWorkflowData({ ...workflowData, requirements: updated });
+                            }}
                           >
-                            <SelectTrigger className="w-20">
+                            <SelectTrigger className="w-32">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Below">Below</SelectItem>
-                              <SelectItem value="Above">Above</SelectItem>
+                              <SelectItem value="Inférieur à">Inférieur à</SelectItem>
+                              <SelectItem value="Supérieur à">Supérieur à</SelectItem>
                             </SelectContent>
                           </Select>
                           <Input
-                            className="w-16 mx-2"
-                            value={req.alertThresholdValue}
-                            onChange={(e) => updateRequirement(index, 'alertThresholdValue', e.target.value)}
+                            className="w-24"
+                            value={req.alert.value}
+                            onChange={(e) => {
+                              const updated = [...workflowData.requirements];
+                              updated[index].alert.value = e.target.value;
+                              setWorkflowData({ ...workflowData, requirements: updated });
+                            }}
+                            placeholder="Valeur"
                           />
-                          <span className="ml-2">{req.alertThresholdUnit}</span>
+                          <Input
+                            className="w-24"
+                            value={req.alert.unit}
+                            onChange={(e) => {
+                              const updated = [...workflowData.requirements];
+                              updated[index].alert.unit = e.target.value;
+                              setWorkflowData({ ...workflowData, requirements: updated });
+                            }}
+                            placeholder="Unité"
+                          />
                         </div>
                       </TableCell>
-                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <Select 
+                      <TableCell>
+                        <Select
                           value={req.action}
-                          onValueChange={(value) => updateRequirement(index, 'action', value)}
+                          onValueChange={(value) => {
+                            const updated = [...workflowData.requirements];
+                            updated[index].action = value;
+                            setWorkflowData({ ...workflowData, requirements: updated });
+                          }}
                         >
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Alert Only">Alert Only</SelectItem>
-                            <SelectItem value="Schedule Appointment">Schedule Appointment</SelectItem>
-                            <SelectItem value="Refer to Specialist">Refer to Specialist</SelectItem>
-                            <SelectItem value="Medication Review">Medication Review</SelectItem>
+                            <SelectItem value="Notification">Notification</SelectItem>
+                            <SelectItem value="Email">Email</SelectItem>
+                            <SelectItem value="SMS">SMS</SelectItem>
                           </SelectContent>
                         </Select>
                       </TableCell>
-                      <TableCell className="px-2">
-                        {workflowData.requirements.length > 1 && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => removeRequirement(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeRequirement(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <div className="px-6 py-3 bg-gray-50 flex justify-end">
-                <Button 
-                  variant="ghost" 
-                  onClick={addNewRequirement}
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary hover:text-primary-dark focus:outline-none"
-                >
-                  <Plus className="h-5 w-5 mr-2" />
-                  Add Test
-                </Button>
-              </div>
             </div>
           </div>
         </div>
         
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            Annuler
           </Button>
           <Button 
             onClick={handleSaveWorkflow}
             disabled={saveWorkflowMutation.isPending}
           >
-            {saveWorkflowMutation.isPending ? 'Saving...' : 'Save Workflow'}
+            {saveWorkflowMutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
           </Button>
         </DialogFooter>
       </DialogContent>
