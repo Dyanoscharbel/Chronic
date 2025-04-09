@@ -146,11 +146,35 @@
 
 /* Amélioration des contrastes en mode sombre */
 .dark .bg-muted {
-  background-color: hsl(0 0% 11%);
+  background-color: hsl(215 15% 15%);
 }
 
 .dark .border-border {
-  border-color: hsl(0 0% 25%);
+  border-color: hsl(215 15% 35%);
+}
+
+.dark .bg-card {
+  background-color: hsl(215 15% 10%);
+}
+
+.text-muted-foreground {
+  color: hsl(215 15% 45%);
+}
+
+.dark .text-muted-foreground {
+  color: hsl(215 15% 65%);
+}
+
+.btn-primary, 
+.bg-primary {
+  background-color: hsl(215 85% 45%);
+  color: white;
+}
+
+.dark .btn-primary,
+.dark .bg-primary {
+  background-color: hsl(215 85% 50%);
+  color: white;
 }
 
 /* Amélioration de la visibilité des textes en mode sombre */
