@@ -383,17 +383,18 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
         <div className="mt-4 space-y-6">
           <div>
             <h3 className="mb-4 text-sm font-medium leading-none">Report Sections:</h3>
-            <div className="rounded-md border p-4 space-y-4">
+            <div className="rounded-md border bg-card p-4 space-y-4">
               {reportSections.map((section) => (
                 <div key={section.id} className="flex items-center space-x-3">
                   <Checkbox
                     id={section.id}
                     checked={section.enabled}
                     onCheckedChange={() => handleSectionToggle(section.id)}
+                    className="h-5 w-5 border-2 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
                   />
                   <label
                     htmlFor={section.id}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-sm font-medium leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     {section.name}
                   </label>
