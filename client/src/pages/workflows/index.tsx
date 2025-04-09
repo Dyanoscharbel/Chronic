@@ -108,7 +108,12 @@ export default function WorkflowsPage() {
                   <TableCell>{workflow.name}</TableCell>
                   <TableCell>{workflow.description}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{workflow.ckdStage}</Badge>
+                    <Badge 
+                      variant="outline" 
+                      className={`${getCKDStageColor(workflow.ckdStage).bg} ${getCKDStageColor(workflow.ckdStage).text}`}
+                    >
+                      {workflow.ckdStage}
+                    </Badge>
                   </TableCell>
                   <TableCell>{workflow.requirements?.length || 0} tests</TableCell>
                   <TableCell className="flex space-x-2">
