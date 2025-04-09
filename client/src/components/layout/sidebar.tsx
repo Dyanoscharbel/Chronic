@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
 import { 
-  Home, Users, FileText, Calendar, Bell, Settings,
+  Home, Users, FileText, Calendar, Bell, Settings, GitBranch,
   Menu, X
 } from 'lucide-react';
 
@@ -14,12 +14,12 @@ interface SidebarProps {
 
 export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
   const [location] = useLocation();
-  
+
   // Only show sidebar on mobile if it's open
   if (isMobile && !isOpen) {
     return null;
   }
-  
+
   const navItems = [
     { 
       label: 'Dashboard', 
@@ -47,12 +47,17 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
       href: '/notifications'
     },
     { 
+      label: 'Workflows', 
+      icon: <GitBranch className="mr-3 h-6 w-6 text-white" />,
+      href: '/workflows'
+    },
+    { 
       label: 'Settings', 
       icon: <Settings className="mr-3 h-6 w-6 text-white" />,
       href: '/settings'
     }
   ];
-  
+
   return (
     <div className={cn(
       "flex flex-col w-64 bg-[var(--primary-dark)]",
@@ -68,11 +73,11 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
           </button>
         </div>
       )}
-      
+
       <div className="flex items-center h-16 flex-shrink-0 px-4 bg-primary">
         <div className="text-white text-xl font-bold">CKD Care</div>
       </div>
-      
+
       <div className="flex-1 flex flex-col overflow-y-auto">
         <nav className="flex-1 px-2 py-4 space-y-1">
           {navItems.map((item) => (

@@ -20,12 +20,13 @@ import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { AppLayout } from "@/components/layout/app-layout";
+import Workflows from "@/pages/workflows"; // Added import for Workflows page
 
 function ProtectedRoute({ component: Component, ...rest }: any) {
   const { isAuthenticated, loading, user } = useAuth();
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  
+
   useEffect(() => {
     if (!loading) {
       if (!isAuthenticated) {
@@ -41,40 +42,40 @@ function ProtectedRoute({ component: Component, ...rest }: any) {
       }
     }
   }, [loading, isAuthenticated, user, setLocation, toast]);
-  
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
     </div>;
   }
-  
+
   if (!isAuthenticated || (user && user.role === 'patient')) {
     return null;
   }
-  
+
   return <Component {...rest} />;
 }
 
 function AuthRoute({ component: Component, ...rest }: any) {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
-  
+
   useEffect(() => {
     if (!loading && isAuthenticated) {
       setLocation("/");
     }
   }, [loading, isAuthenticated, setLocation]);
-  
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
     </div>;
   }
-  
+
   if (isAuthenticated) {
     return null;
   }
-  
+
   return <Component {...rest} />;
 }
 
@@ -88,7 +89,7 @@ function Router() {
       <Route path="/register">
         <AuthRoute component={RegisterPage} />
       </Route>
-      
+
       {/* Protected Routes */}
       <Route path="/">
         <ProtectedRoute component={() => (
@@ -123,7 +124,7 @@ function Router() {
           )} />
         )}
       </Route>
-      
+
       <Route path="/patients">
         <ProtectedRoute component={() => (
           <AppLayout>
@@ -173,7 +174,14 @@ function Router() {
           </AppLayout>
         )} />
       </Route>
-      
+      <Route path="/workflows"> {/* Added route for Workflows */}
+        <ProtectedRoute component={() => (
+          <AppLayout>
+            <Workflows />
+          </AppLayout>
+        )} />
+      </Route>
+
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
