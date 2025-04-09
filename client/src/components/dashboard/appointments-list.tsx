@@ -38,7 +38,7 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
               <li key={appointment._id} className="hover:bg-gray-50">
                 <div className="px-6 py-4 flex items-center">
                   <div className="min-w-0 flex-1 flex items-center">
-                    {appointment.patient?.user && (
+                    {appointment.patient && appointment.patient.user && (
                       <AvatarName
                         firstName={appointment.patient.user.firstName}
                         lastName={appointment.patient.user.lastName}
@@ -48,7 +48,7 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
                     <div className="min-w-0 flex-1 px-4">
                       <div>
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {appointment.patient?.user ? (
+                          {appointment.patient && appointment.patient.user ? (
                             `${appointment.patient.user.firstName} ${appointment.patient.user.lastName}`
                           ) : (
                             'Unknown Patient'
@@ -68,12 +68,12 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
                       {formatTime(appointment.appointmentDate)}
                     </p>
                     <p className={`text-xs mt-1 ${
-                      appointment.doctorStatus === 'confirmed' ? 'text-green-600' :
-                      appointment.doctorStatus === 'cancelled' ? 'text-red-600' :
+                      appointment.status === 'confirmed' ? 'text-green-600' :
+                      appointment.status === 'cancelled' ? 'text-red-600' :
                       'text-yellow-600'
                     }`}>
-                      {appointment.doctorStatus ? 
-                        appointment.doctorStatus.charAt(0).toUpperCase() + appointment.doctorStatus.slice(1)
+                      {appointment.status ? 
+                        appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)
                         : 'Pending'
                       }
                     </p>
