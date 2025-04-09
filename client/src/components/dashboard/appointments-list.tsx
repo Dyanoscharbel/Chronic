@@ -11,14 +11,16 @@ interface AppointmentsListProps {
 }
 
 export function AppointmentsList({ appointments }: AppointmentsListProps) {
-  const upcomingAppointments = appointments
-    .filter(apt => {
-      const appointmentDate = new Date(apt.appointmentDate);
-      const now = new Date();
-      return appointmentDate > now;
-    })
-    .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
-    .slice(0, 3);
+  const upcomingAppointments = appointments?.filter(apt => {
+    if (!apt) return false;
+    const appointmentDate = new Date(apt.appointmentDate);
+    const now = new Date();
+    return appointmentDate > now && 
+           apt.doctorStatus !== 'cancelled' && 
+           apt.patientStatus !== 'cancelled';
+  })
+  .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
+  .slice(0, 3) || [];
 
   return (
     <Card className="bg-white shadow rounded-lg">
