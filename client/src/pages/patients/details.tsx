@@ -9,7 +9,7 @@ import { PageLoader } from '@/components/ui/loader';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getCKDStageColor, calculateAge, formatDate } from '@/lib/utils';
+import { getCKDStageColor, calculateAge, formatDate, formatTime } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 
 interface PatientDetailsProps {
