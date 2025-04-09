@@ -1224,9 +1224,11 @@ console.error('----------------------------------------');
 
       // Count upcoming appointments (future dates that are not cancelled)
       const now = new Date();
-      const upcomingAppointments = appointments.filter(apt => 
-        new Date(apt.appointmentDate) > now && apt.status !== 'cancelled'
-      );
+      const upcomingAppointments = await Appointment.find({
+        doctor: doctor._id,
+        appointmentDate: { $gt: now },
+        doctorStatus: { $nin: ['cancelled', 'completed'] }
+      });
 
       // Simulate some critical alerts for demo
       const criticalAlerts = 3;
