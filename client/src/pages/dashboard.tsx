@@ -4,7 +4,7 @@ import { User, Users, Calendar, FileText, AlertTriangle, Settings, Plus } from '
 import { StatsCard } from '@/components/dashboard/stats-card';
 import { ChartCard } from '@/components/dashboard/chart-card';
 
-import { AppointmentsList } from '@/components/dashboard/appointments-list';
+import { LabResultsList } from '@/components/dashboard/appointments-list';
 import { AlertsList } from '@/components/dashboard/alerts-list';
 import { Button } from '@/components/ui/button';
 import { WorkflowModal } from '@/components/dashboard/workflow-modal';
@@ -122,7 +122,7 @@ export default function Dashboard() {
       
       {/* Appointments and Alerts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <AppointmentsList appointments={upcomingAppointments || []} />
+        <LabResultsList />
         <AlertsList notifications={notificationsData?.notifications?.slice(0, 5) || []} />
       </div>
       
