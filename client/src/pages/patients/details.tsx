@@ -166,6 +166,24 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                     <TableCell>{result.labTest.testName}</TableCell>
                     <TableCell>{result.resultValue}</TableCell>
                     <TableCell>{result.labTest.unit}</TableCell>
+                    <TableCell>
+                      {(() => {
+                        const value = parseFloat(result.resultValue);
+                        const min = result.labTest.normalMin;
+                        const max = result.labTest.normalMax;
+                        
+                        if (min && max) {
+                          if (value < min) {
+                            return <Badge variant="destructive">En dessous</Badge>;
+                          } else if (value > max) {
+                            return <Badge variant="destructive">Au dessus</Badge>;
+                          } else {
+                            return <Badge variant="success">Normal</Badge>;
+                          }
+                        }
+                        return <Badge variant="secondary">Non défini</Badge>;
+                      })()}
+                    </TableCell>
                     <TableCell className="text-gray-500">{result.comment || '-'}</TableCell>
                   </TableRow>
                 ))}
