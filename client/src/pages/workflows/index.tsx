@@ -117,12 +117,12 @@ export default function WorkflowsPage() {
                       size="sm"
                       onClick={() => handleEdit(workflow)}
                     >
-                      <Pencil className="h-4 w-4" />
+                      Éditer
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <Trash2 className="h-4 w-4 text-red-500" />
+                        <Button variant="outline" size="sm" className="text-red-500">
+                          Supprimer
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
