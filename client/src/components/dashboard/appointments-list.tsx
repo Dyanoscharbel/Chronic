@@ -1,17 +1,13 @@
+
 import React from 'react';
 import { Link } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDate } from '@/lib/utils';
 import { PatientLabResult } from '@/lib/types';
-import { useQuery } from '@tanstack/react-query'; // Import useQuery
-import { Loader } from '@/components/ui/loader'; //Import Loader component
+import { useQuery } from '@tanstack/react-query';
+import { Loader } from '@/components/ui/loader';
 
-
-interface LabResultsListProps {
-  labResults: PatientLabResult[];
-}
-
-export function AppointmentsList() {
+export function LatestLabResults() {
   const { data: labResults, isLoading } = useQuery({
     queryKey: ['/api/patient-lab-results'],
     refetchInterval: 5000
@@ -19,7 +15,7 @@ export function AppointmentsList() {
 
   const recentResults = labResults?.sort((a, b) => 
     new Date(b.resultDate).getTime() - new Date(a.resultDate).getTime()
-  ).slice(0, 3) || [];
+  ).slice(0, 5) || [];
 
   if (isLoading) {
     return <Loader />;
