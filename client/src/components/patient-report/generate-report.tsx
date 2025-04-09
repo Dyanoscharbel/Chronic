@@ -390,7 +390,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
                     id={section.id}
                     checked={section.enabled}
                     onCheckedChange={() => handleSectionToggle(section.id)}
-                    className="h-5 w-5 border-2 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
+                    className="h-5 w-5 border-2 border-black data-[state=checked]:bg-black data-[state=checked]:text-white"
                   />
                   <label
                     htmlFor={section.id}
