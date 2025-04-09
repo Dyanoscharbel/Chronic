@@ -309,11 +309,24 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
                           </Select>
                           <Input
                             className="w-24"
+                            type="number"
+                            step="0.01"
                             value={req.alert.value}
                             onChange={(e) => {
-                              const updated = [...workflowData.requirements];
-                              updated[index].alert.value = e.target.value;
-                              setWorkflowData({ ...workflowData, requirements: updated });
+                              const value = e.target.value.replace(',', '.');
+                              if (!isNaN(parseFloat(value)) || value === '') {
+                                const updated = [...workflowData.requirements];
+                                updated[index].alert.value = value;
+                                setWorkflowData({ ...workflowData, requirements: updated });
+                              }
+                            }}
+                            onBlur={(e) => {
+                              const value = e.target.value;
+                              if (value && !isNaN(parseFloat(value))) {
+                                const updated = [...workflowData.requirements];
+                                updated[index].alert.value = parseFloat(value).toString();
+                                setWorkflowData({ ...workflowData, requirements: updated });
+                              }
                             }}
                             placeholder="Valeur"
                           />
