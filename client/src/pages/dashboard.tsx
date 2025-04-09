@@ -75,7 +75,7 @@ export default function Dashboard() {
         <StatsCard
           icon={<Calendar className="h-6 w-6 text-white" />}
           iconBgColor="bg-indigo-500"
-          title="Rendez-vous à venir"
+          title="Rendez-vous total"
           value={dashboardStats?.upcomingAppointments || 0}
           footerLink="/appointments"
           footerText="Voir tous les rendez-vous"
