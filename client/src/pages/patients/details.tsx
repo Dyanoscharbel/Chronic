@@ -173,12 +173,23 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                         const max = result.labTest.normalMax;
                         
                         if (min && max) {
+                          const normalValue = (max + min) / 2;
+                          const deviation = Math.abs((value - normalValue) / normalValue);
+
                           if (value < min) {
-                            return <Badge variant="destructive">En dessous</Badge>;
+                            if (deviation > 0.3) {
+                              return <Badge variant="destructive" className="bg-red-100 text-red-700 font-bold">⚠️↓ Dangereusement bas</Badge>;
+                            } else {
+                              return <Badge variant="outline" className="bg-orange-50 text-orange-600">↓ En dessous de la normale</Badge>;
+                            }
                           } else if (value > max) {
-                            return <Badge variant="destructive">Au dessus</Badge>;
+                            if (deviation > 0.3) {
+                              return <Badge variant="destructive" className="bg-red-100 text-red-700 font-bold">⚠️↑ Dangereusement élevé</Badge>;
+                            } else {
+                              return <Badge variant="outline" className="bg-red-50 text-red-600">↑ Au-dessus de la normale</Badge>;
+                            }
                           } else {
-                            return <Badge variant="success">Normal</Badge>;
+                            return <Badge variant="outline" className="bg-green-50 text-green-600">✓ Normal</Badge>;
                           }
                         }
                         return <Badge variant="secondary">Non défini</Badge>;
