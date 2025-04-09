@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -15,9 +15,10 @@ import { apiRequest } from '@/lib/queryClient';
 interface WorkflowModalProps {
   isOpen: boolean;
   onClose: () => void;
+  workflow?: any;
 }
 
-export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
+export function WorkflowModal({ isOpen, onClose, workflow }: WorkflowModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -56,14 +57,39 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
       }
     ]
   });
+
+  useEffect(() => {
+    if (workflow) {
+      setWorkflowData({
+        name: workflow.name,
+        type: workflow.ckdStage,
+        description: workflow.description,
+        requirements: workflow.requirements.map((req: any) => ({
+          testName: req.testName,
+          frequency: req.frequency,
+          alert: {
+            type: req.alert.type,
+            value: req.alert.value,
+            unit: req.alert.unit
+          },
+          action: req.action
+        }))
+      });
+    } else {
+      resetForm();
+    }
+  }, [workflow]);
   
   const saveWorkflowMutation = useMutation({
-    mutationFn: async (workflow: any) => {
-      return await apiRequest('POST', '/api/workflows', {
-        name: workflow.name,
-        description: workflow.description,
-        ckdStage: workflow.type,
-        requirements: workflow.requirements.map((req: any) => ({
+    mutationFn: async (data: any) => {
+      const method = workflow ? 'PUT' : 'POST';
+      const url = workflow ? `/api/workflows/${workflow._id}` : '/api/workflows';
+      
+      return await apiRequest(method, url, {
+        name: data.name,
+        description: data.description,
+        ckdStage: data.type,
+        requirements: data.requirements.map((req: any) => ({
           testName: req.testName,
           frequency: req.frequency,
           alert: {
@@ -77,8 +103,8 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
     },
     onSuccess: () => {
       toast({
-        title: 'Workflow créé',
-        description: 'Le workflow a été enregistré avec succès',
+        title: workflow ? 'Workflow modifié' : 'Workflow créé',
+        description: workflow ? 'Le workflow a été modifié avec succès' : 'Le workflow a été créé avec succès',
       });
       queryClient.invalidateQueries({ queryKey: ['/api/workflows'] });
       onClose();
@@ -113,12 +139,12 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
       description: '',
       requirements: [
         {
-          testName: 'DFG (eGFR)',
+          testName: '',
           frequency: 'Tous les 3 mois',
           alert: {
             type: 'Inférieur à',
-            value: '30',
-            unit: 'mL/min/1.73m²'
+            value: '',
+            unit: ''
           },
           action: 'Notification'
         }
@@ -158,9 +184,9 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Personnaliser le Workflow Patient</DialogTitle>
+          <DialogTitle>{workflow ? 'Modifier le Workflow' : 'Créer un Workflow'}</DialogTitle>
           <DialogDescription>
-            Créez un protocole de suivi standardisé pour les patients selon leur stade d'IRC.
+            {workflow ? 'Modifiez les paramètres du workflow existant.' : 'Créez un protocole de suivi standardisé pour les patients selon leur stade d\'IRC.'}
           </DialogDescription>
         </DialogHeader>
         
@@ -362,6 +388,7 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => removeRequirement(index)}
+                          disabled={workflowData.requirements.length === 1}
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -382,7 +409,7 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
             onClick={handleSaveWorkflow}
             disabled={saveWorkflowMutation.isPending}
           >
-            {saveWorkflowMutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
+            {saveWorkflowMutation.isPending ? 'Enregistrement...' : (workflow ? 'Modifier' : 'Créer')}
           </Button>
         </DialogFooter>
       </DialogContent>

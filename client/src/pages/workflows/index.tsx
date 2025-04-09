@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -49,6 +49,11 @@ export default function WorkflowsPage() {
     },
   });
 
+  const handleCreate = () => {
+    setSelectedWorkflow(null);
+    setWorkflowModalOpen(true);
+  };
+
   const handleEdit = (workflow) => {
     setSelectedWorkflow(workflow);
     setWorkflowModalOpen(true);
@@ -75,10 +80,9 @@ export default function WorkflowsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">Workflows</h1>
         <Button 
-          onClick={() => setWorkflowModalOpen(true)}
+          onClick={handleCreate}
           className="flex items-center space-x-2"
         >
-          <Plus className="h-4 w-4" />
           <span>Créer un Workflow</span>
         </Button>
       </div>
