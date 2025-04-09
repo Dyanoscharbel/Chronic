@@ -55,7 +55,7 @@ export default function WorkflowsPage() {
   };
 
   const handleEdit = (workflow) => {
-    setSelectedWorkflow(workflow);
+    setSelectedWorkflow({...workflow});
     setWorkflowModalOpen(true);
   };
 

@@ -61,18 +61,18 @@ export function WorkflowModal({ isOpen, onClose, workflow }: WorkflowModalProps)
   useEffect(() => {
     if (workflow) {
       setWorkflowData({
-        name: workflow.name,
-        type: workflow.ckdStage,
-        description: workflow.description,
-        requirements: workflow.requirements.map((req: any) => ({
-          testName: req.testName,
-          frequency: req.frequency,
+        name: workflow.name || '',
+        type: workflow.ckdStage || 'Stage 3A',
+        description: workflow.description || '',
+        requirements: (workflow.requirements || []).map((req: any) => ({
+          testName: req.testName || '',
+          frequency: req.frequency || 'Tous les 3 mois',
           alert: {
-            type: req.alert.type,
-            value: req.alert.value,
-            unit: req.alert.unit
+            type: req.alert?.type || 'Inférieur à',
+            value: req.alert?.value || '',
+            unit: req.alert?.unit || ''
           },
-          action: req.action
+          action: req.action || 'Notification'
         }))
       });
     } else {
