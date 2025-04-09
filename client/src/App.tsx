@@ -112,6 +112,16 @@ function Router() {
           )} />
         )}
       </Route>
+
+      <Route path="/patients/:id">
+        {(params) => (
+          <ProtectedRoute component={() => (
+            <AppLayout>
+              <PatientDetails id={params.id} />
+            </AppLayout>
+          )} />
+        )}
+      </Route>
       
       <Route path="/patients">
         <ProtectedRoute component={() => (
