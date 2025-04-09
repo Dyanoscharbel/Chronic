@@ -970,7 +970,7 @@ console.error('----------------------------------------');
       console.log('Appointment created successfully:', savedAppointment._id);
       res.status(201).json(savedAppointment);
 
-    } catch (error) {
+    }catch (error) {
       console.error('Error creating appointment:', error);
       if (error.name === 'ValidationError') {
         return res.status(400).json({ 
@@ -1343,15 +1343,12 @@ console.error('----------------------------------------');
     try {
       const userId = req.session.user?.id;
       console.log('Looking for doctor with user ID:', userId);
-      const doctor = await Doctor.findOne({ user: userId }).select('_id');
+      const doctor = await Doctor.findOne({ user: userId });
       if (!doctor) {
         console.log('No doctor found for user ID:', userId);
-      } else {
-        console.log('Found doctor:', doctor._id);
-      }
-      if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found' });
       }
+      console.log('Found doctor:', doctor._id);
 
       console.log('Fetching appointments for doctor:', doctor._id);
 
@@ -1382,8 +1379,8 @@ console.error('----------------------------------------');
 
       // Augment with patient and doctor details
       const enhancedAppointments = await Promise.all(appointments.map(async apt => {
-        const patient = await storage.getPatientById(apt.patientId);
-        const doctor = await storage.getDoctorById(apt.doctorId);
+        const patient = await storage.getPatientById(apt.patient);
+        const doctor = await storage.getDoctorById(apt.doctor);
 
         return {
           ...apt,
