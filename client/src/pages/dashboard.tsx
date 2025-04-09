@@ -103,11 +103,6 @@ export default function Dashboard() {
         />
       </div>
       
-      {/* Recent Appointments */}
-      <div className="grid grid-cols-1 gap-6">
-        <AppointmentsList appointments={upcomingAppointments || []} />
-      </div>
-
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ChartCard
@@ -123,8 +118,11 @@ export default function Dashboard() {
         />
       </div>
       
-      {/* Alerts */}
-      <div className="grid grid-cols-1 gap-6">
+      
+      
+      {/* Appointments and Alerts */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <AppointmentsList appointments={upcomingAppointments || []} />
         <AlertsList notifications={notificationsData?.notifications?.slice(0, 5) || []} />
       </div>
       
