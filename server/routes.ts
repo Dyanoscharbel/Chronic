@@ -1356,10 +1356,12 @@ console.error('----------------------------------------');
       console.log('Fetching appointments for doctor:', doctor._id);
 
       // Get appointments for this doctor only
+      const now = new Date();
       const appointments = await Appointment.find({ 
         doctor: doctor._id,
         doctorStatus: { $ne: 'cancelled' },
-        appointmentDate: { $gt: new Date() }
+        appointmentDate: { $gt: now },
+        patientStatus: { $ne: 'cancelled' }
       })
         .populate({
           path: 'patient',
