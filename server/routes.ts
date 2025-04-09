@@ -1352,14 +1352,8 @@ console.error('----------------------------------------');
 
       console.log('Fetching appointments for doctor:', doctor._id);
 
-      // Get appointments for this doctor only
-      const now = new Date();
-      const appointments = await Appointment.find({ 
-        doctor: doctor._id,
-        doctorStatus: { $ne: 'cancelled' },
-        appointmentDate: { $gt: now },
-        patientStatus: { $ne: 'cancelled' }
-      })
+      // Get all appointments for this doctor without any filters
+      const appointments = await Appointment.find({ doctor: doctor._id })
         .populate({
           path: 'patient',
           populate: {
@@ -1374,7 +1368,7 @@ console.error('----------------------------------------');
             select: 'firstName lastName specialty'
           }
         })
-        .sort({ appointmentDate: 1 })
+        .sort({ appointmentDate: -1 }) // Les plus récents d'abord
         .limit(3);
 
       // Augment with patient and doctor details
