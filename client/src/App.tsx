@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
 import PatientsPage from "@/pages/patients/index";
-import PatientView from "@/pages/patients/view";
+
 import PatientAddEdit from "@/pages/patients/add-edit";
 import LabResultsPage from "@/pages/lab-results/index";
 import LabResultAdd from "@/pages/lab-results/add";
@@ -112,15 +112,7 @@ function Router() {
           )} />
         )}
       </Route>
-      <Route path="/patients/:id">
-        {(params) => (
-          <ProtectedRoute component={() => (
-            <AppLayout>
-              <PatientView id={params.id} />
-            </AppLayout>
-          )} />
-        )}
-      </Route>
+      
       <Route path="/patients">
         <ProtectedRoute component={() => (
           <AppLayout>
