@@ -401,7 +401,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
               />
               <label
                 htmlFor="medicalHistory"
-                className="text-sm font-medium leading-none"
+                className="text-sm font-medium leading-none text-foreground hover:cursor-pointer"
               >
                 Medical History
               </label>
@@ -415,7 +415,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
               />
               <label
                 htmlFor="labResults"
-                className="text-sm font-medium leading-none"
+                className="text-sm font-medium leading-none text-foreground hover:cursor-pointer"
               >
                 Laboratory Results
               </label>
@@ -429,7 +429,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
               />
               <label
                 htmlFor="appointments"
-                className="text-sm font-medium leading-none"
+                className="text-sm font-medium leading-none text-foreground hover:cursor-pointer"
               >
                 Appointments
               </label>
@@ -444,7 +444,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
               />
               <label
                 htmlFor="riskAssessment"
-                className={`text-sm font-medium leading-none ${!patient.lastEgfrValue || !patient.proteinuriaLevel ? 'opacity-50' : ''}`}
+                className={`text-sm font-medium leading-none ${!patient.lastEgfrValue || !patient.proteinuriaLevel ? 'opacity-50' : ''} text-foreground hover:cursor-pointer`}
               >
                 Risk Assessment
               </label>
