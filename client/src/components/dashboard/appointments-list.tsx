@@ -7,7 +7,7 @@ import { PatientLabResult } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { Loader } from '@/components/ui/loader';
 
-export function LatestLabResults() {
+export function AppointmentsList() {
   const { data: labResults, isLoading } = useQuery({
     queryKey: ['/api/patient-lab-results'],
     refetchInterval: 5000
