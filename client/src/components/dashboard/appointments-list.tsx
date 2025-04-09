@@ -72,7 +72,10 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
                       appointment.doctorStatus === 'cancelled' ? 'text-red-600' :
                       'text-yellow-600'
                     }`}>
-                      {appointment.doctorStatus.charAt(0).toUpperCase() + appointment.doctorStatus.slice(1)}
+                      {appointment.doctorStatus ? 
+                        appointment.doctorStatus.charAt(0).toUpperCase() + appointment.doctorStatus.slice(1)
+                        : 'Pending'
+                      }
                     </p>
                   </div>
                 </div>
