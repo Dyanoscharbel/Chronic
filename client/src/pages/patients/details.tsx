@@ -29,8 +29,9 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
   });
 
   const { data: appointments = [], isLoading: appointmentsLoading } = useQuery<Appointment[]>({
-    queryKey: [`/api/appointments/patient/${id}`],
+    queryKey: [`/api/appointments`],
     enabled: !!id,
+    select: (data) => data.filter(apt => apt.patient._id === id)
   });
 
   if (patientLoading || resultsLoading || appointmentsLoading) {
