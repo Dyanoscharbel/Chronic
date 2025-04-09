@@ -141,30 +141,48 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
       // Personal Information Section
       if (reportSections.find(s => s.id === 'personalInfo')?.enabled) {
         doc.setFontSize(16);
-        doc.text('Personal Information', 14, yPos);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 71, 65);
+        doc.text('Informations Personnelles', 20, yPos);
         yPos += 10;
 
+        // Add a background rectangle
+        doc.setFillColor(245, 247, 250);
+        doc.rect(15, yPos - 5, 180, 50, 'F');
+        
+        // Create two columns for better organization
+        const leftCol = 25;
+        const rightCol = 110;
+        const lineHeight = 12;
+
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(100, 100, 100);
+
+        // Left column
+        doc.text("Nom complet:", leftCol, yPos);
+        doc.text("Age:", leftCol, yPos + lineHeight);
+        doc.text("Date de naissance:", leftCol, yPos + lineHeight * 2);
+        doc.text("Genre:", leftCol, yPos + lineHeight * 3);
+
+        // Right column headers
+        doc.text("Téléphone:", rightCol, yPos);
+        doc.text("Adresse:", rightCol, yPos + lineHeight);
+
+        // Add values in normal font
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        
         const age = calculateAge(patient.birthDate);
+        doc.text(`${patient.user.firstName} ${patient.user.lastName}`, leftCol + 25, yPos);
+        doc.text(`${age} ans`, leftCol + 25, yPos + lineHeight);
+        doc.text(formatDate(patient.birthDate), leftCol + 35, yPos + lineHeight * 2);
+        doc.text(patient.gender === 'M' ? 'Masculin' : 'Féminin', leftCol + 25, yPos + lineHeight * 3);
 
-        doc.setFontSize(12);
-        doc.text(`Age: ${age} years`, 14, yPos);
-        yPos += 7;
-        doc.text(`Gender: ${patient.gender}`, 14, yPos);
-        yPos += 7;
-        doc.text(`Birth Date: ${formatDate(patient.birthDate)}`, 14, yPos);
-        yPos += 7;
+        doc.text(patient.phone || 'Non renseigné', rightCol + 25, yPos);
+        doc.text(patient.address || 'Non renseignée', rightCol + 25, yPos + lineHeight);
 
-        if (patient.phone) {
-          doc.text(`Phone: ${patient.phone}`, 14, yPos);
-          yPos += 7;
-        }
-
-        if (patient.address) {
-          doc.text(`Address: ${patient.address}`, 14, yPos);
-          yPos += 7;
-        }
-
-        yPos += 5;
+        yPos += 55;
       }
 
       // Medical History Section
