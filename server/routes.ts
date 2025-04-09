@@ -1225,9 +1225,7 @@ console.error('----------------------------------------');
       // Count upcoming appointments (future dates that are not cancelled)
       const now = new Date();
       const upcomingAppointments = appointments.filter(apt => 
-        new Date(apt.appointmentDate) > now && 
-        apt.status !== 'cancelled' &&
-        apt.doctor.toString() === doctor._id.toString()
+        new Date(apt.appointmentDate) > now && apt.status !== 'cancelled'
       );
 
       // Simulate some critical alerts for demo
