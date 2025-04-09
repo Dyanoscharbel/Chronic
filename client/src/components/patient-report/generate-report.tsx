@@ -76,29 +76,67 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
     setReportGenerated(false);
 
     try {
-      const doc = new jsPDF();
+      // Créer le document PDF en format A4
+      const doc = new jsPDF({
+        format: 'a4',
+        unit: 'mm'
+      });
 
-      // Add report title and date
-      doc.setFontSize(20);
-      doc.text('Patient Medical Report', 105, 20, { align: 'center' });
+      // Ajouter un en-tête stylisé
+      doc.setFillColor(0, 71, 65); // Vert foncé professionnel
+      doc.rect(0, 0, 210, 40, 'F');
+      
+      // Titre du rapport
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(24);
+      doc.text('Rapport Médical Patient', 105, 20, { align: 'center' });
 
-      doc.setFontSize(10);
-      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 28, { align: 'center' });
-
-      let yPos = 40;
-
-      // Patient Identification Section
-      doc.setFontSize(16);
-      doc.text('Patient Identification', 14, yPos);
-      yPos += 10;
-
+      // Date de génération
       doc.setFontSize(12);
-      doc.text(`Patient ID: P-${patient.id.toString().padStart(5, '0')}`, 14, yPos);
-      yPos += 7;
-      doc.text(`Name: ${patient.user.firstName} ${patient.user.lastName}`, 14, yPos);
-      yPos += 7;
-      doc.text(`Email: ${patient.user.email}`, 14, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 105, 30, { align: 'center' });
+
+      // Réinitialiser les couleurs pour le contenu
+      doc.setTextColor(0, 0, 0);
+      
+      let yPos = 50;
+
+      // Ajouter un style de page
+      doc.setDrawColor(0, 71, 65);
+      doc.setLineWidth(0.5);
+      doc.line(15, 45, 195, 45);
+
+      // Section d'identification du patient avec un style amélioré
+      doc.setFillColor(240, 240, 240);
+      doc.rect(15, yPos - 5, 180, 25, 'F');
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.setTextColor(0, 71, 65);
+      doc.text('Identification du Patient', 20, yPos);
       yPos += 10;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.setTextColor(0, 0, 0);
+
+      // Utilisation d'une mise en page en colonnes
+      const col1X = 20;
+      const col2X = 110;
+      
+      doc.text(`ID Patient: P-${patient.id.toString().padStart(5, '0')}`, col1X, yPos);
+      doc.text(`Email: ${patient.user.email}`, col2X, yPos);
+      yPos += 7;
+      
+      doc.text(`Nom complet: ${patient.user.firstName} ${patient.user.lastName}`, col1X, yPos);
+      yPos += 15;
+
+      // Ajouter une ligne de séparation stylisée
+      doc.setDrawColor(0, 71, 65);
+      doc.setLineDashPattern([1, 1], 0);
+      doc.line(15, yPos - 5, 195, yPos - 5);
+      doc.setLineDashPattern([], 0);
 
       // Personal Information Section
       if (reportSections.find(s => s.id === 'personalInfo')?.enabled) {
@@ -228,14 +266,34 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
           ];
         });
 
-        // Add table with lab results
+        // Ajouter un tableau stylisé pour les résultats
         autoTable(doc, {
-          head: [['Test', 'Result', 'Normal Range', 'Status', 'Date']],
+          head: [['Test', 'Résultat', 'Plage Normale', 'Statut', 'Date']],
           body: tableData,
           startY: yPos,
           theme: 'grid',
-          headStyles: { fillColor: [66, 133, 244] },
-          alternateRowStyles: { fillColor: [240, 240, 240] }
+          styles: {
+            font: 'helvetica',
+            fontSize: 10,
+            cellPadding: 5,
+          },
+          headStyles: {
+            fillColor: [0, 71, 65],
+            textColor: 255,
+            fontStyle: 'bold',
+            halign: 'center'
+          },
+          columnStyles: {
+            0: { fontStyle: 'bold' },
+            2: { fontSize: 9 },
+            3: { halign: 'center' },
+            4: { halign: 'center' }
+          },
+          alternateRowStyles: { 
+            fillColor: [240, 245, 245]
+          },
+          margin: { top: 10, left: 15, right: 15 },
+          tableWidth: 180
         });
 
         // Update yPos based on the table height
@@ -339,13 +397,28 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
         }
       }
 
-      // Add footer with page numbers
+      // Ajouter un pied de page stylisé avec numérotation
       const pageCount = doc.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
-        doc.setFontSize(10);
-        doc.text(`Page ${i} of ${pageCount}`, 105, doc.internal.pageSize.height - 10, { align: 'center' });
-        doc.text(`Confidential Medical Record - ${patient.user.firstName} ${patient.user.lastName}`, 105, doc.internal.pageSize.height - 5, { align: 'center' });
+        
+        // Barre de pied de page
+        doc.setFillColor(0, 71, 65);
+        doc.rect(0, doc.internal.pageSize.height - 20, 210, 20, 'F');
+        
+        // Texte du pied de page
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        
+        // Informations de confidentialité à gauche
+        doc.text(`Dossier Médical Confidentiel - ${patient.user.firstName} ${patient.user.lastName}`, 15, doc.internal.pageSize.height - 8);
+        
+        // Numéro de page à droite
+        doc.text(`Page ${i} sur ${pageCount}`, 195, doc.internal.pageSize.height - 8, { align: 'right' });
+        
+        // Date de génération au centre
+        doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')}`, 105, doc.internal.pageSize.height - 8, { align: 'center' });
       }
 
       // Save the PDF
