@@ -364,29 +364,30 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Generate Patient Report</DialogTitle>
-          <DialogDescription>
+        <DialogHeader className="border-b pb-4">
+          <DialogTitle className="text-2xl">Generate Patient Report</DialogTitle>
+          <DialogDescription className="text-muted-foreground mt-2">
             {patient.user ? (
-              <>Create a comprehensive PDF report for {patient.user.firstName} {patient.user.lastName}</>
+              <>Create a comprehensive PDF report for <span className="font-medium text-foreground">{patient.user.firstName} {patient.user.lastName}</span></>
             ) : (
               'Create a comprehensive patient report'
             )}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="text-sm font-medium mb-2">Include in report:</div>
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
+        <div className="space-y-6 py-6">
+          <div className="text-sm font-semibold text-foreground">Report Sections:</div>
+          <div className="space-y-4 bg-muted/50 p-4 rounded-lg">
+            <div className="flex items-center space-x-3 bg-background p-3 rounded-md hover:bg-accent transition-colors">
               <Checkbox 
                 id="personalInfo" 
                 checked={includeOptions.personalInfo}
                 onCheckedChange={(checked) => handleOptionToggle('personalInfo', checked as boolean)} 
+                className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
               />
               <label
                 htmlFor="personalInfo"
-                className="text-sm font-medium leading-none"
+                className="text-sm font-medium leading-none cursor-pointer select-none"
               >
                 Personal Information
               </label>
@@ -457,31 +458,38 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
           )}
 
           {reportGenerated && (
-            <div className="flex items-center space-x-2 p-4 bg-green-50 border border-green-200 rounded-md text-green-800">
+            <div className="flex items-center space-x-2 p-4 bg-green-100 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded-lg text-green-800 dark:text-green-300 animate-in fade-in duration-300">
               <Check className="h-5 w-5" />
               <span className="text-sm font-medium">Report generated successfully!</span>
             </div>
           )}
         </div>
 
-        <DialogFooter className="flex items-center justify-between">
+        <DialogFooter className="flex items-center justify-between border-t pt-4">
           <Button
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={generating}
+            className="w-[100px]"
           >
             Cancel
           </Button>
           <Button
             onClick={generatePDF}
             disabled={generating}
+            className="w-[140px] bg-primary hover:bg-primary/90"
           >
             {generating ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 Generating...
               </>
-            ) : 'Generate PDF'}
+            ) : (
+              <>
+                <FileText className="h-4 w-4 mr-2" />
+                Generate PDF
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
