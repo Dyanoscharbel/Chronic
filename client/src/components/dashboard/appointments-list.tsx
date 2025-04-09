@@ -15,9 +15,7 @@ export function AppointmentsList({ appointments }: AppointmentsListProps) {
     .filter(apt => {
       const appointmentDate = new Date(apt.appointmentDate);
       const now = new Date();
-      return appointmentDate > now && 
-             apt.doctorStatus !== 'cancelled' && 
-             apt.patientStatus !== 'cancelled';
+      return appointmentDate > now;
     })
     .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
     .slice(0, 3);
