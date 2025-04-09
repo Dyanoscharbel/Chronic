@@ -376,9 +376,9 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
         </DialogHeader>
 
         <div className="space-y-6 py-6">
-          <div className="text-sm font-semibold text-foreground">Report Sections:</div>
-          <div className="space-y-4 bg-muted/50 p-4 rounded-lg">
-            <div className="flex items-center space-x-3 bg-background p-3 rounded-md hover:bg-accent transition-colors">
+          <div className="text-base font-semibold text-foreground">Report Sections:</div>
+          <div className="space-y-4 bg-card p-4 rounded-lg border shadow-sm">
+            <div className="flex items-center space-x-3 bg-background p-3 rounded-md hover:bg-accent/10 transition-colors border">
               <Checkbox 
                 id="personalInfo" 
                 checked={includeOptions.personalInfo}
@@ -393,11 +393,12 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
               </label>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3 bg-background p-3 rounded-md hover:bg-accent/10 transition-colors border">
               <Checkbox 
                 id="medicalHistory" 
                 checked={includeOptions.medicalHistory}
-                onCheckedChange={(checked) => handleOptionToggle('medicalHistory', checked as boolean)} 
+                onCheckedChange={(checked) => handleOptionToggle('medicalHistory', checked as boolean)}
+                className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
               />
               <label
                 htmlFor="medicalHistory"
@@ -470,14 +471,14 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={generating}
-            className="w-[100px]"
+            className="w-[100px] border-2"
           >
             Cancel
           </Button>
           <Button
             onClick={generatePDF}
             disabled={generating}
-            className="w-[140px] bg-primary hover:bg-primary/90"
+            className="w-[140px] bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
           >
             {generating ? (
               <>
