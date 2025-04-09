@@ -76,7 +76,7 @@ export default function Dashboard() {
           icon={<Calendar className="h-6 w-6 text-white" />}
           iconBgColor="bg-indigo-500"
           title="Rendez-vous total"
-          value={dashboardStats?.upcomingAppointments || 0}
+          value={dashboardStats?.totalAppointments || 0}
           footerLink="/appointments"
           footerText="Voir tous les rendez-vous"
           footerLinkColor="text-indigo-600 hover:text-indigo-500"

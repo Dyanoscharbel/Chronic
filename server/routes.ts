@@ -971,7 +971,7 @@ console.error('----------------------------------------');
       res.status(201).json(savedAppointment);
 
     }catch (error) {
-      console.error('Error creating appointment:', error);
+            console.error('Error creating appointment:', error);
       if (error.name === 'ValidationError') {
         return res.status(400).json({ 
           message: 'Erreur de validation',
@@ -1222,13 +1222,8 @@ console.error('----------------------------------------');
       const appointments = await storage.getAppointments();
       const results = await storage.getPatientLabResults();
 
-      // Count upcoming appointments (future dates that are not cancelled)
-      const now = new Date();
-      const upcomingAppointments = await Appointment.find({
-        doctor: doctor._id,
-        appointmentDate: { $gt: now },
-        doctorStatus: { $nin: ['cancelled', 'completed'] }
-      });
+      // Count all appointments for the connected doctor
+      const totalAppointments = await Appointment.countDocuments({ doctor: doctor._id });
 
       // Simulate some critical alerts for demo
       const criticalAlerts = 3;
@@ -1263,7 +1258,7 @@ console.error('----------------------------------------');
 
       res.json({
         totalPatients: patients.length,
-        upcomingAppointments: upcomingAppointments.length,
+        totalAppointments,
         criticalAlerts,
         pendingLabResults,
         stageDistribution,
