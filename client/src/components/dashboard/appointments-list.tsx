@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDate } from '@/lib/utils';
 import { PatientLabResult } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query'; // Import useQuery
-import Loader from '@/components/Loader'; //Import Loader component
+import { Loader } from '@/components/ui/loader'; //Import Loader component
 
 
 interface LabResultsListProps {
