@@ -188,29 +188,49 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
       // Medical History Section
       if (reportSections.find(s => s.id === 'medicalHistory')?.enabled) {
         doc.setFontSize(16);
-        doc.text('Medical History', 14, yPos);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 71, 65);
+        doc.text('Historique Médical', 20, yPos);
         yPos += 10;
 
-        doc.setFontSize(12);
-        doc.text(`CKD Stage: ${patient.ckdStage}`, 14, yPos);
-        yPos += 7;
+        // Add a background rectangle for medical history
+        doc.setFillColor(245, 247, 250);
+        doc.rect(15, yPos - 5, 180, 45, 'F');
 
-        if (patient.proteinuriaLevel) {
-          doc.text(`Proteinuria Level: ${patient.proteinuriaLevel}`, 14, yPos);
-          yPos += 7;
-        }
+        // Create two columns
+        const leftCol = 25;
+        const rightCol = 110;
+        const lineHeight = 12;
 
-        if (patient.lastEgfrValue) {
-          doc.text(`Last eGFR Value: ${patient.lastEgfrValue} mL/min/1.73m²`, 14, yPos);
-          yPos += 7;
-        }
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(100, 100, 100);
 
+        // Left column headers
+        doc.text("Stade MRC:", leftCol, yPos);
+        doc.text("Protéinurie:", leftCol, yPos + lineHeight);
+        doc.text("DFG (eGFR):", leftCol, yPos + lineHeight * 2);
+
+        // Add values in normal font
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        
+        doc.text(patient.ckdStage || 'Non défini', leftCol + 25, yPos);
+        doc.text(patient.proteinuriaLevel || 'Non mesuré', leftCol + 25, yPos + lineHeight);
+        doc.text(patient.lastEgfrValue ? `${patient.lastEgfrValue} mL/min/1.73m²` : 'Non mesuré', leftCol + 25, yPos + lineHeight * 2);
+
+        // Right column if needed
         if (patient.lastProteinuriaValue) {
-          doc.text(`Last Proteinuria Value: ${patient.lastProteinuriaValue} mg/g`, 14, yPos);
-          yPos += 7;
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(100, 100, 100);
+          doc.text("Dernière mesure protéinurie:", rightCol, yPos);
+          
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(0, 0, 0);
+          doc.text(`${patient.lastProteinuriaValue} mg/g`, rightCol + 45, yPos);
         }
 
-        yPos += 5;
+        yPos += 50;
       }
 
       // Risk Assessment Section
