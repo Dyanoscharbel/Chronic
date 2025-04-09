@@ -29,13 +29,13 @@ interface GenerateReportProps {
 export function GenerateReport({ patient, trigger }: GenerateReportProps) {
   const [open, setOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [includeOptions, setIncludeOptions] = useState({
-    personalInfo: true,
-    medicalHistory: true,
-    labResults: true,
-    appointments: true,
-    riskAssessment: true
-  });
+  const [reportSections, setReportSections] = useState<ReportSection[]>([
+    { id: "personalInfo", name: "Personal Information", enabled: true },
+    { id: "medicalHistory", name: "Medical History", enabled: true },
+    { id: "labResults", name: "Laboratory Results", enabled: true },
+    { id: "appointments", name: "Appointments", enabled: true },
+    { id: "riskAssessment", name: "Risk Assessment", enabled: true }
+  ]);
   const [reportGenerated, setReportGenerated] = useState(false);
 
   // Fetch additional data needed for the report
@@ -59,11 +59,16 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
     enabled: open,
   });
 
-  const handleOptionToggle = (option: string, checked: boolean) => {
-    setIncludeOptions(prev => ({
-      ...prev,
-      [option]: checked
-    }));
+
+  const handleSectionToggle = (sectionId: string) => {
+    setReportSections(prevSections => {
+      return prevSections.map(section => {
+        if (section.id === sectionId) {
+          return { ...section, enabled: !section.enabled };
+        }
+        return section;
+      });
+    });
   };
 
   const generatePDF = async () => {
@@ -96,7 +101,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
       yPos += 10;
 
       // Personal Information Section
-      if (includeOptions.personalInfo) {
+      if (reportSections.find(s => s.id === 'personalInfo')?.enabled) {
         doc.setFontSize(16);
         doc.text('Personal Information', 14, yPos);
         yPos += 10;
@@ -125,7 +130,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
       }
 
       // Medical History Section
-      if (includeOptions.medicalHistory) {
+      if (reportSections.find(s => s.id === 'medicalHistory')?.enabled) {
         doc.setFontSize(16);
         doc.text('Medical History', 14, yPos);
         yPos += 10;
@@ -153,7 +158,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
       }
 
       // Risk Assessment Section
-      if (includeOptions.riskAssessment && patient.lastEgfrValue && patient.proteinuriaLevel) {
+      if (reportSections.find(s => s.id === 'riskAssessment')?.enabled && patient.lastEgfrValue && patient.proteinuriaLevel) {
         doc.setFontSize(16);
         doc.text('Risk Assessment', 14, yPos);
         yPos += 10;
@@ -191,7 +196,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
       }
 
       // Laboratory Results Section
-      if (includeOptions.labResults && labResults && labResults.length > 0 && labTests) {
+      if (reportSections.find(s => s.id === 'labResults')?.enabled && labResults && labResults.length > 0 && labTests) {
         doc.setFontSize(16);
         doc.text('Laboratory Results', 14, yPos);
         yPos += 10;
@@ -238,13 +243,13 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
       }
 
       // Check if need to add a new page for appointments
-      if (yPos > 250 && includeOptions.appointments && appointments && appointments.length > 0) {
+      if (yPos > 250 && reportSections.find(s => s.id === 'appointments')?.enabled && appointments && appointments.length > 0) {
         doc.addPage();
         yPos = 20;
       }
 
       // Appointments Section
-      if (includeOptions.appointments && appointments && appointments.length > 0 && doctors) {
+      if (reportSections.find(s => s.id === 'appointments')?.enabled && appointments && appointments.length > 0 && doctors) {
         doc.setFontSize(16);
         doc.text('Appointments', 14, yPos);
         yPos += 10;
@@ -363,10 +368,10 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="border-b pb-4">
-          <DialogTitle className="text-2xl">Generate Patient Report</DialogTitle>
-          <DialogDescription className="text-muted-foreground mt-2">
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Generate Patient Report</DialogTitle>
+          <DialogDescription>
             {patient.user ? (
               <>Create a comprehensive PDF report for <span className="font-medium text-foreground">{patient.user.firstName} {patient.user.lastName}</span></>
             ) : (
@@ -375,86 +380,33 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-6">
-          <div className="text-base font-semibold text-foreground">Report Sections:</div>
-          <div className="space-y-4 bg-card p-4 rounded-lg border shadow-sm">
-            <div className="flex items-center space-x-3 bg-background p-3 rounded-md hover:bg-accent/10 transition-colors border">
-              <Checkbox 
-                id="personalInfo" 
-                checked={includeOptions.personalInfo}
-                onCheckedChange={(checked) => handleOptionToggle('personalInfo', checked as boolean)} 
-                className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-              />
-              <label
-                htmlFor="personalInfo"
-                className="text-sm font-medium leading-none cursor-pointer select-none"
-              >
-                Personal Information
-              </label>
-            </div>
-
-            <div className="flex items-center space-x-3 bg-background p-3 rounded-md hover:bg-accent/10 transition-colors border">
-              <Checkbox 
-                id="medicalHistory" 
-                checked={includeOptions.medicalHistory}
-                onCheckedChange={(checked) => handleOptionToggle('medicalHistory', checked as boolean)}
-                className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-              />
-              <label
-                htmlFor="medicalHistory"
-                className="text-sm font-medium leading-none text-foreground hover:cursor-pointer"
-              >
-                Medical History
-              </label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="labResults" 
-                checked={includeOptions.labResults}
-                onCheckedChange={(checked) => handleOptionToggle('labResults', checked as boolean)} 
-              />
-              <label
-                htmlFor="labResults"
-                className="text-sm font-medium leading-none text-foreground hover:cursor-pointer"
-              >
-                Laboratory Results
-              </label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="appointments" 
-                checked={includeOptions.appointments}
-                onCheckedChange={(checked) => handleOptionToggle('appointments', checked as boolean)} 
-              />
-              <label
-                htmlFor="appointments"
-                className="text-sm font-medium leading-none text-foreground hover:cursor-pointer"
-              >
-                Appointments
-              </label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="riskAssessment" 
-                checked={includeOptions.riskAssessment}
-                onCheckedChange={(checked) => handleOptionToggle('riskAssessment', checked as boolean)} 
-                disabled={!patient.lastEgfrValue || !patient.proteinuriaLevel}
-              />
-              <label
-                htmlFor="riskAssessment"
-                className={`text-sm font-medium leading-none ${!patient.lastEgfrValue || !patient.proteinuriaLevel ? 'opacity-50' : ''} text-foreground hover:cursor-pointer`}
-              >
-                Risk Assessment
-              </label>
+        <div className="mt-4 space-y-6">
+          <div>
+            <h3 className="mb-4 text-sm font-medium leading-none">Report Sections:</h3>
+            <div className="rounded-md border p-4 space-y-4">
+              {reportSections.map((section) => (
+                <div key={section.id} className="flex items-center space-x-3">
+                  <Checkbox
+                    id={section.id}
+                    checked={section.enabled}
+                    onCheckedChange={() => handleSectionToggle(section.id)}
+                  />
+                  <label
+                    htmlFor={section.id}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    {section.name}
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
 
           {!patient.lastEgfrValue && (
-            <div className="text-xs text-amber-600 mt-1">
-              No eGFR value available. Risk assessment will be limited.
+            <div className="rounded-md bg-yellow-50 p-4">
+              <p className="text-yellow-800 text-sm">
+                No eGFR value available. Risk assessment will be limited.
+              </p>
             </div>
           )}
 
@@ -466,34 +418,33 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
           )}
         </div>
 
-        <DialogFooter className="flex items-center justify-between border-t pt-4">
+        <DialogFooter className="mt-6">
           <Button
+            type="button"
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={generating}
-            className="w-[100px] border-2"
           >
             Cancel
           </Button>
-          <Button
-            onClick={generatePDF}
-            disabled={generating}
-            className="w-[140px] bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-          >
+          <Button type="submit" onClick={generatePDF} disabled={generating}>
             {generating ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 Generating...
               </>
             ) : (
-              <>
-                <FileText className="h-4 w-4 mr-2" />
-                Generate PDF
-              </>
+              'Generate Report'
             )}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
+}
+
+interface ReportSection {
+  id: string;
+  name: string;
+  enabled: boolean;
 }
