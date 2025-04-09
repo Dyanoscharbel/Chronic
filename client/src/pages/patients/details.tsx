@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { ArrowLeft, Calendar, Phone, MapPin, Activity, FileText, Beaker, AlertCircle } from 'lucide-react';
@@ -122,8 +121,8 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
+        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-200">
+          <CardHeader className="border-b">
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-primary" />
               <CardTitle>Suivi Médical</CardTitle>
@@ -144,8 +143,8 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="shadow-lg hover:shadow-xl transition-shadow duration-200">
+        <CardHeader className="border-b">
           <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5 text-primary" />
             <CardTitle>Rendez-vous</CardTitle>
@@ -204,8 +203,8 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="shadow-lg hover:shadow-xl transition-shadow duration-200">
+        <CardHeader className="border-b">
           <div className="flex items-center gap-2">
             <Beaker className="h-5 w-5 text-primary" />
             <CardTitle>Résultats de Laboratoire</CardTitle>
@@ -237,7 +236,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                         const value = parseFloat(result.resultValue);
                         const min = result.labTest.normalMin;
                         const max = result.labTest.normalMax;
-                        
+
                         if (min && max) {
                           const normalValue = (max + min) / 2;
                           const deviation = Math.abs((value - normalValue) / normalValue);
