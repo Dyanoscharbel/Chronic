@@ -1127,8 +1127,36 @@ console.error('----------------------------------------');
   // Workflow routes
   apiRouter.get('/workflows', authenticate, async (req, res) => {
     try {
-      const workflows = await storage.getWorkflows();
+      const userId = req.session.user?.id;
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found' });
+      }
+
+      const workflows = await Workflow.find({ createdBy: doctor._id });
       res.json(workflows);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  apiRouter.delete('/workflows/:id', authenticate, async (req, res) => {
+    try {
+      const workflowId = req.params.id;
+      const userId = req.session.user?.id;
+      
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found' });
+      }
+
+      const workflow = await Workflow.findOne({ _id: workflowId, createdBy: doctor._id });
+      if (!workflow) {
+        return res.status(404).json({ message: 'Workflow not found' });
+      }
+
+      await Workflow.findByIdAndDelete(workflowId);
+      res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
     }
