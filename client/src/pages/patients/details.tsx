@@ -1,7 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { ArrowLeft, Calendar, Phone, MapPin, Activity, FileText, Flask, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Phone, MapPin, Activity, FileText, Beaker, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Patient, PatientLabResult } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -141,7 +141,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Flask className="h-5 w-5 text-primary" />
+            <Beaker className="h-5 w-5 text-primary" />
             <CardTitle>Résultats de Laboratoire</CardTitle>
           </div>
         </CardHeader>
