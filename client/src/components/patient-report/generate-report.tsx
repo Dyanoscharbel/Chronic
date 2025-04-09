@@ -198,11 +198,11 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
 
         // Prepare data for the table
         const tableData = labResults.map(result => {
-          const test = labTests.find(t => t.id === result.labTestId);
+          const test = labTests.find(t => t._id === result.labTest._id);
           const value = parseFloat(result.resultValue.toString());
-          const unit = test?.unit || '';
-          const min = test?.normalMin ? parseFloat(test.normalMin.toString()) : undefined;
-          const max = test?.normalMax ? parseFloat(test.normalMax.toString()) : undefined;
+          const unit = result.labTest.unit || '';
+          const min = result.labTest.normalMin ? parseFloat(result.labTest.normalMin.toString()) : undefined;
+          const max = result.labTest.normalMax ? parseFloat(result.labTest.normalMax.toString()) : undefined;
 
           let status = 'Normal';
           if (min !== undefined && max !== undefined) {
@@ -215,7 +215,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
             : 'Not specified';
 
           return [
-            test?.testName || `Test #${result.labTestId}`,
+            result.labTest.testName || `Test #${result.labTest._id}`,
             `${value} ${unit}`,
             range,
             status,
