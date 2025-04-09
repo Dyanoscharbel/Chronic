@@ -967,8 +967,7 @@ console.error('----------------------------------------');
           }
         });
 
-      console.log('Appointment created successfully:', savedAppointment._id);
-      res.status(201).json(savedAppointment);
+      console.log('Appointment created successfully:', savedAppointment._id);      res.status(201).json(savedAppointment);
 
     }catch (error) {
             console.error('Error creating appointment:', error);
@@ -1144,7 +1143,7 @@ console.error('----------------------------------------');
     try {
       const workflowId = req.params.id;
       const userId = req.session.user?.id;
-      
+
       const doctor = await Doctor.findOne({ user: userId });
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found' });
@@ -1504,6 +1503,40 @@ console.error('----------------------------------------');
     } catch (error) {
       console.error('Erreur changement mot de passe:', error);
       res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
+  apiRouter.put('/workflows/:id', authenticate, async (req, res) => {
+    try {
+      const workflowId = req.params.id;
+      const userId = req.session.user?.id;
+      const { name, description, ckdStage, requirements } = req.body;
+
+      // Vérifier le docteur
+      const doctor = await Doctor.findOne({ user: userId });
+      if (!doctor) {
+        return res.status(403).json({ message: 'Doctor not found' });
+      }
+
+      // Trouver et mettre à jour le workflow
+      const workflow = await Workflow.findOne({ _id: workflowId, createdBy: doctor._id });
+      if (!workflow) {
+        return res.status(404).json({ message: 'Workflow not found' });
+      }
+
+      // Mettre à jour les champs
+      workflow.name = name;
+      workflow.description = description;
+      workflow.ckdStage = ckdStage;
+      workflow.requirements = requirements;
+
+      // Sauvegarder les modifications
+      await workflow.save();
+
+      res.json(workflow);
+    } catch (error) {
+      console.error('Error updating workflow:', error);
+      res.status(500).json({ message: 'Server error' });
     }
   });
 
