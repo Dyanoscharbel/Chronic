@@ -848,6 +848,9 @@ console.error('----------------------------------------');
           </div>
         `;
 
+        // Récupérer les informations complètes du docteur
+        const doctorWithUser = await Doctor.findById(doctor._id).populate('user');
+
         // Template d'email pour le patient
         const patientEmailTemplate = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
@@ -864,7 +867,7 @@ console.error('----------------------------------------');
                 <p style="color: #374151; margin: 5px 0;"><strong>Date du test:</strong> ${new Date().toLocaleDateString()}</p>
               </div>
               <div style="background-color: #e5e7eb; padding: 10px; border-radius: 3px;">
-                <p style="color: #4b5563; margin: 0;">Votre médecin, Dr. ${doctor.user.firstName} ${doctor.user.lastName}, a été notifié de ces résultats.</p>
+                <p style="color: #4b5563; margin: 0;">Votre médecin, Dr. ${doctorWithUser.user.firstName} ${doctorWithUser.user.lastName}, a été notifié de ces résultats.</p>
               </div>
             </div>
             <div style="font-size: 12px; color: #6b7280; text-align: center; margin-top: 20px;">
