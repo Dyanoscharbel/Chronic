@@ -134,7 +134,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <Menu className="h-6 w-6" />
           </button>
           <div className="ml-auto px-4">
-            <Button variant="ghost" onClick={handleLogout} className="text-gray-500 hover:text-gray-700">
+            <Button 
+              variant="destructive" 
+              onClick={handleLogout} 
+              className="bg-red-600 hover:bg-red-700 text-white font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+            >
               <LogOut className="h-5 w-5 mr-2" />
               Déconnexion
             </Button>
