@@ -44,8 +44,9 @@ export default function ChatbotPage() {
         }
       }
     },
-    onError: (error) => {
-      const errorMessage = error.response?.data?.message || 'Une erreur est survenue';
+    onError: (error: any) => {
+      // Extraire uniquement le message d'erreur de la réponse
+      const errorMessage = error.response?.data?.message || error.message || 'Une erreur est survenue';
       setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
     }
   });
