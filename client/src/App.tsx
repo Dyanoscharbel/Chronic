@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
 import NotFound from "@/pages/not-found";
+import AdminDashboard from "@/pages/admin/dashboard";
 import Dashboard from "@/pages/dashboard";
 import PatientsPage from "@/pages/patients/index";
 
