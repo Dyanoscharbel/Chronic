@@ -18,7 +18,7 @@ export function AppLayout({ children, isAdmin = false }: AppLayoutProps) {
   const isMobile = useMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [location] = useLocation();
-  const hideHeader = isAdmin && location.pathname === '/admin/dashboard'; // Corrected pathname access
+  const hideHeader = location.pathname === '/admin/dashboard';
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
