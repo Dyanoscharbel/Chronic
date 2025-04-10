@@ -23,6 +23,7 @@ import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { AppLayout } from "@/components/layout/app-layout";
+import { AdminLayout } from "@/components/layout/admin-layout";
 import Workflows from "@/pages/workflows";
 import ChatbotPage from "@/pages/chatbot"; // Import ChatbotPage component
 
