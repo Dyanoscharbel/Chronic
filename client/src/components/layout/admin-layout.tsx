@@ -27,7 +27,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { 
       label: 'Tableau de bord', 
       icon: <Home className="mr-3 h-6 w-6 text-white" />,
-      href: '/admin'
+      href: '/admin/accueil'
     },
     { 
       label: 'Médecins', 
