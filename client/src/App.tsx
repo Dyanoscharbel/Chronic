@@ -204,9 +204,15 @@ function Router() {
       </Route>
       <Route path="/settings">
         <ProtectedRoute component={() => (
-          <AppLayout>
-            <SettingsPage />
-          </AppLayout>
+          user?.role === 'admin' ? (
+            <AdminLayout>
+              <SettingsPage />
+            </AdminLayout>
+          ) : (
+            <AppLayout>
+              <SettingsPage />
+            </AppLayout>
+          )
         )} />
       </Route>
       <Route path="/workflows">
