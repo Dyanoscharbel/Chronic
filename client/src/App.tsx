@@ -85,38 +85,6 @@ function AuthRoute({ component: Component, ...rest }: any) {
 function Router() {
   return (
     <Switch>
-      {/* Admin Routes */}
-      <Route path="/admin/dashboard">
-        <ProtectedRoute 
-          component={() => (
-            <AdminLayout>
-              <AdminDashboard />
-            </AdminLayout>
-          )}
-          adminOnly={true}
-        />
-      </Route>
-      <Route path="/admin/doctors">
-        <ProtectedRoute 
-          component={() => (
-            <AdminLayout>
-              <DoctorsManagement />
-            </AdminLayout>
-          )}
-          adminOnly={true}
-        />
-      </Route>
-      <Route path="/admin/patients">
-        <ProtectedRoute 
-          component={() => (
-            <AdminLayout>
-              <PatientsManagement />
-            </AdminLayout>
-          )}
-          adminOnly={true}
-        />
-      </Route>
-
       {/* Auth Routes */}
       <Route path="/login">
         <AuthRoute component={LoginPage} />
