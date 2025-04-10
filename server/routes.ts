@@ -1422,8 +1422,8 @@ console.error('----------------------------------------');
       const appointments = await storage.getAppointments();
       const results = await storage.getPatientLabResults();
 
-      // Count all appointments in the database
-      const totalAppointments = await Appointment.countDocuments();
+      // Count all appointments for the connected doctor
+      const totalAppointments = await Appointment.countDocuments({ doctor: doctor._id });
 
       // Simulate some critical alerts for demo
       const criticalAlerts = 3;
