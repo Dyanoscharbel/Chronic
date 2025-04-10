@@ -171,9 +171,14 @@ export default function LabResultsPage() {
 
   const filteredResults = labResults?.filter(result => {
     const testName = getTestName(result.labTest);
+    const patientName = result.patient?.user 
+      ? `${result.patient.user.firstName} ${result.patient.user.lastName}`.toLowerCase()
+      : '';
+    const searchLower = searchQuery.toLowerCase();
 
     const matchesSearch = searchQuery ? (
-      testName.toLowerCase().includes(searchQuery.toLowerCase())
+      testName.toLowerCase().includes(searchLower) ||
+      patientName.includes(searchLower)
     ) : true;
 
     const matchesPatient = selectedPatient === 'all' ? true : result.patient?._id === selectedPatient;
