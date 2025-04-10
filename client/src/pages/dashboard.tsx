@@ -106,13 +106,13 @@ export default function Dashboard() {
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ChartCard
-          title="Patient CKD Stages Distribution"
+          title="Distribution des stades MRC des patients"
           type="pie"
           data={dashboardStats?.stageDistribution || {}}
         />
         
         <ChartCard
-          title="Average eGFR Trend (Last 6 Months)"
+          title="Tendance moyenne du DFG (6 derniers mois)"
           type="line"
           data={dashboardStats?.egfrTrend || []}
         />
