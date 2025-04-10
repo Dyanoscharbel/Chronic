@@ -61,16 +61,16 @@ export default function ChatbotPage() {
               }`}
             >
               <div 
-                className={`max-w-[80%] p-3 rounded-lg shadow ${
+                className={`max-w-[80%] p-4 rounded-xl shadow-lg ${
                   msg.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
+                    ? 'bg-[var(--primary-dark)] text-white font-medium'
+                    : 'bg-muted/90 border border-border'
                 }`}
               >
-                <p className="text-sm mb-1">
+                <p className={`text-sm mb-2 ${msg.role === 'user' ? 'text-primary-foreground/90' : 'text-foreground/70'}`}>
                   {msg.role === 'user' ? 'Vous' : 'Assistant'}
                 </p>
-                <p className="break-words">{msg.content}</p>
+                <p className="break-words leading-relaxed">{msg.content}</p>
               </div>
             </div>
           ))}
