@@ -1267,6 +1267,67 @@ console.error('----------------------------------------');
 
       await workflow.save();
 
+      // Chercher tous les patients du même stage CKD
+      const patientsWithStage = await Patient.find({ 
+        ckdStage: workflow.ckdStage,
+        doctor: doctor._id 
+      }).populate('user');
+
+      // Envoyer un email au médecin
+      const doctorEmailTemplate = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #2563eb;">Nouveau Workflow Créé</h1>
+            <hr style="border: 1px solid #eee;">
+          </div>
+          <div style="background-color: #f8fafc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <h2 style="color: #1e40af; margin-bottom: 15px;">${workflow.name}</h2>
+            <p style="color: #374151; line-height: 1.6;">${workflow.description}</p>
+            <p style="color: #374151;"><strong>Stage CKD:</strong> ${workflow.ckdStage}</p>
+            <p style="color: #374151;"><strong>Nombre de patients concernés:</strong> ${patientsWithStage.length}</p>
+          </div>
+        </div>
+      `;
+
+      await notificationService.sendEmail(
+        doctor.user.email,
+        'Nouveau workflow créé',
+        doctorEmailTemplate
+      );
+
+      // Envoyer un email à chaque patient concerné
+      for (const patient of patientsWithStage) {
+        const patientEmailTemplate = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h1 style="color: #2563eb;">Nouveau Protocole de Suivi</h1>
+              <hr style="border: 1px solid #eee;">
+            </div>
+            <div style="background-color: #f8fafc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+              <p style="color: #374151;">Cher(e) ${patient.user.firstName} ${patient.user.lastName},</p>
+              <p style="color: #374151; line-height: 1.6;">
+                Votre médecin, Dr. ${doctor.user.firstName} ${doctor.user.lastName}, 
+                a mis en place un nouveau protocole de suivi pour votre stade CKD (${workflow.ckdStage}).
+              </p>
+              <h3 style="color: #1e40af;">${workflow.name}</h3>
+              <p style="color: #374151;">${workflow.description}</p>
+              <div style="background-color: #e5e7eb; padding: 10px; border-radius: 3px; margin-top: 15px;">
+                <p style="color: #4b5563; margin: 0;">
+                  Ce protocole aidera à mieux suivre l'évolution de votre état de santé.
+                  N'hésitez pas à contacter votre médecin pour plus d'informations.
+                </p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        await notificationService.sendEmail(
+          patient.user.email,
+          'Nouveau protocole de suivi mis en place',
+          patientEmailTemplate
+        );
+      }
+
       res.status(201).json(workflow);
     } catch (error) {
       console.error('Error creating workflow:', error);
