@@ -24,9 +24,9 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
   return (
     <div className="bg-white shadow rounded-lg">
       <div className="flex items-center justify-between py-4 px-6 border-b border-gray-200">
-        <h2 className="text-lg font-medium text-gray-900">Recent Patients</h2>
+        <h2 className="text-lg font-medium text-gray-900">Patients récents</h2>
         <Link href="/patients" className="text-sm font-medium text-primary hover:text-primary-dark">
-          View all
+          Voir tout
         </Link>
       </div>
 
@@ -41,16 +41,16 @@ export function PatientTable({ patients, totalPatients }: PatientTableProps) {
                 ID
               </TableHead>
               <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Age/Gender
+                Âge/Genre
               </TableHead>
               <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                CKD Stage
+                Stade MRC
               </TableHead>
               <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Last eGFR
+                Dernier DFG
               </TableHead>
               <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Last Visit
+                Dernière visite
               </TableHead>
               <TableHead className="relative px-6 py-3">
                 <span className="sr-only">Actions</span>

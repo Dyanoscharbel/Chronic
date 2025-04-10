@@ -56,7 +56,7 @@ export default function Dashboard() {
           className="flex items-center space-x-2"
         >
           <Plus className="h-4 w-4" />
-          <span>Create Workflow</span>
+          <span>Créer un Workflow</span>
         </Button>
       </div>
       

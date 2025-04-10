@@ -17,15 +17,15 @@ export function ChartCard({ title, type, data, className, height = 'h-64' }: Cha
 
   useEffect(() => {
     if (!chartRef.current) return;
-    
+
     // Destroy existing chart if it exists
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
-    
+
     const ctx = chartRef.current.getContext('2d');
     if (!ctx) return;
-    
+
     // Configure chart based on type
     if (type === 'pie') {
       chartInstance.current = new Chart(ctx, {
@@ -96,7 +96,7 @@ export function ChartCard({ title, type, data, className, height = 'h-64' }: Cha
         }
       });
     }
-    
+
     // Cleanup
     return () => {
       if (chartInstance.current) {
