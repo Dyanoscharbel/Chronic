@@ -1405,12 +1405,43 @@ console.error('----------------------------------------');
         const totalPatients = await Patient.countDocuments();
         const totalDoctors = await Doctor.countDocuments();
         const totalAppointments = await Appointment.countDocuments();
+        
+        // Calculate CKD stage distribution for all patients
+        const stageDistribution = {
+          'Stage 1': 0,
+          'Stage 2': 0,
+          'Stage 3A': 0,
+          'Stage 3B': 0,
+          'Stage 4': 0,
+          'Stage 5': 0
+        };
+
+        const allPatients = await Patient.find();
+        allPatients.forEach(patient => {
+          if (patient.ckdStage && stageDistribution.hasOwnProperty(patient.ckdStage)) {
+            (stageDistribution as any)[patient.ckdStage]++;
+          }
+        });
+
+        // Monthly stats for all patients
+        const monthlyStats = await PatientLabResult.aggregate([
+          {
+            $group: {
+              _id: { $month: "$resultDate" },
+              count: { $sum: 1 }
+            }
+          },
+          { $sort: { "_id": 1 } }
+        ]);
+
         return res.json({
           totalPatients,
           totalDoctors,
           totalAppointments,
-          criticalAlerts: 0,
-          pendingLabResults: 0
+          criticalAlerts: await Notification.countDocuments({ severity: 'error' }),
+          pendingLabResults: await PatientLabResult.countDocuments(),
+          stageDistribution,
+          monthlyStats
         });
       }
 
