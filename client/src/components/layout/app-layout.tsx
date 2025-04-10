@@ -61,7 +61,7 @@ export function AppLayout({ children, isAdmin = false }: AppLayoutProps) {
       )}
 
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        {!hideHeader && (
+        {!isAdmin && (
           <Header 
             toggleSidebar={toggleSidebar}
             user={user}
