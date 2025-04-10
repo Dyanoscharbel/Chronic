@@ -676,8 +676,13 @@ console.error('----------------------------------------');
   // Patient lab results routes
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
-      const userId = req.session.user?.id;
-      const doctor = await Doctor.findOne({ user: userId }).select('_id');
+      const user = req.session.user;
+      if (user?.role === 'admin') {
+        // Pour les admins, retourner tous les résultats ou un tableau vide
+        return res.json([]);
+      }
+
+      const doctor = await Doctor.findOne({ user: user?.id }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
@@ -1118,8 +1123,13 @@ console.error('----------------------------------------');
   // Notifications routes
   apiRouter.get('/notifications', authenticate, async (req, res) => {
     try {
-      const userId = req.session.user?.id;
-      const doctor = await Doctor.findOne({ user: userId }).select('_id');
+      const user = req.session.user;
+      if (user?.role === 'admin') {
+        // Pour les admins, retourner un tableau vide ou des notifications spécifiques
+        return res.json({ notifications: [], criticalCount: 0 });
+      }
+      
+      const doctor = await Doctor.findOne({ user: user?.id }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found' });
       }
@@ -1389,8 +1399,20 @@ console.error('----------------------------------------');
   // Dashboard statistics
   apiRouter.get('/dashboard/stats', authenticate, async (req, res) => {
     try {
-      const userId = req.session.user?.id;
-      const doctor = await Doctor.findOne({ user: userId }).select('_id');
+      const user = req.session.user;
+      if (user?.role === 'admin') {
+        // Stats globaux pour l'admin
+        const totalPatients = await Patient.countDocuments();
+        const totalDoctors = await Doctor.countDocuments();
+        return res.json({
+          totalPatients,
+          totalDoctors,
+          criticalAlerts: 0,
+          pendingLabResults: 0
+        });
+      }
+
+      const doctor = await Doctor.findOne({ user: user?.id }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
