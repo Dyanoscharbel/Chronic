@@ -29,6 +29,11 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
       href: '/'
     },
     { 
+      label: 'Doctors', 
+      icon: <Users className="mr-3 h-6 w-6 text-white" />,
+      href: '/doctors'
+    },
+    { 
       label: 'Patients', 
       icon: <Users className="mr-3 h-6 w-6 text-white" />,
       href: '/patients'
