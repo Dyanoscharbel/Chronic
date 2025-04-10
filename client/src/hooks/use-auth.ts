@@ -52,13 +52,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await apiRequest('POST', '/api/auth/login', { email, password });
       console.log('Statut de la réponse:', response.status);
       const data = await response.json();
-      
+
       console.log('Réponse complète du serveur:', {
         status: response.status,
         data,
         headers: Object.fromEntries(response.headers.entries())
       });
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Erreur de connexion');
       }
@@ -76,9 +76,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         userDetails: data.userDetails,
         password: password // Stocker temporairement pour la reconnexion
       };
-      
+
       setAuthState(prev => ({...prev, ...newAuthState}));
       localStorage.setItem('auth', JSON.stringify({...authState, ...newAuthState}));
+
+      // Redirection selon le rôle
+      if (newAuthState.user.role === 'admin') {
+        window.location.href = '/admin/dashboard';
+      } else {
+        window.location.href = '/';
+      }
       return true;
     } catch (error) {
       console.error("Login error:", error);
@@ -124,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast({
         title: "Veuillez vous reconnecter",
       });
-      
+
       // Rediriger vers login et forcer le rechargement
       setTimeout(() => {
         window.location.href = '/login';
@@ -148,7 +155,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logout,
     setAuthState
   };
-  
+
   return React.createElement(
     AuthContext.Provider,
     { value: contextValue },

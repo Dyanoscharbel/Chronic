@@ -83,6 +83,18 @@ function AuthRoute({ component: Component, ...rest }: any) {
 function Router() {
   return (
     <Switch>
+      {/* Admin Routes */}
+      <Route path="/admin/dashboard">
+        <ProtectedRoute 
+          component={() => (
+            <AppLayout>
+              <AdminDashboard />
+            </AppLayout>
+          )}
+          adminOnly={true}
+        />
+      </Route>
+
       {/* Auth Routes */}
       <Route path="/login">
         <AuthRoute component={LoginPage} />
