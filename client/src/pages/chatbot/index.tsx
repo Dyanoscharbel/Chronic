@@ -39,7 +39,8 @@ export default function ChatbotPage() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    setMessages(prev => [...prev, { role: 'user', content: input }]);
+    const userMessage = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
     sendMessage.mutate(input);
     setInput('');
   };
@@ -53,18 +54,23 @@ export default function ChatbotPage() {
           {messages.map((msg, i) => (
             <div 
               key={i} 
-              className={`mb-4 ${
+              className={`mb-4 flex ${
                 msg.role === 'user' 
-                  ? 'text-right' 
-                  : 'text-left'
+                  ? 'justify-end' 
+                  : 'justify-start'
               }`}
             >
-              <div className={`inline-block p-3 rounded-lg ${
-                msg.role === 'user'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted'
-              }`}>
-                {msg.content}
+              <div 
+                className={`max-w-[80%] p-3 rounded-lg shadow ${
+                  msg.role === 'user'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted'
+                }`}
+              >
+                <p className="text-sm mb-1">
+                  {msg.role === 'user' ? 'Vous' : 'Assistant'}
+                </p>
+                <p className="break-words">{msg.content}</p>
               </div>
             </div>
           ))}
