@@ -88,9 +88,29 @@ function Router() {
       <Route path="/admin/dashboard">
         <ProtectedRoute 
           component={() => (
-            <AppLayout>
+            <AdminLayout>
               <AdminDashboard />
-            </AppLayout>
+            </AdminLayout>
+          )}
+          adminOnly={true}
+        />
+      </Route>
+      <Route path="/admin/doctors">
+        <ProtectedRoute 
+          component={() => (
+            <AdminLayout>
+              <DoctorsManagement />
+            </AdminLayout>
+          )}
+          adminOnly={true}
+        />
+      </Route>
+      <Route path="/admin/patients">
+        <ProtectedRoute 
+          component={() => (
+            <AdminLayout>
+              <PatientsManagement />
+            </AdminLayout>
           )}
           adminOnly={true}
         />
