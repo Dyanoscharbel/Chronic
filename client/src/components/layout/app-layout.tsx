@@ -5,20 +5,20 @@ import { Header } from '@/components/layout/header';
 import { useAuth } from '@/hooks/use-auth';
 import { useMobile } from '@/hooks/use-mobile';
 import { PageLoader } from '@/components/ui/loader';
+import { useLocation } from 'react-router-dom'; // Assuming react-router-dom is used
 
-interface AppLayoutProps {
-  children: React.ReactNode;
-}
 
 interface AppLayoutProps {
   children: React.ReactNode;
   isAdmin?: boolean;
 }
 
-export function AppLayout({ children, isAdmin }: AppLayoutProps) {
+export function AppLayout({ children, isAdmin = false }: AppLayoutProps) {
   const { user, loading } = useAuth();
   const isMobile = useMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [location] = useLocation();
+  const hideHeader = isAdmin && location.pathname === '/admin/dashboard'; // Corrected pathname access
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -61,10 +61,12 @@ export function AppLayout({ children, isAdmin }: AppLayoutProps) {
       )}
 
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <Header 
-          toggleSidebar={toggleSidebar}
-          user={user}
-        />
+        {!hideHeader && (
+          <Header 
+            toggleSidebar={toggleSidebar}
+            user={user}
+          />
+        )}
 
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
           <div className="py-6">
