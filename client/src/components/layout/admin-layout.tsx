@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { LayoutDashboard, Users, UserPlus, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 
