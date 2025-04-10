@@ -27,7 +27,7 @@ const translations = {
   'notifications': 'Notifications',
   'settings': 'Paramètres',
 
-  // Dashboard
+  // Tableau de bord
   'welcome_back': 'Bon retour',
   'total_patients': 'Total patients',
   'upcoming_appointments': 'Prochains rendez-vous',
@@ -47,7 +47,7 @@ const translations = {
   'save_patient': 'Enregistrer le patient',
   'delete_patient': 'Supprimer le patient',
   
-  // Appointments
+  // Rendez-vous
   'new_appointment': 'Nouveau rendez-vous',
   'appointment_date': 'Date du rendez-vous',
   'appointment_time': 'Heure du rendez-vous',
@@ -56,7 +56,7 @@ const translations = {
   'save_appointment': 'Enregistrer le rendez-vous',
   'cancel_appointment': 'Annuler le rendez-vous',
 
-  // Lab Results
+  // Résultats laboratoire
   'new_result': 'Nouveau résultat',
   'test_type': 'Type de test',
   'test_date': 'Date du test',
@@ -64,7 +64,7 @@ const translations = {
   'save_results': 'Enregistrer les résultats',
   'generate_report': 'Générer un rapport',
 
-  // Settings
+  // Paramètres
   'profile': 'Profil',
   'notifications_settings': 'Notifications',
   'theme': 'Thème',
@@ -80,7 +80,7 @@ const translations = {
   'password_changed': 'Mot de passe modifié',
   'preferences_updated': 'Préférences mises à jour',
 
-  // Common
+  // Commun
   'search': 'Rechercher',
   'actions': 'Actions',
   'edit': 'Modifier',
@@ -93,7 +93,19 @@ const translations = {
   'no_data': 'Aucune donnée disponible',
   'back': 'Retour',
   'next': 'Suivant',
-  'previous': 'Précédent'
+  'previous': 'Précédent',
+  
+  // Workflow
+  'workflow': 'Workflow',
+  'workflows': 'Workflows',
+  'create_workflow': 'Créer un workflow',
+  'edit_workflow': 'Modifier le workflow',
+  'delete_workflow': 'Supprimer le workflow',
+  'workflow_name': 'Nom du workflow',
+  'workflow_description': 'Description du workflow',
+  'workflow_stage': 'Stade',
+  'workflow_requirements': 'Exigences',
+  'save_workflow': 'Enregistrer le workflow'
 };
 
 export const useI18n = create<I18nStore>((set) => ({
