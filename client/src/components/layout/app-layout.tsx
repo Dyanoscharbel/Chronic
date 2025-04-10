@@ -9,7 +9,12 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-export function AppLayout({ children }: AppLayoutProps) {
+interface AppLayoutProps {
+  children: React.ReactNode;
+  isAdmin?: boolean;
+}
+
+export function AppLayout({ children, isAdmin }: AppLayoutProps) {
   const { user, loading } = useAuth();
   const isMobile = useMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -40,11 +45,19 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="h-screen flex overflow-hidden bg-gray-50">
       {/* Sidebar for desktop or when opened on mobile */}
-      <Sidebar 
-        isMobile={isMobile} 
-        isOpen={sidebarOpen} 
-        toggleSidebar={toggleSidebar} 
-      />
+      {isAdmin ? (
+        <AdminSidebar
+          isMobile={isMobile}
+          isOpen={sidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
+      ) : (
+        <Sidebar
+          isMobile={isMobile}
+          isOpen={sidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
+      )}
       
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <Header 

@@ -131,13 +131,25 @@ function Router() {
 
       {/* Admin Routes */}
       <Route path="/admin/dashboard">
-        <AdminRoute component={AdminDashboard} />
+        <AdminRoute component={() => (
+          <AppLayout isAdmin>
+            <AdminDashboard />
+          </AppLayout>
+        )} />
       </Route>
       <Route path="/admin/patients">
-        <AdminRoute component={AdminPatientsPage} />
+        <AdminRoute component={() => (
+          <AppLayout isAdmin>
+            <AdminPatientsPage />
+          </AppLayout>
+        )} />
       </Route>
       <Route path="/admin/doctors">
-        <AdminRoute component={AdminDoctorsPage} />
+        <AdminRoute component={() => (
+          <AppLayout isAdmin>
+            <AdminDoctorsPage />
+          </AppLayout>
+        )} />
       </Route>
 
 
