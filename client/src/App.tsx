@@ -8,10 +8,6 @@ import NotFound from "@/pages/not-found";
 
 import Dashboard from "@/pages/dashboard";
 import AdminDashboard from "@/pages/admin/dashboard";
-import AdminAccueil from "@/pages/admin/accueil"; // Import the AdminAccueil component
-import AdminDoctorsPage from "@/pages/admin/doctors"; // Import AdminDoctorsPage
-import AdminSettingsPage from "@/pages/admin/settings"; // Import AdminSettingsPage
-import AdminPatientsPage from "@/pages/admin/patients"; // Import AdminPatientsPage
 import PatientsPage from "@/pages/patients/index";
 
 import PatientAddEdit from "@/pages/patients/add-edit";
@@ -26,7 +22,6 @@ import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { AppLayout } from "@/components/layout/app-layout";
-import { AdminLayout } from "@/components/layout/admin-layout";
 import Workflows from "@/pages/workflows";
 import ChatbotPage from "@/pages/chatbot"; // Import ChatbotPage component
 
@@ -104,7 +99,7 @@ function Router() {
       <Route path="/">
         <ProtectedRoute component={() => (
           <AppLayout>
-            {user?.role === 'admin' ? <AdminAccueil /> : <Dashboard />}
+            {user?.role === 'admin' ? <AdminDashboard /> : <Dashboard />}
           </AppLayout>
         )} />
       </Route>
@@ -113,30 +108,6 @@ function Router() {
           <AppLayout>
             <AdminDashboard />
           </AppLayout>
-        )} adminOnly={true} />
-      </Route>
-      <Route path="/admin/accueil">
-        <ProtectedRoute component={AdminAccueil} adminOnly={true} />
-      </Route>
-      <Route path="/admin/settings">
-        <ProtectedRoute component={() => (
-          <AdminLayout>
-            <AdminSettingsPage />
-          </AdminLayout>
-        )} adminOnly={true} />
-      </Route>
-      <Route path="/admin/doctors">
-        <ProtectedRoute component={() => (
-          <AdminLayout>
-            <AdminDoctorsPage />
-          </AdminLayout>
-        )} adminOnly={true} />
-      </Route>
-      <Route path="/admin/patients">
-        <ProtectedRoute component={() => (
-          <AdminLayout>
-            <AdminPatientsPage />
-          </AdminLayout>
         )} adminOnly={true} />
       </Route>
       <Route path="/patients/add">

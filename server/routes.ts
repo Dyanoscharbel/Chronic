@@ -676,13 +676,8 @@ console.error('----------------------------------------');
   // Patient lab results routes
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
-      const user = req.session.user;
-      if (user?.role === 'admin') {
-        // Pour les admins, retourner tous les résultats ou un tableau vide
-        return res.json([]);
-      }
-
-      const doctor = await Doctor.findOne({ user: user?.id }).select('_id');
+      const userId = req.session.user?.id;
+      const doctor = await Doctor.findOne({ user: userId }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
@@ -1123,13 +1118,8 @@ console.error('----------------------------------------');
   // Notifications routes
   apiRouter.get('/notifications', authenticate, async (req, res) => {
     try {
-      const user = req.session.user;
-      if (user?.role === 'admin') {
-        // Pour les admins, retourner un tableau vide ou des notifications spécifiques
-        return res.json({ notifications: [], criticalCount: 0 });
-      }
-      
-      const doctor = await Doctor.findOne({ user: user?.id }).select('_id');
+      const userId = req.session.user?.id;
+      const doctor = await Doctor.findOne({ user: userId }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found' });
       }
@@ -1396,68 +1386,11 @@ console.error('----------------------------------------');
     }
   });
 
-  // Admin dashboard statistics
-  apiRouter.get('/dashboard/admin-stats', authenticate, async (req, res) => {
-    try {
-      const user = req.session.user;
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: 'Access denied: Admin only' });
-      }
-
-      const adminTotalPatients = await Patient.countDocuments();
-      const adminTotalDoctors = await Doctor.countDocuments();
-      const adminTotalAppointments = await Appointment.countDocuments();
-      
-      // Calculer la distribution des médecins par spécialité
-      const adminDoctors = await Doctor.find().populate('user');
-      const adminSpecialtyDistribution = adminDoctors.reduce((acc: any, doctor) => {
-        acc[doctor.specialty] = (acc[doctor.specialty] || 0) + 1;
-        return acc;
-      }, {});
-
-      // Calculer la croissance mensuelle des patients
-      const now = new Date();
-      const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6));
-      
-      const adminPatientGrowth = await Patient.aggregate([
-        {
-          $match: {
-            createdAt: { $gte: sixMonthsAgo }
-          }
-        },
-        {
-          $group: {
-            _id: { 
-              year: { $year: "$createdAt" },
-              month: { $month: "$createdAt" }
-            },
-            count: { $sum: 1 }
-          }
-        },
-        { $sort: { "_id.year": 1, "_id.month": 1 } }
-      ]);
-
-      return res.json({
-        adminTotalPatients,
-        adminTotalDoctors,
-        adminTotalAppointments,
-        adminSpecialtyDistribution,
-        adminPatientGrowth: adminPatientGrowth.map(item => ({
-          month: `${item._id.year}-${item._id.month}`,
-          count: item.count
-        }))
-      });
-    } catch (error) {
-      console.error('Error fetching admin stats:', error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
-
   // Dashboard statistics
   apiRouter.get('/dashboard/stats', authenticate, async (req, res) => {
     try {
-      const user = req.session.user;
-      const doctor = await Doctor.findOne({ user: user?.id }).select('_id');
+      const userId = req.session.user?.id;
+      const doctor = await Doctor.findOne({ user: userId }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }

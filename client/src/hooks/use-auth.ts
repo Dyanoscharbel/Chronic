@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Redirection selon le rôle
       if (data.user?.role === 'admin') {
-        window.location.href = '/admin/accueil'; // Changed to /admin/accueil
+        window.location.href = '/admin/dashboard';
       } else if (data.user?.role === 'medecin') {
         window.location.href = '/';
       } else {
