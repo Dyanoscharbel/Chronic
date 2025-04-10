@@ -81,10 +81,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('auth', JSON.stringify({...authState, ...newAuthState}));
 
       // Redirection selon le rôle
-      if (newAuthState.user.role === 'admin') {
+      if (data.user?.role === 'admin') {
         window.location.href = '/admin/dashboard';
-      } else {
+      } else if (data.user?.role === 'medecin') {
         window.location.href = '/';
+      } else {
+        // Rediriger vers login si le rôle n'est pas reconnu
+        window.location.href = '/login';
       }
       return true;
     } catch (error) {
