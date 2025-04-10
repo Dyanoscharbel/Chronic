@@ -133,7 +133,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           >
             <Menu className="h-6 w-6" />
           </button>
-          <div className="ml-auto px-4">
+          <div className="flex-1 flex justify-end items-center px-4">
             <Button 
               variant="destructive" 
               onClick={handleLogout} 
