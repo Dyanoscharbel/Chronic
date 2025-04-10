@@ -17,11 +17,6 @@ export default function AdminDashboard() {
     queryFn: () => apiRequest.get('/api/admin/stats').then(res => res.data)
   });
 
-  const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
-    queryKey: ['doctors'],
-    queryFn: () => apiRequest.get('/api/doctors').then(res => res.data)
-  });
-
   if (user?.role !== 'admin') {
     return <div>Accès non autorisé</div>;
   }
@@ -48,7 +43,8 @@ export default function AdminDashboard() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.totalDoctors || 0}</div>
+              <div className="text-2xl font-bold">{stats?.totalDoctors || '0'}</div>
+              <div className="text-xs text-muted-foreground">Médecins enregistrés</div>
             </CardContent>
           </Card>
         </div>
