@@ -933,25 +933,11 @@ console.error('----------------------------------------');
     }
   });
 
-// Admin dashboard stats
-apiRouter.get('/api/admin/stats', authenticate, async (req, res) => {
-  try {
-    // Vérifier que l'utilisateur est admin
-    if (req.session.user?.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied' });
-    }
+// Import des routes admin
+import adminRouter from './admin-routes';
 
-    // Compter le nombre total de médecins
-    const totalDoctors = await Doctor.countDocuments();
-
-    res.json({
-      totalDoctors
-    });
-  } catch (error) {
-    console.error('Error getting admin stats:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+// Routes admin
+apiRouter.use('/admin', authenticate, adminRouter);
 
   // Appointments routes
   apiRouter.get('/appointments', authenticate, async (req, res) => {
