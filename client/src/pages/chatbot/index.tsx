@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Send } from 'lucide-react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,13 +22,9 @@ export default function ChatbotPage() {
       return apiRequest('POST', '/api/chatbot', { message });
     },
     onSuccess: (response) => {
-      if (response?.data?.message) {
-        setMessages(prev => [...prev, 
-          { role: 'assistant', content: response.data.message }
-        ]);
-      } else {
-        console.error('Invalid response format:', response);
-      }
+      setMessages(prev => [...prev, 
+        { role: 'assistant', content: response.data.message }
+      ]);
     }
   });
 
