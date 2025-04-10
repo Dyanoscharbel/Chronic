@@ -18,10 +18,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-background">
       <div className="flex">
         <aside className={cn(
-          "fixed top-0 left-0 z-40 h-screen transition-transform bg-white border-r border-gray-200",
+          "fixed top-0 left-0 z-40 h-screen transition-transform bg-sidebar-background text-sidebar-foreground border-r border-sidebar-border",
           isSidebarOpen ? "w-64" : "w-16"
         )}>
           <div className="flex flex-col h-full">
@@ -36,8 +36,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   className={cn(
                     "flex items-center px-2 py-2 text-sm font-medium rounded-md",
                     location === item.href
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
                   )}
                 >
                   <item.icon className="w-5 h-5 mr-3" />

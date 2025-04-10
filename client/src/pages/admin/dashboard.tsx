@@ -18,7 +18,7 @@ export default function AdminDashboard() {
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Administration</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Administration</h1>
       </div>
       
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
