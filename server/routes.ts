@@ -1404,9 +1404,11 @@ console.error('----------------------------------------');
         // Stats globaux pour l'admin
         const totalPatients = await Patient.countDocuments();
         const totalDoctors = await Doctor.countDocuments();
+        const totalAppointments = await Appointment.countDocuments();
         return res.json({
           totalPatients,
           totalDoctors,
+          totalAppointments,
           criticalAlerts: 0,
           pendingLabResults: 0
         });
