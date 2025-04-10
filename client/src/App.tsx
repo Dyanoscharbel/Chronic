@@ -100,7 +100,7 @@ function Router() {
       <Route path="/">
         <ProtectedRoute component={() => (
           <AppLayout>
-            {user?.role === 'admin' ? <AdminDashboard /> : <Dashboard />}
+            {user?.role === 'admin' ? <AdminAccueil /> : <Dashboard />}
           </AppLayout>
         )} />
       </Route>
