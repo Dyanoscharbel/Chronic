@@ -102,6 +102,13 @@ function Router() {
           </AppLayout>
         )} />
       </Route>
+      <Route path="/admin/dashboard">
+        <ProtectedRoute component={() => (
+          <AppLayout>
+            <AdminDashboard />
+          </AppLayout>
+        )} adminOnly={true} />
+      </Route>
       <Route path="/patients/add">
         <ProtectedRoute component={() => (
           <AppLayout>
