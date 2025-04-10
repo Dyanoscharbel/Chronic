@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import { Doctor, User, Patient, LabTest, PatientLabResult, Workflow, Appointment } from './models';
 import bcrypt from 'bcrypt';
@@ -20,7 +19,6 @@ adminRouter.get('/stats', requireAdmin, async (req, res) => {
     const totalPatients = await Patient.countDocuments();
     const totalUsers = await User.countDocuments();
     const totalAppointments = await Appointment.countDocuments();
-    const totalLabResults = await PatientLabResult.countDocuments();
 
     const patientsByStage = await Patient.aggregate([
       { $group: { _id: "$ckdStage", count: { $sum: 1 } } }
@@ -31,11 +29,9 @@ adminRouter.get('/stats', requireAdmin, async (req, res) => {
       totalPatients,
       totalUsers,
       totalAppointments,
-      totalLabResults,
       patientsByStage
     });
   } catch (error) {
-    console.error('Error getting admin stats:', error);
     res.status(500).json({ message: 'Erreur serveur' });
   }
 });
@@ -52,35 +48,25 @@ adminRouter.get('/doctors', requireAdmin, async (req, res) => {
 
 adminRouter.post('/doctors', requireAdmin, async (req, res) => {
   try {
-    const { firstName, lastName, email, password, specialty, hospital } = req.body;
+    const { email, password, firstName, lastName, specialty, hospital } = req.body;
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email déjà utilisé' });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 10);
-    const newUser = new User({
+    const user = await User.create({
+      email,
+      password: await bcrypt.hash(password, 10),
       firstName,
       lastName,
-      email,
-      passwordHash,
-      role: 'medecin'
+      role: 'doctor'
     });
-    await newUser.save();
 
-    const newDoctor = new Doctor({
-      user: newUser._id,
+    const doctor = await Doctor.create({
+      user: user._id,
       specialty,
       hospital
     });
-    await newDoctor.save();
 
-    const doctor = await Doctor.findById(newDoctor._id).populate('user');
-    res.status(201).json(doctor);
+    res.status(201).json(await doctor.populate('user'));
   } catch (error) {
-    console.error('Error creating doctor:', error);
-    res.status(500).json({ message: 'Erreur serveur' });
+    res.status(500).json({ message: 'Erreur lors de la création du médecin' });
   }
 });
 
@@ -135,10 +121,7 @@ adminRouter.get('/patients', requireAdmin, async (req, res) => {
       .populate('user')
       .populate({
         path: 'doctor',
-        populate: {
-          path: 'user',
-          select: 'firstName lastName'
-        }
+        populate: { path: 'user' }
       });
     res.json(patients);
   } catch (error) {
@@ -180,10 +163,7 @@ adminRouter.post('/patients', requireAdmin, async (req, res) => {
       .populate('user')
       .populate({
         path: 'doctor',
-        populate: {
-          path: 'user',
-          select: 'firstName lastName'
-        }
+        populate: { path: 'user' }
       });
 
     res.status(201).json(patient);
@@ -220,10 +200,7 @@ adminRouter.put('/patients/:id', requireAdmin, async (req, res) => {
       .populate('user')
       .populate({
         path: 'doctor',
-        populate: {
-          path: 'user',
-          select: 'firstName lastName'
-        }
+        populate: { path: 'user' }
       });
 
     res.json(updatedPatient);
@@ -249,6 +226,25 @@ adminRouter.delete('/patients/:id', requireAdmin, async (req, res) => {
   }
 });
 
+// Gestion des rendez-vous
+adminRouter.get('/appointments', requireAdmin, async (req, res) => {
+  try {
+    const appointments = await Appointment.find()
+      .populate({
+        path: 'patient',
+        populate: { path: 'user' }
+      })
+      .populate({
+        path: 'doctor',
+        populate: { path: 'user' }
+      })
+      .sort({ appointmentDate: -1 });
+    res.json(appointments);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
 // Gestion des résultats de laboratoire
 adminRouter.get('/lab-results', requireAdmin, async (req, res) => {
   try {
@@ -263,41 +259,13 @@ adminRouter.get('/lab-results', requireAdmin, async (req, res) => {
   }
 });
 
-// Gestion des rendez-vous
-adminRouter.get('/appointments', requireAdmin, async (req, res) => {
-  try {
-    const appointments = await Appointment.find()
-      .populate({
-        path: 'patient',
-        populate: {
-          path: 'user',
-          select: 'firstName lastName'
-        }
-      })
-      .populate({
-        path: 'doctor',
-        populate: {
-          path: 'user',
-          select: 'firstName lastName'
-        }
-      })
-      .sort({ appointmentDate: -1 });
-    res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur serveur' });
-  }
-});
-
 // Gestion des workflows
 adminRouter.get('/workflows', requireAdmin, async (req, res) => {
   try {
     const workflows = await Workflow.find()
       .populate({
         path: 'createdBy',
-        populate: {
-          path: 'user',
-          select: 'firstName lastName'
-        }
+        populate: { path: 'user' }
       });
     res.json(workflows);
   } catch (error) {
