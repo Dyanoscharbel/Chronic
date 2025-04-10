@@ -1457,20 +1457,6 @@ console.error('----------------------------------------');
   apiRouter.get('/dashboard/stats', authenticate, async (req, res) => {
     try {
       const user = req.session.user;
-      if (user?.role === 'admin') {
-        // Stats globaux pour l'admin
-        const totalPatients = await Patient.countDocuments();
-        const totalDoctors = await Doctor.countDocuments();
-        const totalAppointments = await Appointment.countDocuments();
-        return res.json({
-          totalPatients,
-          totalDoctors,
-          totalAppointments,
-          criticalAlerts: 0,
-          pendingLabResults: 0
-        });
-      }
-
       const doctor = await Doctor.findOne({ user: user?.id }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
