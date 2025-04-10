@@ -17,7 +17,8 @@ export default function AdminDashboard() {
       const response = await apiRequest('GET', '/api/admin/stats');
       return response.data;
     },
-    enabled: user?.role === 'admin'
+    enabled: user?.role === 'admin',
+    staleTime: 30000
   });
 
   const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
@@ -26,7 +27,8 @@ export default function AdminDashboard() {
       const response = await apiRequest('GET', '/api/admin/doctors');
       return response.data;
     },
-    enabled: user?.role === 'admin'
+    enabled: user?.role === 'admin',
+    staleTime: 30000
   });
 
   if (!user || user.role !== 'admin') {
