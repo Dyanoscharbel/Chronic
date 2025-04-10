@@ -31,8 +31,8 @@ const emailTransporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: 'sannicharbel@gmail.com', // Remplacez par votre email Gmail
-    pass: 'yqjk qkxs pmri swlk' // Remplacez par votre mot de passe d'application Gmail
+    user: process.env.EMAIL_USER || '',
+    pass: process.env.EMAIL_PASS || ''
   },
   tls: {
     rejectUnauthorized: false
