@@ -174,10 +174,18 @@ function Router() {
           </AppLayout>
         )} />
       </Route>
-      <Route path="/workflows"> {/* Added route for Workflows */}
+      <Route path="/workflows">
         <ProtectedRoute component={() => (
           <AppLayout>
             <Workflows />
+          </AppLayout>
+        )} />
+      </Route>
+
+      <Route path="/chatbot">
+        <ProtectedRoute component={() => (
+          <AppLayout>
+            <ChatbotPage />
           </AppLayout>
         )} />
       </Route>
