@@ -29,7 +29,7 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
     { 
       label: 'Patients', 
       icon: <Users className="mr-3 h-6 w-6 text-white" />,
-      href: '/patients'
+      href: '/admin/patients'
     },
     { 
       label: 'Lab Results', 
