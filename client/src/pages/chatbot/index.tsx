@@ -15,7 +15,15 @@ interface Message {
 
 export default function ChatbotPage() {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const savedMessages = localStorage.getItem('chatMessages');
+    return savedMessages ? JSON.parse(savedMessages) : [];
+  });
+
+  // Sauvegarder les messages quand ils changent
+  useEffect(() => {
+    localStorage.setItem('chatMessages', JSON.stringify(messages));
+  }, [messages]);
 
   const sendMessage = useMutation({
     mutationFn: async (message: string) => {
