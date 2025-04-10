@@ -1,7 +1,5 @@
-
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Users, Calendar } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader } from '@/components/ui/loader';
@@ -10,19 +8,6 @@ import { apiRequest } from '@/lib/queryClient';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-
-  // Désactiver les requêtes inutiles pour l'admin
-  const { isLoading: isLoadingUpcomingAppointments } = useQuery({
-    queryKey: ['upcoming-appointments'],
-    queryFn: () => Promise.resolve(null),
-    enabled: false // Désactivé pour l'admin
-  });
-
-  const { isLoading: isLoadingNotifications } = useQuery({
-    queryKey: ['notifications'],
-    queryFn: () => Promise.resolve(null),
-    enabled: false // Désactivé pour l'admin
-  });
 
   // Stats query pour admin uniquement
   const { data: stats, isLoading: isLoadingStats } = useQuery({
@@ -41,21 +26,6 @@ export default function AdminDashboard() {
       return response.data;
     },
     enabled: user?.role === 'admin'
-  });
-
-  const { data: appointments, isLoading: isLoadingAppointments } = useQuery({
-    queryKey: ['admin-appointments'],
-    queryFn: async () => {
-      const response = await apiRequest.get('/api/admin/appointments');
-      return response.data;
-    },
-    enabled: user?.role === 'admin'
-  });
-
-  const { isLoading: isLoadingDashboardStats } = useQuery({
-    queryKey: ['dashboard-stats'],
-    queryFn: () => Promise.resolve(null),
-    enabled: false
   });
 
   if (!user || user.role !== 'admin') {
