@@ -890,6 +890,18 @@ console.error('----------------------------------------');
         );
 
         await notificationService.sendEmail(
+          patient.user.email,
+          'Nouveau résultat de laboratoire',
+          patientEmailTemplate
+        );
+      }
+
+      res.status(201).json(newResult);
+    } catch (error) {
+      console.error('Error creating lab result:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
 
 // Admin dashboard stats
 apiRouter.get('/api/admin/stats', authenticate, async (req, res) => {
@@ -910,10 +922,6 @@ apiRouter.get('/api/admin/stats', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-          patient.user.email,
-          'Nouveau résultat de laboratoire',
-          patientEmailTemplate
         );
       }
 
