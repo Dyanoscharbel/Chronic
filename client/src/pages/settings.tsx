@@ -376,14 +376,7 @@ export default function SettingsPage() {
                   <Lock className="mr-2 h-4 w-4" />
                   Mot de passe
                 </Button>
-                <Button
-                  variant={selectedTab === 'notifications' ? 'secondary' : 'ghost'}
-                  className="w-full justify-start"
-                  onClick={() => setSelectedTab('notifications')}
-                >
-                  <Bell className="mr-2 h-4 w-4" />
-                  Notifications
-                </Button>
+                
                 <Button
                   variant={selectedTab === 'theme' ? 'secondary' : 'ghost'}
                   className="w-full justify-start"
@@ -567,127 +560,7 @@ export default function SettingsPage() {
               </>
             )}
 
-            {selectedTab === 'notifications' && (
-              <>
-                <CardHeader>
-                  <CardTitle>Préférences de notification</CardTitle>
-                  <CardDescription>
-                    Gérez la façon dont vous recevez les notifications
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...notificationForm}>
-                    <form onSubmit={notificationForm.handleSubmit(onNotificationsSubmit)} className="space-y-6">
-                      <div className="space-y-4">
-                        <FormField
-                          control={notificationForm.control}
-                          name="emailNotifications"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
-                              <div className="space-y-0.5">
-                                <FormLabel className="text-base">Notifications par e-mail</FormLabel>
-                                <FormDescription>
-                                  Recevoir des notifications par e-mail
-                                </FormDescription>
-                              </div>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={notificationForm.control}
-                          name="criticalAlertsOnly"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
-                              <div className="space-y-0.5">
-                                <FormLabel className="text-base">Alertes critiques seulement</FormLabel>
-                                <FormDescription>
-                                  Recevoir uniquement des notifications pour les alertes critiques
-                                </FormDescription>
-                              </div>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={notificationForm.control}
-                          name="appointmentReminders"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
-                              <div className="space-y-0.5">
-                                <FormLabel className="text-base">Rappels de rendez-vous</FormLabel>
-                                <FormDescription>
-                                  Recevoir des rappels pour les rendez-vous à venir
-                                </FormDescription>
-                              </div>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={notificationForm.control}
-                          name="labResultAlerts"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
-                              <div className="space-y-0.5">
-                                <FormLabel className="text-base">Alertes de résultats de laboratoire</FormLabel>
-                                <FormDescription>
-                                  Recevoir des alertes pour les nouveaux résultats de laboratoire
-                                </FormDescription>
-                              </div>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <CardFooter className="px-0 pt-4 pb-0">
-                        <Button
-                          type="submit"
-                          className="ml-auto"
-                          disabled={updateNotificationsMutation.isPending}
-                        >
-                          {updateNotificationsMutation.isPending ? (
-                            <>
-                              <Loader size="sm" color="white" className="mr-2" />
-                              Enregistrement...
-                            </>
-                          ) : (
-                            <>
-                              <Save className="mr-2 h-4 w-4" />
-                              Enregistrer les préférences
-                            </>
-                          )}
-                        </Button>
-                      </CardFooter>
-                    </form>
-                  </Form>
-                </CardContent>
-              </>
-            )}
+            
 
             {selectedTab === 'theme' && (
               <>
