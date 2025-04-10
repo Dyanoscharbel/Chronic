@@ -677,7 +677,37 @@ console.error('----------------------------------------');
   apiRouter.get('/patient-lab-results', authenticate, async (req, res) => {
     try {
       const userId = req.session.user?.id;
-      const doctor = await Doctor.findOne({ user: userId }).select('_id');
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(403).json({ message: 'User not found' });
+      }
+
+      if (user.role === 'admin') {
+        // Pour les admins, récupérer tous les résultats
+        const results = await PatientLabResult.find()
+          .populate({
+            path: 'patient',
+            populate: {
+              path: 'user',
+              select: 'firstName lastName email'
+            }
+          })
+          .populate({
+            path: 'doctor',
+            populate: {
+              path: 'user',
+              select: 'firstName lastName specialty'
+            }
+          })
+          .populate('labTest')
+          .lean()
+          .sort({ resultDate: -1 });
+
+        return res.json(results);
+      }
+
+      // Pour les médecins, récupérer leurs résultats
+      const doctor = await Doctor.findOne({ user: userId });
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
@@ -1734,7 +1764,7 @@ apiRouter.get('/api/admin/stats', authenticate, async (req, res) => {
         generationConfig: {
           temperature: 0.9,
           topK: 1,
-          topP: 1,
+          topP:1,
           maxOutputTokens: 2048,
         },
       });
