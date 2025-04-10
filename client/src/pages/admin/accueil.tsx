@@ -62,9 +62,9 @@ export default function AdminAccueil() {
           <StatsCard
             icon={<Calendar className="h-6 w-6 text-white" />}
             iconBgColor="bg-green-500"
-            title="Rendez-vous"
+            title="Total Rendez-vous"
             value={dashboardStats?.totalAppointments || 0}
-            footerText="Voir les rendez-vous"
+            footerText="Voir tous les rendez-vous"
             footerLinkColor="text-green-600 hover:text-green-500"
           />
           
