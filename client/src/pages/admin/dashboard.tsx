@@ -12,6 +12,11 @@ import { apiRequest } from '@/lib/queryClient';
 export default function AdminDashboard() {
   const { user } = useAuth();
 
+  const { data: stats, isLoading: isLoadingStats } = useQuery({
+    queryKey: ['admin-stats'],
+    queryFn: () => apiRequest.get('/api/admin/stats').then(res => res.data)
+  });
+
   const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
     queryKey: ['doctors'],
     queryFn: () => apiRequest.get('/api/doctors').then(res => res.data)
@@ -36,6 +41,17 @@ export default function AdminDashboard() {
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Tableau de bord administrateur</h1>
       <div className="grid gap-6 mb-8">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Médecins</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalDoctors || 0}</div>
+            </CardContent>
+          </Card>
+        </div>
         <Card>
           <CardHeader>
             <CardTitle>Liste des médecins</CardTitle>
