@@ -52,13 +52,6 @@ export default function AdminDashboard() {
     enabled: user?.role === 'admin'
   });
 
-  // Désactiver les requêtes qui ne sont pas nécessaires pour l'admin
-  const { isLoading: isLoadingNotifications } = useQuery({
-    queryKey: ['notifications'],
-    queryFn: () => Promise.resolve(null),
-    enabled: false
-  });
-
   const { isLoading: isLoadingDashboardStats } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: () => Promise.resolve(null),
