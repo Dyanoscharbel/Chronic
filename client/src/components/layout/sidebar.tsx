@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/use-auth';
 import { 
   Home, Users, FileText, Calendar, Bell, Settings, GitBranch, MessageSquare,
   Menu, X
@@ -14,6 +15,7 @@ interface SidebarProps {
 
 export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
   const [location] = useLocation();
+  const { user } = useAuth();
 
   // Only show sidebar on mobile if it's open
   if (isMobile && !isOpen) {
