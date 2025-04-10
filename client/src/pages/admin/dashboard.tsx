@@ -1,8 +1,6 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader } from '@/components/ui/loader';
 import { useAuth } from '@/hooks/use-auth';
 import { apiRequest } from '@/lib/queryClient';
@@ -10,7 +8,6 @@ import { apiRequest } from '@/lib/queryClient';
 export default function AdminDashboard() {
   const { user } = useAuth();
 
-  // Stats query pour admin uniquement
   const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
@@ -22,22 +19,11 @@ export default function AdminDashboard() {
     staleTime: 30000
   });
 
-  const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
-    queryKey: ['admin-doctors'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/doctors');
-      const json = await response.json();
-      return json;
-    },
-    enabled: user?.role === 'admin',
-    staleTime: 30000
-  });
-
   if (!user || user.role !== 'admin') {
     return <div>Accès non autorisé</div>;
   }
 
-  if (isLoadingStats || isLoadingDoctors) {
+  if (isLoadingStats) {
     return (
       <div className="flex flex-col space-y-4">
         <h1 className="text-2xl font-semibold text-foreground">Dashboard Administrateur</h1>
@@ -60,7 +46,6 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.totalDoctors || '0'}</div>
-              <div className="text-xs text-muted-foreground">Médecins enregistrés</div>
             </CardContent>
           </Card>
           <Card>
@@ -70,45 +55,24 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.totalPatients || '0'}</div>
-              <div className="text-xs text-muted-foreground">Patients enregistrés</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Utilisateurs</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats?.totalUsers || '0'}</div>
-              <div className="text-xs text-muted-foreground">Utilisateurs enregistrés</div>
             </CardContent>
           </Card>
         </div>
+
+        {/* Distribution des patients par stade */}
         <Card>
           <CardHeader>
-            <CardTitle>Liste des médecins</CardTitle>
+            <CardTitle>Distribution des patients par stade</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nom</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Spécialité</TableHead>
-                  <TableHead>Hôpital</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {doctors?.map((doctor: any) => (
-                  <TableRow key={doctor._id}>
-                    <TableCell>{`${doctor.user.firstName} ${doctor.user.lastName}`}</TableCell>
-                    <TableCell>{doctor.user.email}</TableCell>
-                    <TableCell>{doctor.specialty}</TableCell>
-                    <TableCell>{doctor.hospital}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {stats?.patientsByStage?.map((stage: any) => (
+                <div key={stage._id} className="p-4 border rounded-lg">
+                  <div className="text-sm text-muted-foreground">Stade {stage._id}</div>
+                  <div className="text-2xl font-bold">{stage.count}</div>
+                </div>
+              )) || []}
+            </div>
           </CardContent>
         </Card>
       </div>
