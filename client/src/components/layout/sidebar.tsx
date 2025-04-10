@@ -10,10 +10,9 @@ interface SidebarProps {
   isMobile: boolean;
   isOpen: boolean;
   toggleSidebar: () => void;
-  user: { role: 'admin' | 'doctor' | null }; // Added user prop
 }
 
-export function Sidebar({ isMobile, isOpen, toggleSidebar, user }: SidebarProps) {
+export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
   const [location] = useLocation();
 
   // Only show sidebar on mobile if it's open
@@ -30,7 +29,7 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar, user }: SidebarProps)
     { 
       label: 'Patients', 
       icon: <Users className="mr-3 h-6 w-6 text-white" />,
-      href: user?.role === 'admin' ? '/admin/patients' : user?.role === 'doctor' ? '/doctor/patients' : null // Conditional href
+      href: '/admin/patients'
     },
     { 
       label: 'Lab Results', 
@@ -87,22 +86,20 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar, user }: SidebarProps)
       <div className="flex-1 flex flex-col overflow-y-auto">
         <nav className="flex-1 px-2 py-4 space-y-1">
           {navItems.map((item) => (
-            item.href ? ( //Added conditional rendering for null href
-              <Link 
-                key={item.href}
-                href={item.href}
-                onClick={isMobile ? toggleSidebar : undefined}
-                className={cn(
-                  "group flex items-center px-2 py-2 text-sm font-medium rounded-md text-white",
-                  location === item.href 
-                    ? "bg-[var(--primary-light)]" 
-                    : "hover:bg-[var(--primary-light)]"
-                )}
-              >
-                {item.icon}
-                {item.label}
-              </Link>
-            ) : null
+            <Link 
+              key={item.href}
+              href={item.href}
+              onClick={isMobile ? toggleSidebar : undefined}
+              className={cn(
+                "group flex items-center px-2 py-2 text-sm font-medium rounded-md text-white",
+                location === item.href 
+                  ? "bg-[var(--primary-light)]" 
+                  : "hover:bg-[var(--primary-light)]"
+              )}
+            >
+              {item.icon}
+              {item.label}
+            </Link>
           ))}
         </nav>
       </div>

@@ -119,17 +119,25 @@ function Router() {
         <ProtectedRoute component={AdminAccueil} adminOnly={true} />
       </Route>
       <Route path="/admin/settings">
-        <ProtectedRoute component={AdminSettingsPage} adminOnly={true} />
+        <ProtectedRoute component={() => (
+          <AdminLayout>
+            <AdminSettingsPage />
+          </AdminLayout>
+        )} adminOnly={true} />
+      </Route>
+      <Route path="/admin/doctors">
+        <ProtectedRoute component={() => (
+          <AdminLayout>
+            <AdminDoctorsPage />
+          </AdminLayout>
+        )} adminOnly={true} />
       </Route>
       <Route path="/admin/patients">
-        <ProtectedRoute component={AdminPatientsPage} adminOnly={true} />
-      </Route>
-      <Route path="/doctor/patients">
         <ProtectedRoute component={() => (
-          <AppLayout>
-            <PatientsPage />
-          </AppLayout>
-        )} doctorOnly={true} />
+          <AdminLayout>
+            <AdminPatientsPage />
+          </AdminLayout>
+        )} adminOnly={true} />
       </Route>
       <Route path="/patients/add">
         <ProtectedRoute component={() => (
