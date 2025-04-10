@@ -18,16 +18,11 @@ export default function AdminDashboard() {
     queryFn: () => apiRequest.get('/api/admin/stats').then(res => res.data)
   });
 
-  const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
-    queryKey: ['admin-doctors'],
-    queryFn: () => apiRequest.get('/api/admin/doctors').then(res => res.data)
-  });
-
   if (user?.role !== 'admin') {
     return <div>Accès non autorisé</div>;
   }
 
-  if (isLoadingStats || isLoadingDoctors) {
+  if (isLoadingStats) {
     return (
       <div className="flex flex-col space-y-4">
         <h1 className="text-2xl font-semibold text-foreground">Dashboard Administrateur</h1>
