@@ -13,14 +13,18 @@ import { apiRequest } from '@/lib/queryClient';
 export default function AdminDashboard() {
   const { user } = useAuth();
 
+  // Stats query pour admin uniquement
   const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['admin-stats'],
-    queryFn: () => apiRequest.get('/api/admin/stats').then(res => res.data)
+    queryFn: () => apiRequest.get('/api/admin/stats').then(res => res.data),
+    enabled: user?.role === 'admin'
   });
 
+  // Doctors query pour admin uniquement
   const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
     queryKey: ['admin-doctors'],
-    queryFn: () => apiRequest.get('/api/admin/doctors').then(res => res.data)
+    queryFn: () => apiRequest.get('/api/admin/doctors').then(res => res.data),
+    enabled: user?.role === 'admin'
   });
 
   if (user?.role !== 'admin') {
