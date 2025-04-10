@@ -18,6 +18,11 @@ export default function AdminDashboard() {
     queryFn: () => apiRequest.get('/api/admin/stats').then(res => res.data)
   });
 
+  const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
+    queryKey: ['admin-doctors'],
+    queryFn: () => apiRequest.get('/api/admin/doctors').then(res => res.data)
+  });
+
   if (user?.role !== 'admin') {
     return <div>Accès non autorisé</div>;
   }
