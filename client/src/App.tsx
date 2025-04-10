@@ -10,6 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminAccueil from "@/pages/admin/accueil"; // Import the AdminAccueil component
 import AdminDoctorsPage from "@/pages/admin/doctors"; // Import AdminDoctorsPage
+import AdminPatientsPage from "@/pages/admin/patients"; // Import AdminPatientsPage
 import PatientsPage from "@/pages/patients/index";
 
 import PatientAddEdit from "@/pages/patients/add-edit";
