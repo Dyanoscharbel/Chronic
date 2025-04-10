@@ -9,6 +9,14 @@ import { apiRequest } from '@/lib/queryClient';
 export default function AdminDashboard() {
   const { user } = useAuth();
 
+  // Cacher la barre de navigation et l'icône notification
+  React.useEffect(() => {
+    const header = document.querySelector('[data-sidebar="header"]');
+    const notifications = document.querySelector('[href="/notifications"]');
+    if (header) header.style.display = 'none';
+    if (notifications) notifications.style.display = 'none';
+  }, []);
+
   const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
