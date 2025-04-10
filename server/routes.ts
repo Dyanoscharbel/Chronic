@@ -1700,10 +1700,9 @@ console.error('----------------------------------------');
   app.post('/api/chatbot', authenticate, async (req, res) => {
     try {
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
-      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '', { apiVersion: "v1" });
       const model = genAI.getGenerativeModel({ 
         model: "gemini-1.0-pro",
-        apiVersion: "v1",
         generationConfig: {
           temperature: 0.9,
           topK: 1,
