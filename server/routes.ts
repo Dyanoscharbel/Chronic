@@ -824,22 +824,67 @@ console.error('----------------------------------------');
 
         await newNotification.save();
 
-        // Envoyer un email au docteur
+        // Template d'email pour le docteur
+        const doctorEmailTemplate = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h1 style="color: #2563eb;">Système de Suivi CKD</h1>
+              <hr style="border: 1px solid #eee;">
+            </div>
+            <div style="background-color: #f8fafc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+              <h2 style="color: #1e40af; margin-bottom: 15px;">Nouvelle Notification Médicale</h2>
+              <p style="color: #374151; line-height: 1.6;">${newNotification.message}</p>
+              <p style="color: #374151;"><strong>Niveau de Sévérité:</strong> 
+                <span style="color: ${newNotification.severity === 'error' ? '#dc2626' : newNotification.severity === 'warning' ? '#d97706' : '#059669'}">
+                  ${newNotification.severity}
+                </span>
+              </p>
+              <p style="color: #374151;"><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div style="font-size: 12px; color: #6b7280; text-align: center; margin-top: 20px;">
+              <p>Ce message a été envoyé automatiquement par le Système de Suivi CKD.</p>
+              <p>Ne pas répondre à cet email.</p>
+            </div>
+          </div>
+        `;
+
+        // Template d'email pour le patient
+        const patientEmailTemplate = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h1 style="color: #2563eb;">Système de Suivi CKD</h1>
+              <hr style="border: 1px solid #eee;">
+            </div>
+            <div style="background-color: #f8fafc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+              <h2 style="color: #1e40af; margin-bottom: 15px;">Nouveau Résultat de Test</h2>
+              <div style="margin-bottom: 15px;">
+                <p style="color: #374151; margin: 5px 0;"><strong>Test:</strong> ${labTest.testName}</p>
+                <p style="color: #374151; margin: 5px 0;"><strong>Valeur:</strong> ${resultValue} ${labTest.unit}</p>
+                <p style="color: #374151; margin: 5px 0;"><strong>Plage normale:</strong> ${labTest.normalMin} - ${labTest.normalMax} ${labTest.unit}</p>
+                <p style="color: #374151; margin: 5px 0;"><strong>Date du test:</strong> ${new Date().toLocaleDateString()}</p>
+              </div>
+              <div style="background-color: #e5e7eb; padding: 10px; border-radius: 3px;">
+                <p style="color: #4b5563; margin: 0;">Votre médecin, Dr. ${doctor.user.firstName} ${doctor.user.lastName}, a été notifié de ces résultats.</p>
+              </div>
+            </div>
+            <div style="font-size: 12px; color: #6b7280; text-align: center; margin-top: 20px;">
+              <p>Ce message a été envoyé automatiquement par le Système de Suivi CKD.</p>
+              <p>Pour toute question, veuillez contacter votre médecin.</p>
+            </div>
+          </div>
+        `;
+
+        // Envoyer les emails
         await notificationService.sendEmail(
           doctor.user.email,
           'Nouvelle notification de résultat de laboratoire',
-          `<h1>Nouvelle notification</h1>
-           <p>${newNotification.message}</p>
-           <p>Sévérité: ${newNotification.severity}</p>`
+          doctorEmailTemplate
         );
 
-        // Envoyer un email au patient
         await notificationService.sendEmail(
           patient.user.email,
           'Nouveau résultat de laboratoire',
-          `<h1>Nouveau résultat de test</h1>
-           <p>Un nouveau résultat de test est disponible: ${labTest.testName}</p>
-           <p>Valeur: ${resultValue} ${labTest.unit}</p>`
+          patientEmailTemplate
         );
       }
 
