@@ -26,6 +26,8 @@ export default function ChatbotPage() {
         const data = await response.json();
         if (data?.message) {
           setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
+        } else {
+          console.error('Invalid response format:', data);
         }
       } catch (error) {
         console.error('Error parsing response:', error);
@@ -37,56 +39,47 @@ export default function ChatbotPage() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const userMessage = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages(prev => [...prev, { role: 'user', content: input }]);
     sendMessage.mutate(input);
     setInput('');
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl h-screen flex flex-col">
-      <h1 className="text-3xl font-bold mb-6 text-primary">Assistant IA</h1>
+    <div className="container mx-auto p-4 max-w-4xl">
+      <h1 className="text-2xl font-bold mb-4">Assistant IA</h1>
       
-      <Card className="flex-grow mb-4 border-2 border-primary/20">
-        <ScrollArea className="h-[calc(100vh-12rem)] p-6">
+      <Card className="mb-4">
+        <ScrollArea className="h-[500px] p-4">
           {messages.map((msg, i) => (
             <div 
               key={i} 
-              className={`mb-6 flex ${
+              className={`mb-4 ${
                 msg.role === 'user' 
-                  ? 'justify-end' 
-                  : 'justify-start'
+                  ? 'text-right' 
+                  : 'text-left'
               }`}
             >
-              <div 
-                className={`max-w-[80%] p-4 rounded-2xl shadow-lg ${
-                  msg.role === 'user'
-                    ? 'bg-primary text-primary-foreground ml-auto'
-                    : 'bg-muted mr-auto'
-                }`}
-              >
-                <p className="whitespace-pre-wrap">{msg.content}</p>
+              <div className={`inline-block p-3 rounded-lg ${
+                msg.role === 'user'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted'
+              }`}>
+                {msg.content}
               </div>
             </div>
           ))}
         </ScrollArea>
       </Card>
 
-      <form onSubmit={handleSubmit} className="flex gap-3">
+      <form onSubmit={handleSubmit} className="flex gap-2">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Posez votre question..."
+          placeholder="Tapez votre message..."
           disabled={sendMessage.isPending}
-          className="text-base p-6 border-2 border-primary/20"
         />
-        <Button 
-          type="submit" 
-          disabled={sendMessage.isPending}
-          size="lg"
-          className="bg-primary hover:bg-primary/90"
-        >
-          <Send className="h-5 w-5" />
+        <Button type="submit" disabled={sendMessage.isPending}>
+          <Send className="h-4 w-4" />
         </Button>
       </form>
     </div>
