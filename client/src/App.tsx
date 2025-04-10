@@ -20,7 +20,8 @@ import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
 import { AppLayout } from "@/components/layout/app-layout";
-import Workflows from "@/pages/workflows"; // Added import for Workflows page
+import Workflows from "@/pages/workflows";
+import ChatbotPage from "@/pages/chatbot"; // Import ChatbotPage component
 
 function ProtectedRoute({ component: Component, ...rest }: any) {
   const { isAuthenticated, loading, user } = useAuth();
