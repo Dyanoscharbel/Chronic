@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/hooks/use-auth';
 import { 
   Home, Users, FileText, Calendar, Bell, Settings, GitBranch, MessageSquare,
   Menu, X
@@ -15,37 +14,13 @@ interface SidebarProps {
 
 export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
   const [location] = useLocation();
-  const { user } = useAuth();
 
   // Only show sidebar on mobile if it's open
   if (isMobile && !isOpen) {
     return null;
   }
 
-  const adminNavItems = [
-    { 
-      label: 'Dashboard', 
-      icon: <Home className="mr-3 h-6 w-6 text-white" />,
-      href: '/'
-    },
-    { 
-      label: 'Doctors', 
-      icon: <Users className="mr-3 h-6 w-6 text-white" />,
-      href: '/doctors'
-    },
-    { 
-      label: 'Patients', 
-      icon: <Users className="mr-3 h-6 w-6 text-white" />,
-      href: '/patients'
-    },
-    { 
-      label: 'Settings', 
-      icon: <Settings className="mr-3 h-6 w-6 text-white" />,
-      href: '/settings'
-    }
-  ];
-
-  const doctorNavItems = [
+  const navItems = [
     { 
       label: 'Dashboard', 
       icon: <Home className="mr-3 h-6 w-6 text-white" />,
@@ -87,8 +62,6 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
       href: '/chatbot'
     }
   ];
-
-  const navItems = user?.role === 'admin' ? adminNavItems : doctorNavItems;
 
   return (
     <div className={cn(

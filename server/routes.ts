@@ -1387,25 +1387,10 @@ console.error('----------------------------------------');
   });
 
   // Dashboard statistics
-  apiRouter.get('/api/dashboard/stats', authenticate, async (req, res) => {
+  apiRouter.get('/dashboard/stats', authenticate, async (req, res) => {
     try {
-      const user = req.session.user;
-
-      if (user?.role === 'admin') {
-        // Statistiques globales pour l'admin
-        const totalDoctors = await Doctor.countDocuments();
-        const totalPatients = await Patient.countDocuments();
-        const totalTests = await PatientLabResult.countDocuments();
-
-        return res.json({
-          totalDoctors,
-          totalPatients,
-          totalTests
-        });
-      }
-
-      // Stats pour les médecins
-      const doctor = await Doctor.findOne({ user: user?.id }).select('_id');
+      const userId = req.session.user?.id;
+      const doctor = await Doctor.findOne({ user: userId }).select('_id');
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
