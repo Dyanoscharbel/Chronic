@@ -18,6 +18,7 @@ export default function ChatbotPage() {
     const savedMessages = localStorage.getItem('chatMessages');
     return savedMessages ? JSON.parse(savedMessages) : [];
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   // Sauvegarder les messages quand ils changent
   useEffect(() => {
@@ -43,11 +44,13 @@ export default function ChatbotPage() {
           setMessages(prev => [...prev, { role: 'assistant', content: 'Une erreur est survenue' }]);
         }
       }
+      setIsLoading(false);
     },
     onError: (error: any) => {
       // Extraire uniquement le message d'erreur de la réponse
       const errorMessage = error.response?.data?.message || error.message || 'Une erreur est survenue';
       setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
+      setIsLoading(false);
     }
   });
 
@@ -57,6 +60,7 @@ export default function ChatbotPage() {
 
     const userMessage = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
     sendMessage.mutate(input);
     setInput('');
   };
@@ -90,6 +94,13 @@ export default function ChatbotPage() {
               </div>
             </div>
           ))}
+          {isLoading && (
+            <div className="flex items-center space-x-2 text-gray-500">
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+            </div>
+          )}
         </ScrollArea>
       </Card>
 
