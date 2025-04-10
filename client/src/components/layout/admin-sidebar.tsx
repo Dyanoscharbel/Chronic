@@ -21,7 +21,7 @@ export function AdminSidebar({ isMobile, isOpen, toggleSidebar }: AdminSidebarPr
     {
       label: 'Tableau de bord',
       icon: <Home className="mr-3 h-6 w-6 text-white" />,
-      href: '/admin/dashboard'
+      href: '/admin'
     },
     { 
       label: 'Patients', 
