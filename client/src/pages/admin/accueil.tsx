@@ -38,20 +38,7 @@ export default function AdminAccueil() {
   return (
     <AdminLayout>
       <div className="flex flex-col space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-foreground">Accueil Administration</h1>
-          
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <form onSubmit={(e) => e.preventDefault()} className="relative w-full sm:w-auto">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-              <Input
-                type="search"
-                placeholder="Rechercher patients..."
-                className="pl-8 w-full sm:w-[250px]"
-              />
-            </form>
-          </div>
-        </div>
+        <h1 className="text-2xl font-semibold text-foreground">Accueil Administration</h1>
         
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCard
