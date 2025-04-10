@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,10 +11,17 @@ import { Badge } from '@/components/ui/badge';
 import { apiRequest } from '@/lib/queryClient';
 import { PlusCircle, Trash2, Edit, Search } from 'lucide-react';
 
+// Placeholder for the new admin patient dialog component.  This needs to be implemented separately.
+const AdminPatientDialog = ({isOpen, onClose, patient}) => {
+    return <div>Admin Patient Dialog (Implementation needed)</div>
+}
+
+
 export default function AdminPatientsPage() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [addEditDialogOpen, setAddEditDialogOpen] = useState(false); // Added state for the dialog
 
   const { data: patients, isLoading, refetch } = useQuery({
     queryKey: ['admin-patients'],
@@ -53,7 +59,7 @@ export default function AdminPatientsPage() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Gestion des Patients</h1>
-        <Button className="w-full sm:w-auto">
+        <Button onClick={() => setAddEditDialogOpen(true)}> {/* Open the admin dialog */}
           <PlusCircle className="mr-2 h-4 w-4" />
           Ajouter un patient
         </Button>
@@ -108,7 +114,7 @@ export default function AdminPatientsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => {setAddEditDialogOpen(true); setSelectedPatient(patient);}}>
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button 
@@ -154,6 +160,14 @@ export default function AdminPatientsPage() {
           </div>
         </DialogContent>
       </Dialog>
+      <AdminPatientDialog 
+        isOpen={addEditDialogOpen}
+        onClose={() => {
+          setAddEditDialogOpen(false);
+          setSelectedPatient(undefined);
+        }}
+        patient={selectedPatient}
+      />
     </div>
   );
 }
