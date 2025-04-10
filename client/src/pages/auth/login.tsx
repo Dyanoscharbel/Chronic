@@ -44,6 +44,8 @@ export default function LoginPage() {
       if (success) {
         setLocation('/');
       }
+    } catch (error) {
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
