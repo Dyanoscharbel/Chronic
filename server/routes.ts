@@ -934,7 +934,7 @@ console.error('----------------------------------------');
   });
 
 // Routes admin
-  import adminRouter from './admin-routes';
+  const adminRouter = require('./admin-routes').default;
   apiRouter.use('/admin', authenticate, adminRouter);
 
   // Appointments routes
