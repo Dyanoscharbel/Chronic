@@ -1701,7 +1701,15 @@ console.error('----------------------------------------');
     try {
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.0-pro",
+        generationConfig: {
+          temperature: 0.9,
+          topK: 1,
+          topP: 1,
+          maxOutputTokens: 2048,
+        },
+      });
 
       const chat = model.startChat({
         context: "Vous êtes un assistant médical spécialisé dans la néphrologie et les maladies rénales. Répondez de manière professionnelle et précise.",
