@@ -817,6 +817,24 @@ console.error('----------------------------------------');
         });
 
         await newNotification.save();
+
+        // Envoyer un email au docteur
+        await notificationService.sendEmail(
+          doctor.user.email,
+          'Nouvelle notification de résultat de laboratoire',
+          `<h1>Nouvelle notification</h1>
+           <p>${newNotification.message}</p>
+           <p>Sévérité: ${newNotification.severity}</p>`
+        );
+
+        // Envoyer un email au patient
+        await notificationService.sendEmail(
+          patient.user.email,
+          'Nouveau résultat de laboratoire',
+          `<h1>Nouveau résultat de test</h1>
+           <p>Un nouveau résultat de test est disponible: ${labTest.testName}</p>
+           <p>Valeur: ${resultValue} ${labTest.unit}</p>`
+        );
       }
 
       res.status(201).json(newResult);
