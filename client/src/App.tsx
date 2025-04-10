@@ -91,6 +91,29 @@ function AdminRoute({ component: Component, ...rest }: any) {
   return <Component {...rest} />;
 }
 
+function AuthRoute({ component: Component, ...rest }: any) {
+  const { isAuthenticated, loading } = useAuth();
+  const [location, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      setLocation("/");
+    }
+  }, [loading, isAuthenticated, setLocation]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+    </div>;
+  }
+
+  if (isAuthenticated) {
+    return null;
+  }
+
+  return <Component {...rest} />;
+}
+
 function Router() {
   const { user } = useAuth();
 
