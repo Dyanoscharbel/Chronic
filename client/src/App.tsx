@@ -131,6 +131,12 @@ function Router() {
       <Route path="/admin/dashboard">
         <AdminRoute component={AdminDashboard} />
       </Route>
+      <Route path="/admin/patients">
+        <AdminRoute component={AdminPatientsPage} />
+      </Route>
+      <Route path="/admin/doctors">
+        <AdminRoute component={AdminDoctorsPage} />
+      </Route>
 
 
       {/* Protected Routes */}
