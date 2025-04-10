@@ -27,14 +27,17 @@ import path from 'path';
 
 // Configuration des services de notification
 const emailTransporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
+  service: 'gmail',
+  host: 'smtp.gmail.com', 
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
-  debug: true
+  tls: {
+    rejectUnauthorized: false
+  }
 });
 
 const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
