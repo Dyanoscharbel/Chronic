@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { Users, UserPlus, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 
@@ -11,9 +11,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const menuItems = [
-    { icon: Users, label: 'Gestion Docteurs', href: '/admin/doctors' },
-    { icon: UserPlus, label: 'Gestion Patients', href: '/admin/patients' },
-    { icon: Settings, label: 'Paramètres', href: '/admin/settings' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
+    { icon: Users, label: 'Docteurs', href: '/admin/doctors' },
+    { icon: UserPlus, label: 'Patients', href: '/admin/patients' },
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         )}>
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between h-16 px-4">
-              <span className="text-lg font-semibold">Admin Panel</span>
+              {isSidebarOpen && <span className="text-lg font-semibold">Admin Panel</span>}
             </div>
             <nav className="flex-1 px-3 space-y-1">
               {menuItems.map((item) => (
