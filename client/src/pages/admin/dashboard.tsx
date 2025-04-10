@@ -46,12 +46,11 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           icon={<User className="text-black h-6 w-6" />}
-          iconBgColor="bg-white"
+          iconBgColor="bg-blue-500"
           title="Total Médecins"
           value={dashboardStats?.totalDoctors || 0}
-          footerLink="/doctors"
-          footerText="Voir tous les médecins"
-          footerLinkColor="text-primary hover:text-primary-dark"
+          footerText="Médecins enregistrés"
+          footerLinkColor="text-blue-600 hover:text-blue-500"
         />
         
         <StatsCard
@@ -59,28 +58,16 @@ export default function AdminDashboard() {
           iconBgColor="bg-indigo-500"
           title="Total Patients"
           value={dashboardStats?.totalPatients || 0}
-          footerLink="/admin/patients"
-          footerText="Voir tous les patients"
+          footerText="Patients enregistrés"
           footerLinkColor="text-indigo-600 hover:text-indigo-500"
-        />
-        
-        <StatsCard
-          icon={<AlertTriangle className="h-6 w-6 text-white" />}
-          iconBgColor="bg-yellow-500"
-          title="Alertes Système"
-          value={notificationsData?.notifications?.filter(n => !n.isRead)?.length || 0}
-          footerLink="/admin/alerts"
-          footerText="Voir toutes les alertes"
-          footerLinkColor="text-yellow-600 hover:text-yellow-500"
         />
         
         <StatsCard
           icon={<FileText className="h-6 w-6 text-white" />}
           iconBgColor="bg-green-500"
-          title="Total Tests"
-          value={labResults?.length || 0}
-          footerLink="/admin/lab-tests"
-          footerText="Voir tous les tests"
+          title="Total Résultats"
+          value={dashboardStats?.totalTests || 0}
+          footerText="Résultats de tests"
           footerLinkColor="text-green-600 hover:text-green-500"
         />
       </div>

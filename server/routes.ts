@@ -1392,17 +1392,15 @@ console.error('----------------------------------------');
       const user = req.session.user;
 
       if (user?.role === 'admin') {
-        // Statistiques pour l'admin
+        // Statistiques globales pour l'admin
         const totalDoctors = await Doctor.countDocuments();
         const totalPatients = await Patient.countDocuments();
-        const totalTests = await LabTest.countDocuments();
-        const totalAlerts = await Notification.countDocuments();
+        const totalTests = await PatientLabResult.countDocuments();
 
         return res.json({
           totalDoctors,
           totalPatients,
-          totalTests,
-          totalAlerts
+          totalTests
         });
       }
 
