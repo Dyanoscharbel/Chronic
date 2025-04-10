@@ -1,13 +1,11 @@
 
-import { useAuth } from '@/hooks/use-auth';
 import SettingsPage from '@/pages/settings';
+import { AppLayout } from '@/components/layout/app-layout';
 
 export default function AdminSettingsPage() {
-  const { user } = useAuth();
-
-  if (user?.role !== 'admin') {
-    return <div>Accès non autorisé</div>;
-  }
-
-  return <SettingsPage />;
+  return (
+    <AppLayout isAdmin>
+      <SettingsPage />
+    </AppLayout>
+  );
 }
