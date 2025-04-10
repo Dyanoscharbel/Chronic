@@ -1396,6 +1396,63 @@ console.error('----------------------------------------');
     }
   });
 
+  // Admin dashboard statistics
+  apiRouter.get('/dashboard/admin-stats', authenticate, async (req, res) => {
+    try {
+      const user = req.session.user;
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: 'Access denied: Admin only' });
+      }
+
+      const totalPatients = await Patient.countDocuments();
+      const totalDoctors = await Doctor.countDocuments();
+      const totalAppointments = await Appointment.countDocuments();
+      
+      // Calculer la distribution des médecins par spécialité
+      const doctors = await Doctor.find().populate('user');
+      const specialtyDistribution = doctors.reduce((acc: any, doctor) => {
+        acc[doctor.specialty] = (acc[doctor.specialty] || 0) + 1;
+        return acc;
+      }, {});
+
+      // Calculer la croissance mensuelle des patients
+      const now = new Date();
+      const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6));
+      
+      const patientGrowth = await Patient.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: sixMonthsAgo }
+          }
+        },
+        {
+          $group: {
+            _id: { 
+              year: { $year: "$createdAt" },
+              month: { $month: "$createdAt" }
+            },
+            count: { $sum: 1 }
+          }
+        },
+        { $sort: { "_id.year": 1, "_id.month": 1 } }
+      ]);
+
+      return res.json({
+        totalPatients,
+        totalDoctors,
+        totalAppointments,
+        specialtyDistribution,
+        patientGrowth: patientGrowth.map(item => ({
+          month: `${item._id.year}-${item._id.month}`,
+          count: item.count
+        }))
+      });
+    } catch (error) {
+      console.error('Error fetching admin stats:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
   // Dashboard statistics
   apiRouter.get('/dashboard/stats', authenticate, async (req, res) => {
     try {

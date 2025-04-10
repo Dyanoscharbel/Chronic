@@ -13,7 +13,7 @@ import { DashboardStats } from '@/lib/types';
 
 export default function AdminAccueil() {
   const { data: dashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
-    queryKey: ['/api/dashboard/stats'],
+    queryKey: ['/api/dashboard/admin-stats'],
     refetchInterval: 5000,
   });
 
