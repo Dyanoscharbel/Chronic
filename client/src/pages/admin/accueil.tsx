@@ -45,7 +45,7 @@ export default function AdminAccueil() {
             icon={<User className="text-black h-6 w-6" />}
             iconBgColor="bg-white"
             title="Total Médecins"
-            value={dashboardStats?.totalDoctors || 0}
+            value={dashboardStats?.adminTotalDoctors || 0}
             footerText="Voir tous les médecins"
             footerLinkColor="text-primary hover:text-primary-dark"
           />
@@ -54,7 +54,7 @@ export default function AdminAccueil() {
             icon={<Users className="h-6 w-6 text-white" />}
             iconBgColor="bg-indigo-500"
             title="Total Patients"
-            value={dashboardStats?.totalPatients || 0}
+            value={dashboardStats?.adminTotalPatients || 0}
             footerText="Voir tous les patients"
             footerLinkColor="text-indigo-600 hover:text-indigo-500"
           />
@@ -63,7 +63,7 @@ export default function AdminAccueil() {
             icon={<Calendar className="h-6 w-6 text-white" />}
             iconBgColor="bg-green-500"
             title="Total Rendez-vous"
-            value={dashboardStats?.totalAppointments || 0}
+            value={dashboardStats?.adminTotalAppointments || 0}
             footerText="Voir tous les rendez-vous"
             footerLinkColor="text-green-600 hover:text-green-500"
           />

@@ -1404,13 +1404,13 @@ console.error('----------------------------------------');
         return res.status(403).json({ message: 'Access denied: Admin only' });
       }
 
-      const totalPatients = await Patient.countDocuments();
-      const totalDoctors = await Doctor.countDocuments();
-      const totalAppointments = await Appointment.countDocuments();
+      const adminTotalPatients = await Patient.countDocuments();
+      const adminTotalDoctors = await Doctor.countDocuments();
+      const adminTotalAppointments = await Appointment.countDocuments();
       
       // Calculer la distribution des médecins par spécialité
-      const doctors = await Doctor.find().populate('user');
-      const specialtyDistribution = doctors.reduce((acc: any, doctor) => {
+      const adminDoctors = await Doctor.find().populate('user');
+      const adminSpecialtyDistribution = adminDoctors.reduce((acc: any, doctor) => {
         acc[doctor.specialty] = (acc[doctor.specialty] || 0) + 1;
         return acc;
       }, {});
@@ -1419,7 +1419,7 @@ console.error('----------------------------------------');
       const now = new Date();
       const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6));
       
-      const patientGrowth = await Patient.aggregate([
+      const adminPatientGrowth = await Patient.aggregate([
         {
           $match: {
             createdAt: { $gte: sixMonthsAgo }
@@ -1438,11 +1438,11 @@ console.error('----------------------------------------');
       ]);
 
       return res.json({
-        totalPatients,
-        totalDoctors,
-        totalAppointments,
-        specialtyDistribution,
-        patientGrowth: patientGrowth.map(item => ({
+        adminTotalPatients,
+        adminTotalDoctors,
+        adminTotalAppointments,
+        adminSpecialtyDistribution,
+        adminPatientGrowth: adminPatientGrowth.map(item => ({
           month: `${item._id.year}-${item._id.month}`,
           count: item.count
         }))
