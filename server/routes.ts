@@ -1276,6 +1276,9 @@ console.error('----------------------------------------');
         doctor: doctor._id 
       }).populate('user');
 
+      // Récupérer les informations complètes du médecin
+      const doctorWithUser = await Doctor.findById(doctor._id).populate('user');
+
       // Envoyer un email au médecin
       const doctorEmailTemplate = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
@@ -1288,6 +1291,22 @@ console.error('----------------------------------------');
             <p style="color: #374151; line-height: 1.6;">${workflow.description}</p>
             <p style="color: #374151;"><strong>Stage CKD:</strong> ${workflow.ckdStage}</p>
             <p style="color: #374151;"><strong>Nombre de patients concernés:</strong> ${patientsWithStage.length}</p>
+            <div style="background-color: #e5e7eb; padding: 10px; border-radius: 3px; margin-top: 15px;">
+              <p style="color: #4b5563; margin: 5px 0;"><strong>Créé par:</strong> Dr. ${doctorWithUser.user.firstName} ${doctorWithUser.user.lastName}</p>
+              <p style="color: #4b5563; margin: 5px 0;"><strong>Spécialité:</strong> ${doctorWithUser.specialty}</p>
+              <p style="color: #4b5563; margin: 5px 0;"><strong>Hôpital:</strong> ${doctorWithUser.hospital}</p>
+            </div>
+            <div style="margin-top: 15px;">
+              <h3 style="color: #1e40af;">Exigences du workflow:</h3>
+              ${workflow.requirements.map(req => `
+                <div style="border-left: 3px solid #2563eb; padding-left: 10px; margin: 10px 0;">
+                  <p style="color: #374151; margin: 3px 0;"><strong>Test:</strong> ${req.testName}</p>
+                  <p style="color: #374151; margin: 3px 0;"><strong>Fréquence:</strong> ${req.frequency}</p>
+                  <p style="color: #374151; margin: 3px 0;"><strong>Alerte:</strong> ${req.alert.type} ${req.alert.value} ${req.alert.unit}</p>
+                  <p style="color: #374151; margin: 3px 0;"><strong>Action:</strong> ${req.action}</p>
+                </div>
+              `).join('')}
+            </div>
           </div>
         </div>
       `;
