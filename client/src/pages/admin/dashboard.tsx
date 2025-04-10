@@ -14,7 +14,7 @@ export default function AdminDashboard() {
   const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const response = await apiRequest.get('/api/admin/stats');
+      const response = await apiRequest('GET', '/api/admin/stats');
       return response.data;
     },
     enabled: user?.role === 'admin'
@@ -23,7 +23,7 @@ export default function AdminDashboard() {
   const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
     queryKey: ['admin-doctors'],
     queryFn: async () => {
-      const response = await apiRequest.get('/api/admin/doctors');
+      const response = await apiRequest('GET', '/api/admin/doctors');
       return response.data;
     },
     enabled: user?.role === 'admin'
