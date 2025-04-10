@@ -933,11 +933,9 @@ console.error('----------------------------------------');
     }
   });
 
-// Import des routes admin
-import adminRouter from './admin-routes';
-
 // Routes admin
-apiRouter.use('/admin', authenticate, adminRouter);
+  import adminRouter from './admin-routes';
+  apiRouter.use('/admin', authenticate, adminRouter);
 
   // Appointments routes
   apiRouter.get('/appointments', authenticate, async (req, res) => {
