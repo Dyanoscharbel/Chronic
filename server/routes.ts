@@ -1702,7 +1702,7 @@ console.error('----------------------------------------');
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
       const model = genAI.getGenerativeModel({ 
-        model: "v1beta/models/gemini-2.0-flash",
+        model: "gemini-pro",
         generationConfig: {
           temperature: 0.9,
           topK: 1,
