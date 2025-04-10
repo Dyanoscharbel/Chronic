@@ -12,6 +12,7 @@ import { Loader } from '@/components/ui/loader';
 import { DashboardStats, Patient, Appointment, Alert } from '@/lib/types';
 
 export default function Dashboard() {
+  
   const [workflowModalOpen, setWorkflowModalOpen] = useState(false);
   
   const { data: dashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
