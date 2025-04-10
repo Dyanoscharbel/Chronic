@@ -131,11 +131,10 @@ function Router() {
 
       {/* Admin Routes */}
       <Route path="/admin">
-        <AdminRoute component={() => (
-          <AppLayout isAdmin>
-            <AdminDashboard />
-          </AppLayout>
-        )} />
+        <AdminRoute component={() => {
+          window.location.href = '/admin/dashboard';
+          return null;
+        }} />
       </Route>
       <Route path="/admin/dashboard">
         <AdminRoute component={() => (
@@ -164,7 +163,7 @@ function Router() {
       <Route path="/">
         <ProtectedRoute component={() => (
           <AppLayout>
-            {user?.role === 'admin' ? <AdminDashboard /> : <Dashboard />}
+            <Dashboard />
           </AppLayout>
         )} />
       </Route>
