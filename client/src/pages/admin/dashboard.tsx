@@ -1,13 +1,11 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { User, Users, Calendar, FileText, AlertTriangle } from 'lucide-react';
-import { StatsCard } from '@/components/dashboard/stats-card';
-import { Button } from '@/components/ui/button';
-import { Loader } from '@/components/ui/loader';
-import { useAuth } from '@/hooks/use-auth';
+import { Users, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Loader } from '@/components/ui/loader';
+import { useAuth } from '@/hooks/use-auth';
 import { apiRequest } from '@/lib/queryClient';
 
 export default function AdminDashboard() {
@@ -27,11 +25,18 @@ export default function AdminDashboard() {
     enabled: user?.role === 'admin'
   });
 
+  // Patients query pour admin uniquement
+  const { data: patients, isLoading: isLoadingPatients } = useQuery({
+    queryKey: ['admin-patients'],
+    queryFn: () => apiRequest.get('/api/admin/patients').then(res => res.data),
+    enabled: user?.role === 'admin'
+  });
+
   if (user?.role !== 'admin') {
     return <div>Accès non autorisé</div>;
   }
 
-  if (isLoadingStats || isLoadingDoctors) {
+  if (isLoadingStats || isLoadingDoctors || isLoadingPatients) {
     return (
       <div className="flex flex-col space-y-4">
         <h1 className="text-2xl font-semibold text-foreground">Dashboard Administrateur</h1>
