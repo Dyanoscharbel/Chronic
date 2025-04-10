@@ -133,7 +133,11 @@ function Router() {
         )} adminOnly={true} />
       </Route>
       <Route path="/admin/patients">
-        <ProtectedRoute component={AdminPatientsPage} adminOnly={true} />
+        <ProtectedRoute component={() => (
+          <AdminLayout>
+            <AdminPatientsPage />
+          </AdminLayout>
+        )} adminOnly={true} />
       </Route>
       <Route path="/patients/add">
         <ProtectedRoute component={() => (
