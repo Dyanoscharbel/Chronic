@@ -19,6 +19,7 @@ adminRouter.get('/stats', requireAdmin, async (req, res) => {
     const totalPatients = await Patient.countDocuments();
     const totalUsers = await User.countDocuments();
     const totalAppointments = await Appointment.countDocuments();
+    const totalLabResults = await PatientLabResult.countDocuments();
 
     const patientsByStage = await Patient.aggregate([
       { $group: { _id: "$ckdStage", count: { $sum: 1 } } }
@@ -29,6 +30,7 @@ adminRouter.get('/stats', requireAdmin, async (req, res) => {
       totalPatients,
       totalUsers,
       totalAppointments,
+      totalLabResults,
       patientsByStage
     });
   } catch (error) {
