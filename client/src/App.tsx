@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import NotFound from "@/pages/not-found";
 
 import Dashboard from "@/pages/dashboard";
+import AdminDashboard from "@/pages/admin/dashboard";
 import PatientsPage from "@/pages/patients/index";
 
 import PatientAddEdit from "@/pages/patients/add-edit";
