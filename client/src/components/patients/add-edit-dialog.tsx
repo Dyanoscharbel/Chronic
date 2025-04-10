@@ -130,11 +130,11 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit Patient' : 'Add New Patient'}</DialogTitle>
+          <DialogTitle>{isEditing ? 'Modifier le Patient' : 'Ajouter un Nouveau Patient'}</DialogTitle>
           <DialogDescription>
             {isEditing 
-              ? 'Update the information for this patient'
-              : 'Enter the details to register a new patient'
+              ? 'Mettre à jour les informations de ce patient'
+              : 'Saisir les détails pour enregistrer un nouveau patient'
             }
           </DialogDescription>
         </DialogHeader>
@@ -142,7 +142,7 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium">Personal Information</h3>
+              <h3 className="text-lg font-medium">Informations Personnelles</h3>
               <Separator className="my-4" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
@@ -150,9 +150,9 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>Prénom</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter first name" {...field} />
+                        <Input placeholder="Entrer le prénom" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -164,9 +164,9 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>Nom</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter last name" {...field} />
+                        <Input placeholder="Entrer le nom" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -215,7 +215,7 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
                   name="gender"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Gender</FormLabel>
+                      <FormLabel>Genre</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -227,19 +227,19 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
                             <FormControl>
                               <RadioGroupItem value="M" />
                             </FormControl>
-                            <FormLabel className="font-normal">Male</FormLabel>
+                            <FormLabel className="font-normal">Masculin</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="F" />
                             </FormControl>
-                            <FormLabel className="font-normal">Female</FormLabel>
+                            <FormLabel className="font-normal">Féminin</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="Autre" />
                             </FormControl>
-                            <FormLabel className="font-normal">Other</FormLabel>
+                            <FormLabel className="font-normal">Autre</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -331,7 +331,7 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
                 variant="outline"
                 onClick={onClose}
               >
-                Cancel
+                Annuler
               </Button>
               <Button 
                 type="submit"
@@ -340,7 +340,7 @@ export default function AddEditDialog({ isOpen, onClose, patient }: AddEditDialo
                 {(createPatientMutation.isPending || updatePatientMutation.isPending) && (
                   <Loader color="white" size="sm" className="mr-2" />
                 )}
-                {isEditing ? 'Update Patient' : 'Create Patient'}
+                {isEditing ? 'Mettre à jour' : 'Créer le Patient'}
               </Button>
             </DialogFooter>
           </form>

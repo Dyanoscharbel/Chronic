@@ -102,9 +102,9 @@ export default function PatientsPage() {
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle>Patient Registry</CardTitle>
+              <CardTitle>Registre des Patients</CardTitle>
               <CardDescription>
-                Manage and view all registered patients
+                Gérer et consulter tous les patients enregistrés
               </CardDescription>
             </div>
 
