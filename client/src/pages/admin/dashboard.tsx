@@ -11,6 +11,19 @@ import { apiRequest } from '@/lib/queryClient';
 export default function AdminDashboard() {
   const { user } = useAuth();
 
+  // Désactiver les requêtes inutiles pour l'admin
+  const { isLoading: isLoadingUpcomingAppointments } = useQuery({
+    queryKey: ['upcoming-appointments'],
+    queryFn: () => Promise.resolve(null),
+    enabled: false // Désactivé pour l'admin
+  });
+
+  const { isLoading: isLoadingNotifications } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => Promise.resolve(null),
+    enabled: false // Désactivé pour l'admin
+  });
+
   // Stats query pour admin uniquement
   const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['admin-stats'],
