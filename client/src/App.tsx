@@ -82,6 +82,8 @@ function AuthRoute({ component: Component, ...rest }: any) {
 }
 
 function Router() {
+  const { user } = useAuth();
+
   return (
     <Switch>
       {/* Auth Routes */}
@@ -96,7 +98,7 @@ function Router() {
       <Route path="/">
         <ProtectedRoute component={() => (
           <AppLayout>
-            <Dashboard />
+            {user?.role === 'admin' ? <AdminDashboard /> : <Dashboard />}
           </AppLayout>
         )} />
       </Route>
