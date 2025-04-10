@@ -1,5 +1,6 @@
 import { Router, type Express } from "express";
 import { createServer, type Server } from "http";
+import adminRouter from './admin-routes';
 import { storage } from "./storage";
 import mongoose from "mongoose";
 import { z } from "zod";
@@ -263,6 +264,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true });
     });
   });
+
+  // Admin routes
+  apiRouter.use('/admin', authenticate, adminRouter);
 
   // Users routes
   apiRouter.put('/user/profile', authenticate, async (req, res) => {
@@ -933,11 +937,7 @@ console.error('----------------------------------------');
     }
   });
 
-// Routes admin
-  import adminRouter from './admin-routes';
-  apiRouter.use('/admin', authenticate, adminRouter);
-
-  // Appointments routes
+// Appointments routes
   apiRouter.get('/appointments', authenticate, async (req, res) => {
     try {
       const userId = req.session.user?.id;
