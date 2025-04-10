@@ -30,7 +30,6 @@ export default function NotificationsPage() {
 
   const { data, isLoading } = useQuery<{ notifications: Notification[] }>({
     queryKey: ['/api/notifications'],
-    onError: handleError,
   });
 
   // Mark notification as read mutation
