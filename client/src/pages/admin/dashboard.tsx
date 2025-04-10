@@ -49,7 +49,7 @@ export default function AdminDashboard() {
           iconBgColor="bg-white"
           title="Total Médecins"
           value={dashboardStats?.totalDoctors || 0}
-          footerLink="/admin/doctors"
+          footerLink="/doctors"
           footerText="Voir tous les médecins"
           footerLinkColor="text-primary hover:text-primary-dark"
         />
