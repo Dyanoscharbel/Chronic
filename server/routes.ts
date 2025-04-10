@@ -922,15 +922,6 @@ apiRouter.get('/api/admin/stats', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-        );
-      }
-
-      res.status(201).json(newResult);
-    } catch (error) {
-      console.error('Error creating lab result:', error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
 
   // Appointments routes
   apiRouter.get('/appointments', authenticate, async (req, res) => {
