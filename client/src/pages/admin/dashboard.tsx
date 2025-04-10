@@ -1,22 +1,31 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Users, Calendar, AlertTriangle, FileText } from 'lucide-react';
+import { Users, Calendar, AlertTriangle, FileText, LogOut } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader } from '@/components/ui/loader';
 import { useAuth } from '@/hooks/use-auth';
+import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
 
-  // Cacher la barre de navigation et l'icône notification
-  React.useEffect(() => {
-    const header = document.querySelector('[data-sidebar="header"]');
-    const notifications = document.querySelector('[href="/notifications"]');
-    if (header) header.style.display = 'none';
-    if (notifications) notifications.style.display = 'none';
-  }, []);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Déconnexion réussie"
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur lors de la déconnexion",
+        variant: "destructive"
+      });
+    }
+  };
 
   const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['admin-stats'],
@@ -46,7 +55,13 @@ export default function AdminDashboard() {
 
   return (
     <div className="container mx-auto p-6 space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Tableau de bord administrateur</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Tableau de bord administrateur</h1>
+        <Button onClick={handleLogout} variant="destructive" className="flex items-center gap-2">
+          <LogOut className="h-4 w-4" />
+          Se déconnecter
+        </Button>
+      </div>
       
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-white hover:shadow-lg transition-shadow">
