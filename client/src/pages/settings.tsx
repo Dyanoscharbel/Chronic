@@ -74,7 +74,7 @@ const themeSchema = z.object({
 });
 
 
-export default function SettingsPage() {
+export function SettingsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user, setAuthState, logout } = useAuth();
