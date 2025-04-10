@@ -21,14 +21,16 @@ export default function ChatbotPage() {
     mutationFn: async (message: string) => {
       return apiRequest('POST', '/api/chatbot', { message });
     },
-    onSuccess: (response) => {
-      console.log('Chatbot response:', response);
-      const responseMessage = response?.data?.message || response?.message;
-      
-      if (responseMessage) {
-        setMessages(prev => [...prev, { role: 'assistant', content: responseMessage }]);
-      } else {
-        console.error('Invalid response format:', response);
+    onSuccess: async (response) => {
+      try {
+        const data = await response.json();
+        if (data?.message) {
+          setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
+        } else {
+          console.error('Invalid response format:', data);
+        }
+      } catch (error) {
+        console.error('Error parsing response:', error);
       }
     }
   });
