@@ -15,7 +15,8 @@ export default function AdminDashboard() {
     queryKey: ['admin-stats'],
     queryFn: async () => {
       const response = await apiRequest('GET', '/api/admin/stats');
-      return response.data;
+      const json = await response.json();
+      return json;
     },
     enabled: user?.role === 'admin',
     staleTime: 30000
@@ -25,7 +26,8 @@ export default function AdminDashboard() {
     queryKey: ['admin-doctors'],
     queryFn: async () => {
       const response = await apiRequest('GET', '/api/admin/doctors');
-      return response.data;
+      const json = await response.json();
+      return json;
     },
     enabled: user?.role === 'admin',
     staleTime: 30000
