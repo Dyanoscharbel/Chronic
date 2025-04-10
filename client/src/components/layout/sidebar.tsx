@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
 import { 
-  Home, Users, FileText, Calendar, Bell, Settings, GitBranch,
+  Home, Users, FileText, Calendar, Bell, Settings, GitBranch, MessageSquare,
   Menu, X
 } from 'lucide-react';
 
@@ -55,6 +55,11 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
       label: 'Settings', 
       icon: <Settings className="mr-3 h-6 w-6 text-white" />,
       href: '/settings'
+    },
+    { 
+      label: 'Assistant IA', 
+      icon: <MessageSquare className="mr-3 h-6 w-6 text-white" />,
+      href: '/chatbot'
     }
   ];
 
@@ -101,3 +106,15 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
     </div>
   );
 }
+
+// Placeholder Chatbot component
+function Chatbot() {
+  return (
+    <div>
+      <h1>Chatbot Page</h1>
+      <p>This is a placeholder for the chatbot integration.</p>
+    </div>
+  );
+}
+
+export default Chatbot;

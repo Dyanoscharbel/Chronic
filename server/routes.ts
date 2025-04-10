@@ -13,6 +13,7 @@ import session from 'express-session';
 import MemoryStore from 'memorystore';
 import bcrypt from 'bcrypt';
 import { User, Doctor, Patient, LabTest, PatientLabResult, Notification, Appointment, Workflow } from './models';
+import OpenAI from 'openai';
 
 const MemoryStoreSession = MemoryStore(session);
 
@@ -86,6 +87,10 @@ export const notificationService = {
     }
   }
 };
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session setup
@@ -1689,6 +1694,33 @@ console.error('----------------------------------------');
     } catch (error) {
       console.error('Error updating workflow:', error);
       res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  app.post('/api/chatbot', authenticate, async (req, res) => {
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { 
+            role: "system", 
+            content: "Vous êtes un assistant médical spécialisé dans la néphrologie et les maladies rénales. Répondez de manière professionnelle et précise."
+          },
+          { 
+            role: "user", 
+            content: req.body.message 
+          }
+        ],
+      });
+
+      res.json({ 
+        message: completion.choices[0].message.content 
+      });
+    } catch (error) {
+      console.error('ChatGPT Error:', error);
+      res.status(500).json({ 
+        message: "Erreur lors de la communication avec l'assistant" 
+      });
     }
   });
 
