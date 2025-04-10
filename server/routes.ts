@@ -1699,22 +1699,19 @@ console.error('----------------------------------------');
 
   app.post('/api/chatbot', authenticate, async (req, res) => {
     try {
-      const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { 
-            role: "system", 
-            content: "Vous êtes un assistant médical spécialisé dans la néphrologie et les maladies rénales. Répondez de manière professionnelle et précise."
-          },
-          { 
-            role: "user", 
-            content: req.body.message 
-          }
-        ],
+      const { GoogleGenerativeAI } = require('@google/generative-ai');
+      const genAI = new GoogleGenerativeAI('AIzaSyCdRtUKHW2fDpeWw5NvWGfiCnT9auIxjBU');
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+      const chat = model.startChat({
+        context: "Vous êtes un assistant médical spécialisé dans la néphrologie et les maladies rénales. Répondez de manière professionnelle et précise.",
       });
 
+      const result = await chat.sendMessage(req.body.message);
+      const response = await result.response;
+
       res.json({ 
-        message: completion.choices[0].message.content 
+        message: response.text()
       });
     } catch (error) {
       console.error('ChatGPT Error:', error);
