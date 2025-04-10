@@ -36,6 +36,10 @@ export default function AdminDashboard() {
     return <div>Accès non autorisé</div>;
   }
 
+  if (!user || user.role !== 'admin') {
+    return <div>Accès non autorisé</div>;
+  }
+
   if (isLoadingStats || isLoadingDoctors || isLoadingPatients) {
     return (
       <div className="flex flex-col space-y-4">
