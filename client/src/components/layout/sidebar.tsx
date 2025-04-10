@@ -32,34 +32,9 @@ export function Sidebar({ isMobile, isOpen, toggleSidebar }: SidebarProps) {
       href: '/patients'
     },
     { 
-      label: 'Lab Results', 
-      icon: <FileText className="mr-3 h-6 w-6 text-white" />,
-      href: '/lab-results'
-    },
-    { 
-      label: 'Appointments', 
-      icon: <Calendar className="mr-3 h-6 w-6 text-white" />,
-      href: '/appointments'
-    },
-    { 
-      label: 'Notifications', 
-      icon: <Bell className="mr-3 h-6 w-6 text-white" />,
-      href: '/notifications'
-    },
-    { 
-      label: 'Workflows', 
-      icon: <GitBranch className="mr-3 h-6 w-6 text-white" />,
-      href: '/workflows'
-    },
-    { 
       label: 'Settings', 
       icon: <Settings className="mr-3 h-6 w-6 text-white" />,
       href: '/settings'
-    },
-    { 
-      label: 'Assistant IA', 
-      icon: <MessageSquare className="mr-3 h-6 w-6 text-white" />,
-      href: '/chatbot'
     }
   ];
 
