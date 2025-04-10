@@ -125,22 +125,23 @@ export default function AppointmentsPage() {
 
   // Filter appointments based on search and filter
   const filteredAppointments = appointments?.filter(appointment => {
-    const patient = appointment.patient; //Updated
-    const doctor = appointment.doctor; //Updated
+    const patient = appointment.patient;
+    const doctor = appointment.doctor;
+    const searchLower = searchQuery.toLowerCase();
 
-    const matchesSearch = searchQuery ? (
+    const matchesSearch = searchQuery === '' ? true : (
       patient && (
-        patient.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        patient.user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+        patient.user.firstName.toLowerCase().includes(searchLower) ||
+        patient.user.lastName.toLowerCase().includes(searchLower)
       ) ||
       doctor && (
-        doctor.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doctor.user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+        doctor.user.firstName.toLowerCase().includes(searchLower) ||
+        doctor.user.lastName.toLowerCase().includes(searchLower)
       ) ||
-      appointment.purpose?.toLowerCase().includes(searchQuery.toLowerCase())
-    ) : true;
+      appointment.purpose?.toLowerCase().includes(searchLower)
+    );
 
-    const matchesFilter = filterStatus === 'all' ? true : appointment.status === filterStatus;
+    const matchesFilter = filterStatus === 'all' ? true : appointment.doctorStatus === filterStatus;
 
     return matchesSearch && matchesFilter;
   }) || [];
