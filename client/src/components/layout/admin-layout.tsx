@@ -4,7 +4,7 @@ import { Header } from './header';
 import { useAuth } from '@/hooks/use-auth';
 import { useMobile } from '@/hooks/use-mobile';
 import { PageLoader } from '@/components/ui/loader';
-import { Link } from '@/lib/utils';
+import { Link } from 'wouter';
 import { Settings, UserMd, Users } from 'lucide-react';
 
 interface AdminLayoutProps {
