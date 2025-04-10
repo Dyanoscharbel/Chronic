@@ -27,13 +27,12 @@ import path from 'path';
 
 // Configuration des services de notification
 const emailTransporter = nodemailer.createTransport({
-  service: 'gmail',
-  host: 'smtp.gmail.com',
+  host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER || '',
-    pass: process.env.EMAIL_PASS || ''
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   },
   tls: {
     rejectUnauthorized: false
@@ -1260,7 +1259,7 @@ console.error('----------------------------------------');
 
       const userId = req.session.user?.id;
       console.log('Creating workflow for user:', userId);
-      
+
       const doctor = await Doctor.findOne({ user: userId });
       console.log('Found doctor:', doctor);
 
