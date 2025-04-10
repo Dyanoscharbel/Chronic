@@ -22,9 +22,10 @@ export default function ChatbotPage() {
       return apiRequest('POST', '/api/chatbot', { message });
     },
     onSuccess: (response) => {
-      const responseText = response?.data?.message;
-      if (responseText) {
-        setMessages(prev => [...prev, { role: 'assistant', content: responseText }]);
+      if (response?.data?.message) {
+        setMessages(prev => [...prev, { role: 'assistant', content: response.data.message }]);
+      } else if (response?.message) {
+        setMessages(prev => [...prev, { role: 'assistant', content: response.message }]);
       } else {
         console.error('Invalid response format:', response);
       }
