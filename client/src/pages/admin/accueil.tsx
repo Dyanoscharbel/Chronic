@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { User, Users, Calendar, FileText, AlertTriangle } from 'lucide-react';
+import { User, Users, Calendar, FileText, AlertTriangle, Search } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/stats-card';
 import { ChartCard } from '@/components/dashboard/chart-card';
 import { LabResultsList } from '@/components/dashboard/appointments-list';
