@@ -27,6 +27,18 @@ import { AppLayout } from "@/components/layout/app-layout";
 import Workflows from "@/pages/workflows";
 import ChatbotPage from "@/pages/chatbot"; // Import ChatbotPage component
 
+//New component for admin settings page.  Content mirrored from SettingsPage for simplicity.  Should be replaced with actual admin settings.
+const AdminSettingsPage = () => {
+    return (
+        <div>
+            <h1>Admin Settings Page</h1>
+            {/* Add actual admin settings content here */}
+            <p>This is a placeholder for admin settings.</p>
+        </div>
+    )
+}
+
+
 function ProtectedRoute({ component: Component, ...rest }: any) {
   const { isAuthenticated, loading, user } = useAuth();
   const [location, setLocation] = useLocation();
@@ -154,6 +166,13 @@ function Router() {
         <AdminRoute component={() => (
           <AppLayout isAdmin>
             <AdminDoctorsPage />
+          </AppLayout>
+        )} />
+      </Route>
+      <Route path="/admin/settings">
+        <AdminRoute component={() => (
+          <AppLayout isAdmin>
+            <AdminSettingsPage />
           </AppLayout>
         )} />
       </Route>

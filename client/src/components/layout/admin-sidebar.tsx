@@ -36,7 +36,7 @@ export function AdminSidebar({ isMobile, isOpen, toggleSidebar }: AdminSidebarPr
     { 
       label: 'Paramètres', 
       icon: <Settings className="mr-3 h-6 w-6 text-white" />,
-      href: '/settings'
+      href: '/admin/settings'
     }
   ];
 
