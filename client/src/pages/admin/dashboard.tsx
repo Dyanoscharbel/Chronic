@@ -18,29 +18,17 @@ export default function AdminDashboard() {
     enabled: user?.role === 'admin'
   });
 
-  // Doctors query pour admin uniquement
   const { data: doctors, isLoading: isLoadingDoctors } = useQuery({
     queryKey: ['admin-doctors'],
     queryFn: () => apiRequest.get('/api/admin/doctors').then(res => res.data),
     enabled: user?.role === 'admin'
   });
 
-  // Patients query pour admin uniquement
-  const { data: patients, isLoading: isLoadingPatients } = useQuery({
-    queryKey: ['admin-patients'],
-    queryFn: () => apiRequest.get('/api/admin/patients').then(res => res.data),
-    enabled: user?.role === 'admin'
-  });
-
-  if (user?.role !== 'admin') {
-    return <div>Accès non autorisé</div>;
-  }
-
   if (!user || user.role !== 'admin') {
     return <div>Accès non autorisé</div>;
   }
 
-  if (isLoadingStats || isLoadingDoctors || isLoadingPatients) {
+  if (isLoadingStats || isLoadingDoctors) {
     return (
       <div className="flex flex-col space-y-4">
         <h1 className="text-2xl font-semibold text-foreground">Dashboard Administrateur</h1>
