@@ -1258,8 +1258,11 @@ console.error('----------------------------------------');
     try {
       const { name, description, ckdStage, requirements } = req.body;
 
-      const userId = (req as any).session.user?.id || (req as any).user.id;
+      const userId = req.session.user?.id;
+      console.log('Creating workflow for user:', userId);
+      
       const doctor = await Doctor.findOne({ user: userId });
+      console.log('Found doctor:', doctor);
 
       if (!doctor) {
         return res.status(403).json({ message: 'Doctor not found' });
@@ -1700,7 +1703,11 @@ console.error('----------------------------------------');
   app.post('/api/chatbot', authenticate, async (req, res) => {
     try {
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
-      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+      if (!process.env.GEMINI_API_KEY) {
+        console.error('GEMINI_API_KEY not found');
+        return res.status(500).json({ message: 'Configuration API manquante' });
+      }
+      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ 
         model: "gemini-2.0-flash",
         apiVersion: "v1beta",
