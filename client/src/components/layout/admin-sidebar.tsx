@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
-import { Home, Users, Settings, X } from 'lucide-react';
+import { Users, Settings, X } from 'lucide-react';
 
 interface AdminSidebarProps {
   isMobile: boolean;
@@ -18,11 +18,6 @@ export function AdminSidebar({ isMobile, isOpen, toggleSidebar }: AdminSidebarPr
   }
 
   const navItems = [
-    { 
-      label: 'Dashboard', 
-      icon: <Home className="mr-3 h-6 w-6 text-white" />,
-      href: '/admin/dashboard'
-    },
     { 
       label: 'Patients', 
       icon: <Users className="mr-3 h-6 w-6 text-white" />,
@@ -57,7 +52,7 @@ export function AdminSidebar({ isMobile, isOpen, toggleSidebar }: AdminSidebarPr
       )}
 
       <div className="flex items-center h-16 flex-shrink-0 px-4 bg-primary">
-        <div className="text-white text-xl font-bold">Admin Panel</div>
+        <div className="text-white text-xl font-bold">Administration</div>
       </div>
 
       <div className="flex-1 flex flex-col overflow-y-auto">

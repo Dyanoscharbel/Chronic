@@ -130,12 +130,17 @@ function Router() {
       </Route>
 
       {/* Admin Routes */}
+      <Route path="/admin">
+        <AdminRoute component={() => {
+          window.location.href = '/admin/patients';
+          return null;
+        }} />
+      </Route>
       <Route path="/admin/dashboard">
-        <AdminRoute component={() => (
-          <AppLayout isAdmin>
-            <AdminDashboard />
-          </AppLayout>
-        )} />
+        <AdminRoute component={() => {
+          window.location.href = '/admin/patients';
+          return null;
+        }} />
       </Route>
       <Route path="/admin/patients">
         <AdminRoute component={() => (
