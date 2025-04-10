@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header';
 import { useAuth } from '@/hooks/use-auth';
 import { useMobile } from '@/hooks/use-mobile';
 import { PageLoader } from '@/components/ui/loader';
-import { useLocation } from 'react-router-dom'; // Assuming react-router-dom is used
+import { useLocation } from 'wouter';
 
 
 interface AppLayoutProps {
