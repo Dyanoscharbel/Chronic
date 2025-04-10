@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
@@ -38,9 +37,18 @@ export default function ChatbotPage() {
           console.error('Invalid response format:', data);
         }
       } catch (error) {
-        console.error('Error parsing response:', error);
+          if (error instanceof Error) {
+            setMessages(prev => [...prev, { role: 'assistant', content: error.message }]);
+          } else {
+            setMessages(prev => [...prev, { role: 'assistant', content: 'Une erreur est survenue' }]);
+          }
+        }
+      },
+      onError: (error) => {
+        const errorMessage = error.response?.data?.message || 'Une erreur est survenue';
+        setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
       }
-    }
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -56,7 +64,7 @@ export default function ChatbotPage() {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-2xl font-bold mb-4">Assistant IA</h1>
-      
+
       <Card className="mb-4">
         <ScrollArea className="h-[500px] p-4">
           {messages.map((msg, i) => (
