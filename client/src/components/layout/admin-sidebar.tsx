@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
-import { Users, Settings, X } from 'lucide-react';
+import { Home, Users, Settings, X } from 'lucide-react';
 
 interface AdminSidebarProps {
   isMobile: boolean;
@@ -18,6 +18,11 @@ export function AdminSidebar({ isMobile, isOpen, toggleSidebar }: AdminSidebarPr
   }
 
   const navItems = [
+    {
+      label: 'Tableau de bord',
+      icon: <Home className="mr-3 h-6 w-6 text-white" />,
+      href: '/admin/dashboard'
+    },
     { 
       label: 'Patients', 
       icon: <Users className="mr-3 h-6 w-6 text-white" />,
