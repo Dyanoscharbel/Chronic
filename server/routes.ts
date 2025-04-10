@@ -1328,7 +1328,7 @@ console.error('----------------------------------------');
             <div style="background-color: #f8fafc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
               <p style="color: #374151;">Cher(e) ${patient.user.firstName} ${patient.user.lastName},</p>
               <p style="color: #374151; line-height: 1.6;">
-                Votre médecin, Dr. ${doctor.user.firstName} ${doctor.user.lastName}, 
+                Votre médecin, Dr. ${doctorWithUser.user.firstName} ${doctorWithUser.user.lastName}, 
                 a mis en place un nouveau protocole de suivi pour votre stade CKD (${workflow.ckdStage}).
               </p>
               <h3 style="color: #1e40af;">${workflow.name}</h3>
