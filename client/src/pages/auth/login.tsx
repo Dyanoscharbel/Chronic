@@ -40,14 +40,10 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      const success = await login(data.email, data.password);
-      if (success) {
-        // Rediriger vers le bon tableau de bord en fonction du rôle
-        if (success.user.role === 'admin') {
-          setLocation('/admin/dashboard');
-        } else {
-          setLocation('/');
-        }
+      const response = await login(data.email, data.password);
+      if (response) {
+        // La redirection sera gérée par la fonction login elle-même
+        console.log('Connexion réussie');
       }
     } finally {
       setIsLoading(false);
