@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.user?.role === 'admin') {
         window.location.href = '/admin/dashboard';
       } else if (data.user?.role === 'medecin') {
-        window.location.href = '/dashboard'; // ✅ change ici
+        window.location.href = '/'; // ✅ change ici
       } else {
         window.location.href = '/login';
       }
