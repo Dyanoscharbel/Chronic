@@ -37,18 +37,17 @@ export default function ChatbotPage() {
           console.error('Invalid response format:', data);
         }
       } catch (error) {
-          if (error instanceof Error) {
-            setMessages(prev => [...prev, { role: 'assistant', content: error.message }]);
-          } else {
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Une erreur est survenue' }]);
-          }
+        if (error instanceof Error) {
+          setMessages(prev => [...prev, { role: 'assistant', content: error.message }]);
+        } else {
+          setMessages(prev => [...prev, { role: 'assistant', content: 'Une erreur est survenue' }]);
         }
-      },
-      onError: (error) => {
-        const errorMessage = error.response?.data?.message || 'Une erreur est survenue';
-        setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
       }
     },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || 'Une erreur est survenue';
+      setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
+    }
   });
 
   const handleSubmit = (e: React.FormEvent) => {
