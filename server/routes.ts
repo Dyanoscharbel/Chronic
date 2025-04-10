@@ -13,7 +13,7 @@ import session from 'express-session';
 import MemoryStore from 'memorystore';
 import bcrypt from 'bcrypt';
 import { User, Doctor, Patient, LabTest, PatientLabResult, Notification, Appointment, Workflow } from './models';
-import OpenAI from 'openai';
+// import OpenAI from 'openai'; // Removed OpenAI import
 
 const MemoryStoreSession = MemoryStore(session);
 
@@ -88,9 +88,9 @@ export const notificationService = {
   }
 };
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// const openai = new OpenAI({ // Removed OpenAI instantiation
+//   apiKey: process.env.OPENAI_API_KEY
+// });
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session setup
@@ -1714,7 +1714,7 @@ console.error('----------------------------------------');
         message: response.text()
       });
     } catch (error) {
-      console.error('ChatGPT Error:', error);
+      console.error('Gemini Error:', error);
       res.status(500).json({ 
         message: "Erreur lors de la communication avec l'assistant" 
       });
