@@ -42,7 +42,12 @@ export default function LoginPage() {
     try {
       const success = await login(data.email, data.password);
       if (success) {
-        setLocation('/');
+        // Rediriger vers le bon tableau de bord en fonction du rôle
+        if (success.user.role === 'admin') {
+          setLocation('/admin/dashboard');
+        } else {
+          setLocation('/');
+        }
       }
     } finally {
       setIsLoading(false);

@@ -35,7 +35,6 @@ function ProtectedRoute({ component: Component, ...rest }: any) {
       if (!isAuthenticated) {
         setLocation("/login");
       } else if (user && user.role === 'patient') {
-        // Rediriger les patients vers la page de connexion avec un message
         toast({
           title: "Accès restreint",
           description: "Seuls les médecins et les administrateurs peuvent accéder à cette application.",
@@ -59,15 +58,25 @@ function ProtectedRoute({ component: Component, ...rest }: any) {
   return <Component {...rest} />;
 }
 
-function AuthRoute({ component: Component, ...rest }: any) {
-  const { isAuthenticated, loading } = useAuth();
+function AdminRoute({ component: Component, ...rest }: any) {
+  const { isAuthenticated, loading, user } = useAuth();
   const [location, setLocation] = useLocation();
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (!loading && isAuthenticated) {
-      setLocation("/");
+    if (!loading) {
+      if (!isAuthenticated) {
+        setLocation("/login");
+      } else if (user && user.role !== 'admin') {
+        toast({
+          title: "Accès restreint",
+          description: "Cette section est réservée à l'administrateur.",
+          variant: "destructive",
+        });
+        setLocation("/");
+      }
     }
-  }, [loading, isAuthenticated, setLocation]);
+  }, [loading, isAuthenticated, user, setLocation, toast]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
@@ -75,7 +84,7 @@ function AuthRoute({ component: Component, ...rest }: any) {
     </div>;
   }
 
-  if (isAuthenticated) {
+  if (!isAuthenticated || (user && user.role !== 'admin')) {
     return null;
   }
 
@@ -95,6 +104,12 @@ function Router() {
         <AuthRoute component={RegisterPage} />
       </Route>
 
+      {/* Admin Routes */}
+      <Route path="/admin/dashboard">
+        <AdminRoute component={AdminDashboard} />
+      </Route>
+
+
       {/* Protected Routes */}
       <Route path="/">
         <ProtectedRoute component={() => (
@@ -102,13 +117,6 @@ function Router() {
             {user?.role === 'admin' ? <AdminDashboard /> : <Dashboard />}
           </AppLayout>
         )} />
-      </Route>
-      <Route path="/admin/dashboard">
-        <ProtectedRoute component={() => (
-          <AppLayout>
-            <AdminDashboard />
-          </AppLayout>
-        )} adminOnly={true} />
       </Route>
       <Route path="/patients/add">
         <ProtectedRoute component={() => (
