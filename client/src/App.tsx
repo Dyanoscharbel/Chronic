@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 
 import Dashboard from "@/pages/dashboard";
 import AdminDashboard from "@/pages/admin/dashboard";
+import AdminAccueil from "@/pages/admin/accueil"; // Import the AdminAccueil component
 import PatientsPage from "@/pages/patients/index";
 
 import PatientAddEdit from "@/pages/patients/add-edit";
@@ -109,6 +110,9 @@ function Router() {
             <AdminDashboard />
           </AppLayout>
         )} adminOnly={true} />
+      </Route>
+      <Route path="/admin/accueil">
+        <ProtectedRoute component={AdminAccueil} adminOnly={true} />
       </Route>
       <Route path="/patients/add">
         <ProtectedRoute component={() => (
