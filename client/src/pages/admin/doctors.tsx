@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AdminLayout } from "@/components/layout/admin-layout";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,8 +22,7 @@ export default function AdminDoctorsPage() {
   );
 
   return (
-    <AdminLayout>
-      <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-foreground">Liste des Médecins</h1>
           <Button>
@@ -74,6 +72,5 @@ export default function AdminDoctorsPage() {
           </CardContent>
         </Card>
       </div>
-    </AdminLayout>
   );
 }
