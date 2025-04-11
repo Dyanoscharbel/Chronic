@@ -949,8 +949,8 @@ console.error('----------------------------------------');
       const now = new Date();
       const updatedAppointments = await Promise.all(appointments.map(async (appointment) => {
         if (new Date(appointment.appointmentDate) < now && 
-            appointment.doctorStatus === 'confirmed' && 
-            appointment.patientStatus === 'confirmed') {
+            appointment.doctorStatus !== 'confirmed' && 
+            appointment.patientStatus !== 'confirmed') {
           appointment.doctorStatus = 'completed';
           appointment.patientStatus = 'completed';
           await appointment.save();
