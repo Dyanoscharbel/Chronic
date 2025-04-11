@@ -1,12 +1,13 @@
+
 import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
-import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { apiRequest } from '@/lib/queryClient';
+import { useAuth } from '@/hooks/use-auth';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -17,8 +18,11 @@ export default function ChatbotPage() {
   const [input, setInput] = useState('');
   const { isAuthenticated } = useAuth();
   const [messages, setMessages] = useState<Message[]>(() => {
-    const savedMessages = localStorage.getItem('chatMessages');
-    return savedMessages ? JSON.parse(savedMessages) : [];
+    if (typeof window !== 'undefined') {
+      const savedMessages = localStorage.getItem('chatMessages');
+      return savedMessages ? JSON.parse(savedMessages) : [];
+    }
+    return [];
   });
 
   // Effacer l'historique quand l'utilisateur se déconnecte
@@ -28,11 +32,12 @@ export default function ChatbotPage() {
       setMessages([]);
     }
   }, [isAuthenticated]);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Sauvegarder les messages quand ils changent
   useEffect(() => {
-    localStorage.setItem('chatMessages', JSON.stringify(messages));
+    if (messages.length > 0) {
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
+    }
   }, [messages]);
 
   const sendMessage = useMutation({
@@ -44,23 +49,14 @@ export default function ChatbotPage() {
         const data = await response.json();
         if (data?.message) {
           setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
-        } else {
-          console.error('Invalid response format:', data);
         }
       } catch (error) {
-        if (error instanceof Error) {
-          setMessages(prev => [...prev, { role: 'assistant', content: error.message }]);
-        } else {
-          setMessages(prev => [...prev, { role: 'assistant', content: 'Une erreur est survenue' }]);
-        }
+        console.error('Error processing response:', error);
       }
-      setIsLoading(false);
     },
     onError: (error: any) => {
-      // Extraire uniquement le message d'erreur de la réponse
       const errorMessage = error.response?.data?.message || error.message || 'Une erreur est survenue';
       setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
-      setIsLoading(false);
     }
   });
 
@@ -70,7 +66,6 @@ export default function ChatbotPage() {
 
     const userMessage = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
     sendMessage.mutate(input);
     setInput('');
   };
@@ -78,7 +73,7 @@ export default function ChatbotPage() {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-2xl font-bold mb-4">Assistant IA</h1>
-
+      
       <Card className="mb-4">
         <ScrollArea className="h-[500px] p-4">
           {messages.map((msg, i) => (
@@ -104,13 +99,6 @@ export default function ChatbotPage() {
               </div>
             </div>
           ))}
-          {isLoading && (
-            <div className="flex items-center space-x-2 text-gray-500">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-            </div>
-          )}
         </ScrollArea>
       </Card>
 
