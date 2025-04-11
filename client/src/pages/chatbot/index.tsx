@@ -60,6 +60,18 @@ export default function ChatbotPage() {
     }
   });
 
+  // Référence pour le conteneur de messages
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Défilement automatique quand les messages changent
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -99,6 +111,7 @@ export default function ChatbotPage() {
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </ScrollArea>
       </Card>
 
