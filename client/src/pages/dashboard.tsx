@@ -38,22 +38,28 @@ export default function Dashboard() {
   });
 
   // Calculer les données de tendance DFG
-  const dfgTrendData = useMemo(() => {
+  const [startDate, setStartDate] = useState<string>(
+      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    );
+    const [endDate, setEndDate] = useState<string>(
+      new Date().toISOString().split('T')[0]
+    );
+
+    const dfgTrendData = useMemo(() => {
     if (!labResults) return [];
 
     const dfgResults = labResults.filter(result => 
       result.labTest?.testName?.toLowerCase().includes('dfg')
     );
 
-    // Filtrer les résultats par date si une période est sélectionnée
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Filtrer les résultats par période
     const filteredResults = dfgResults
       .filter(result => {
-        if (!period) return true; // Si pas de période sélectionnée, retourner tous les résultats
         const resultDate = new Date(result.resultDate);
-        const compareDate = new Date(period);
-        return resultDate.getFullYear() === compareDate.getFullYear() && 
-               resultDate.getMonth() === compareDate.getMonth() && 
-               resultDate.getDate() === compareDate.getDate();
+        return resultDate >= start && resultDate <= end;
       })
       .sort((a, b) => new Date(a.resultDate).getTime() - new Date(b.resultDate).getTime());
 

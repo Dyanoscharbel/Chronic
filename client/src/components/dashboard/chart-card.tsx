@@ -9,8 +9,8 @@ interface ChartCardProps {
   data: any;
   className?: string;
   height?: string;
-  period?: string;
-  onPeriodChange?: (period: string) => void;
+  period?: { startDate?: string; endDate?: string };
+  onPeriodChange?: (period: { startDate?: string; endDate?: string }) => void;
 }
 
 export function ChartCard({ title, type, data, className, height = 'h-64', period, onPeriodChange }: ChartCardProps) {
@@ -113,13 +113,26 @@ export function ChartCard({ title, type, data, className, height = 'h-64', perio
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-medium text-gray-900">{title}</CardTitle>
           <div className="flex items-center gap-2">
-            {type === 'line' && onPeriodChange && (
+            {type === 'line' && (
               <div className="flex items-center gap-2">
-                <input
-                  type="date"
-                  className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  onChange={(e) => onPeriodChange(`${e.target.value}`)}
-                />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-500">Du:</span>
+                  <input
+                    type="date"
+                    className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    value={period?.startDate}
+                    onChange={(e) => onPeriodChange?.({ startDate: e.target.value, endDate: period?.endDate })}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-500">Au:</span>
+                  <input
+                    type="date"
+                    className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    value={period?.endDate}
+                    onChange={(e) => onPeriodChange?.({ startDate: period?.startDate, endDate: e.target.value })}
+                  />
+                </div>
               </div>
             )}
           </div>
