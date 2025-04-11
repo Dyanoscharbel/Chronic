@@ -1,45 +1,63 @@
 
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/ui/loader';
+import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { PlusCircle, Trash2, Edit } from 'lucide-react';
-import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import DoctorDialog from '@/components/admin/doctor-dialog';
 
 export default function AdminDoctorsPage() {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const { data: doctors, isLoading, refetch } = useQuery({
+  const { data: doctors, isLoading } = useQuery({
     queryKey: ['admin-doctors'],
-    queryFn: () => apiRequest.get('/api/admin/doctors').then(res => res.data)
+    queryFn: () => apiRequest('GET', '/api/admin/doctors').then(res => res.data)
   });
 
-  const handleDelete = async (doctorId: string) => {
-    try {
-      await apiRequest.delete(`/api/admin/doctors/${doctorId}`);
-      await refetch();
+  const deleteMutation = useMutation({
+    mutationFn: (doctorId: string) => apiRequest('DELETE', `/api/admin/doctors/${doctorId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
       setIsDeleteDialogOpen(false);
-    } catch (error) {
-      console.error('Erreur lors de la suppression:', error);
+      toast({
+        title: 'Médecin supprimé avec succès'
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Erreur',
+        description: 'Une erreur est survenue lors de la suppression',
+        variant: 'destructive'
+      });
     }
-  };
+  });
 
   if (isLoading) {
-    return <div className="h-96 flex items-center justify-center">
-      <Loader size="lg" />
-    </div>;
+    return (
+      <div className="h-96 flex items-center justify-center">
+        <Loader size="lg" />
+      </div>
+    );
   }
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Gestion des Médecins</h1>
-        <Button>
+        <Button onClick={() => {
+          setSelectedDoctor(null);
+          setIsAddEditDialogOpen(true);
+        }}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Ajouter un médecin
         </Button>
@@ -69,7 +87,14 @@ export default function AdminDoctorsPage() {
                   <TableCell>{doctor.hospital}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          setSelectedDoctor(doctor);
+                          setIsAddEditDialogOpen(true);
+                        }}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button 
@@ -93,6 +118,9 @@ export default function AdminDoctorsPage() {
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmer la suppression</DialogTitle>
+          </DialogHeader>
           <Alert>
             <AlertDescription>
               Êtes-vous sûr de vouloir supprimer ce médecin ? Cette action est irréversible.
@@ -104,13 +132,22 @@ export default function AdminDoctorsPage() {
             </Button>
             <Button 
               variant="destructive" 
-              onClick={() => selectedDoctor && handleDelete(selectedDoctor._id)}
+              onClick={() => selectedDoctor && deleteMutation.mutate(selectedDoctor._id)}
             >
               Supprimer
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      <DoctorDialog 
+        isOpen={isAddEditDialogOpen}
+        onClose={() => {
+          setIsAddEditDialogOpen(false);
+          setSelectedDoctor(null);
+        }}
+        doctor={selectedDoctor}
+      />
     </div>
   );
 }
