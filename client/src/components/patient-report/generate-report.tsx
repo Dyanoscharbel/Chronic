@@ -509,14 +509,6 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
             </div>
           </div>
 
-          {!patient.lastEgfrValue && (
-            <div className="rounded-md bg-yellow-50 p-4">
-              <p className="text-yellow-800 text-sm">
-                No eGFR value available. Risk assessment will be limited.
-              </p>
-            </div>
-          )}
-
           {reportGenerated && (
             <div className="flex items-center space-x-2 p-4 bg-green-100 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded-lg text-green-800 dark:text-green-300 animate-in fade-in duration-300">
               <Check className="h-5 w-5" />
