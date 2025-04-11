@@ -840,16 +840,14 @@ console.error('----------------------------------------');
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
 
-        // Convertir la créatinine en μmol/L si nécessaire (multiplier par 88.4)
-        const creatinineMicromol = resultValue * 88.4;
-
+        // La valeur est déjà en mg/dL, pas besoin de conversion
         // Calculer le DFG avec la formule MDRD pour patients noirs
-        let dfg = 175 * Math.pow(creatinineMicromol/88.4, -1.154) * Math.pow(age, -0.203);
+        let dfg = 175 * Math.pow(resultValue, -1.154) * Math.pow(age, -0.203);
         if (patient.gender === 'F') {
           dfg *= 0.742;
         }
         dfg *= 1.212; // Facteur pour patients noirs
-        dfg = Math.round(dfg); // Arrondir le résultat
+        dfg = Math.max(0, Math.round(dfg)); // Empêcher les valeurs négatives ou Infinity
 
         console.log(`DFG calculé pour le patient ${patientId}:`, dfg);
 
