@@ -81,18 +81,26 @@ export function ChartCard({ title, type, data, className, height = 'h-64', perio
           scales: {
             y: {
               beginAtZero: false,
-              min: 30,
-              max: 60,
               title: {
                 display: true,
                 text: 'eGFR (mL/min)'
+              },
+              ticks: {
+                callback: function(value) {
+                  return value + ' mL/min';
+                }
               }
             },
             x: {
               title: {
                 display: true,
-                text: 'Month'
+                text: 'Date'
               }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
             }
           }
         }

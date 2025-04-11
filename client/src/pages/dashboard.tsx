@@ -46,7 +46,7 @@ export default function Dashboard() {
     );
 
     const dfgTrendData = useMemo(() => {
-    if (!labResults) return [];
+    if (!labResults || !startDate || !endDate) return [];
 
     const dfgResults = labResults.filter(result => 
       result.labTest?.testName?.toLowerCase().includes('dfg')
