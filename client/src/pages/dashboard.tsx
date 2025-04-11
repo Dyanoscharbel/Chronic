@@ -45,12 +45,15 @@ export default function Dashboard() {
       result.labTest?.testName?.toLowerCase().includes('dfg')
     );
 
-    const selectedDate = period ? new Date(period) : new Date();
-    
+    // Filtrer les résultats par date si une période est sélectionnée
     const filteredResults = dfgResults
       .filter(result => {
+        if (!period) return true; // Si pas de période sélectionnée, retourner tous les résultats
         const resultDate = new Date(result.resultDate);
-        return resultDate.toISOString().split('T')[0] === selectedDate.toISOString().split('T')[0];
+        const compareDate = new Date(period);
+        return resultDate.getFullYear() === compareDate.getFullYear() && 
+               resultDate.getMonth() === compareDate.getMonth() && 
+               resultDate.getDate() === compareDate.getDate();
       })
       .sort((a, b) => new Date(a.resultDate).getTime() - new Date(b.resultDate).getTime());
 
