@@ -819,11 +819,17 @@ console.error('----------------------------------------');
         return res.status(403).json({ message: 'Doctor not found for the connected user' });
       }
 
+      // S'assurer que la valeur est un nombre décimal valide
+      const parsedValue = parseFloat(resultValue);
+      if (isNaN(parsedValue)) {
+        return res.status(400).json({ message: 'La valeur du résultat doit être un nombre valide' });
+      }
+
       const newResult = new PatientLabResult({
         patient: patientId,
         doctor: doctor._id,
         labTest: labTestId,
-        resultValue,
+        resultValue: parsedValue,
         resultDate
       });
 
@@ -842,7 +848,7 @@ console.error('----------------------------------------');
           const age = today.getFullYear() - birthDate.getFullYear();
 
           // Calculer le DFG avec la formule MDRD adaptée pour patients noirs
-          const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
+          const dfg = calculateMDRD(parsedValue, age, patient.gender === 'F');
           console.log(`DFG calculé pour le patient ${patientId}: ${dfg}`);
 
           // Chercher le test DFG dans la base de données
@@ -881,18 +887,18 @@ console.error('----------------------------------------');
       if (patient && labTest) {
         // Calculer l'écart par rapport à la normale
         const normalValue = (labTest.normalMax + labTest.normalMin) / 2;
-        const deviation = Math.abs((resultValue - normalValue) / normalValue);
-        const isAbnormal = resultValue < labTest.normalMin || resultValue > labTest.normalMax;
+        const deviation = Math.abs((parsedValue - normalValue) / normalValue);
+        const isAbnormal = parsedValue < labTest.normalMin || parsedValue > labTest.normalMax;
 
         let message = '';
         if (deviation > 0.3) {
-          message = resultValue < normalValue 
-            ? `ALERTE: Niveau dangereusement bas pour ${labTest.testName}: ${resultValue} ${labTest.unit}`
-            : `ALERTE: Niveau dangereusement élevé pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
+          message = parsedValue < normalValue 
+            ? `ALERTE: Niveau dangereusement bas pour ${labTest.testName}: ${parsedValue} ${labTest.unit}`
+            : `ALERTE: Niveau dangereusement élevé pour ${labTest.testName}: ${parsedValue} ${labTest.unit}`;
         } else if (isAbnormal) {
-          message = `Attention: Résultat anormal pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
+          message = `Attention: Résultat anormal pour ${labTest.testName}: ${parsedValue} ${labTest.unit}`;
         } else {
-          message = `Nouveau résultat normal pour ${labTest.testName}: ${resultValue} ${labTest.unit}`;
+          message = `Nouveau résultat normal pour ${labTest.testName}: ${parsedValue} ${labTest.unit}`;
         }
 
         // Créer la notification dans MongoDB
@@ -918,7 +924,7 @@ console.error('----------------------------------------');
             const age = new Date().getFullYear() - birthDate.getFullYear();
 
             // Calculer le DFG avec la formule MDRD
-            const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
+            const dfg = calculateMDRD(parsedValue, age, patient.gender === 'F');
 
             // Déterminer le nouveau stade CKD
             const newStage = determineCKDStage(dfg);
@@ -992,7 +998,7 @@ console.error('----------------------------------------');
               <h2 style="color: #1e40af; margin-bottom: 15px;">Nouveau Résultat de Test</h2>
               <div style="margin-bottom: 15px;">
                 <p style="color: #374151; margin: 5px 0;"><strong>Test:</strong> ${labTest.testName}</p>
-                <p style="color: #374151; margin: 5px 0;"><strong>Valeur:</strong> ${resultValue} ${labTest.unit}</p>
+                <p style="color: #374151; margin: 5px 0;"><strong>Valeur:</strong> ${parsedValue} ${labTest.unit}</p>
                 <p style="color: #374151; margin: 5px 0;"><strong>Plage normale:</strong> ${labTest.normalMin} - ${labTest.normalMax} ${labTest.unit}</p>
                 <p style="color: #374151; margin: 5px 0;"><strong>Date du test:</strong> ${new Date().toLocaleDateString()}</p>
               </div>
@@ -1916,7 +1922,7 @@ function calculateMDRD(creatinine: number, age: number, isFemale: boolean): numb
     dfg *= 0.742;
   }
   dfg *= 1.212; // Facteur pour patients noirs
-  
+
   // Limit maximum value to prevent unrealistic results
   dfg = Math.min(dfg, 200);
   return Math.round(dfg);
