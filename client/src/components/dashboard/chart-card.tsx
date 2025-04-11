@@ -133,6 +133,12 @@ export function ChartCard({ title, type, data, className, height = 'h-64', perio
                     onChange={(e) => onPeriodChange?.({ startDate: period?.startDate, endDate: e.target.value })}
                   />
                 </div>
+                <button
+                  className="ml-2 rounded-md bg-primary px-3 py-2 text-sm text-white hover:bg-primary/90"
+                  onClick={() => onPeriodChange?.(period || {})}
+                >
+                  Valider
+                </button>
               </div>
             )}
           </div>
