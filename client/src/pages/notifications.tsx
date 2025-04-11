@@ -181,10 +181,18 @@ export default function NotificationsPage() {
                     <div className="flex justify-between items-start">
                       <div className="flex gap-3">
                         <div className={`rounded-full p-2 ${
-                          notification.isRead ? 'bg-gray-100' : 'bg-blue-100'
+                          notification.severity === "dfg" 
+                          ? 'bg-purple-100' 
+                          : notification.isRead 
+                            ? 'bg-gray-100' 
+                            : 'bg-blue-100'
                         }`}>
                           <Bell className={`h-5 w-5 ${
-                            notification.isRead ? 'text-gray-500' : 'text-blue-500'
+                            notification.severity === "dfg"
+                            ? 'text-purple-500'
+                            : notification.isRead 
+                              ? 'text-gray-500' 
+                              : 'text-blue-500'
                           }`} />
                         </div>
                         <div>
