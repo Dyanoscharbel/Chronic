@@ -174,7 +174,7 @@ adminRouter.post('/patients', requireAdmin, async (req, res) => {
   }
 });
 
-adminRouter.put('/patients/:id', requireAdmin, async (req, res) => {
+adminRouter.put('/patients/:id', async (req, res) => { // Modification ici
   try {
     const { firstName, lastName, email, doctorId, birthDate, gender, address, phone, ckdStage } = req.body;
     const patientId = req.params.id;
