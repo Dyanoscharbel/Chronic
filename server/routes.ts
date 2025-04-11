@@ -858,26 +858,24 @@ console.error('----------------------------------------');
             return;
           }
 
-          // Mise à jour avec upsert (créer si n'existe pas, mettre à jour si existe)
-          const updateResult = await PatientLabResult.findOneAndUpdate(
-            {
-              patient: patientId,
-              labTest: dfgTest._id
-            },
-            {
-              $set: {
-                resultValue: dfg,
-                resultDate: resultDate,
-                doctor: doctor._id
-              }
-            },
-            {
-              upsert: true,
-              new: true
-            }
-          );
+          // Vérifier si un résultat DFG existe déjà pour cette date
+          const existingResult = await PatientLabResult.findOne({
+            patient: patientId,
+            labTest: dfgTest._id,
+            resultDate: resultDate
+          });
 
-          console.log(`DFG ${updateResult.isNew ? 'créé' : 'mis à jour'} avec succès`);
+          if (!existingResult) {
+            // Créer uniquement si aucun résultat n'existe pour cette date
+            const newResult = await PatientLabResult.create({
+              patient: patientId,
+              doctor: doctor._id,
+              labTest: dfgTest._id,
+              resultValue: dfg,
+              resultDate: resultDate
+            });
+            console.log('DFG créé avec succès');
+          }
 
         } catch (error) {
           console.error('Erreur lors du calcul/enregistrement du DFG:', error);
