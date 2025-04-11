@@ -7,35 +7,38 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+//Added config import
+import { API_URL } from './config';
+
 export async function apiRequest(
   method: string,
-  url: string,
+  path: string,
   data?: unknown | undefined,
 ): Promise<Response> {
   // Récupère le token d'authentification depuis le localStorage
   const storedAuth = localStorage.getItem('auth');
   const authData = storedAuth ? JSON.parse(storedAuth) : null;
   const token = authData?.token;
-  
+
   // Prépare les en-têtes avec l'autorisation si un jeton est disponible
   const headers: Record<string, string> = {
     ...(data ? { "Content-Type": "application/json" } : {}),
     ...(token ? { "Authorization": `Bearer ${token}` } : {})
   };
-  
-  console.log(`Envoi requête ${method} vers ${url}`, { 
+
+  console.log(`Envoi requête ${method} vers ${API_URL}${path}`, { 
     headers, 
     data: data || 'Pas de données' 
   });
 
-  const res = await fetch(url, {
+  const res = await fetch(`${API_URL}${path}`, { // Updated fetch URL
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
 
-  console.log(`Réponse reçue de ${url}:`, {
+  console.log(`Réponse reçue de ${API_URL}${path}:`, {
     status: res.status,
     ok: res.ok,
     statusText: res.statusText,
@@ -56,13 +59,13 @@ export const getQueryFn: <T>(options: {
     const storedAuth = localStorage.getItem('auth');
     const authData = storedAuth ? JSON.parse(storedAuth) : null;
     const token = authData?.token;
-    
+
     // Prépare les en-têtes avec l'autorisation si un jeton est disponible
     const headers: Record<string, string> = token 
       ? { "Authorization": `Bearer ${token}` } 
       : {};
-    
-    const res = await fetch(queryKey[0] as string, {
+
+    const res = await fetch(`${API_URL}${queryKey[0] as string}`, { //Updated fetch URL
       credentials: "include",
       headers
     });
