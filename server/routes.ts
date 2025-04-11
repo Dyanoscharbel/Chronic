@@ -1005,9 +1005,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         // Créer la notification dans MongoDB
-        // Vérifier si c'est un test de DFG
-        const isDFGTest = labTest.testName.toLowerCase().includes('dfg');
-        
+        // Vérifier si c'est un test de DFG ou résultat DFG calculé
+        const isDFGTest = labTest?.testName.toLowerCase().includes('dfg') || labTest?.testName.toLowerCase().includes('créatinine');
+
         const newNotification = new Notification({
           patientId: patient._id,
           doctorId: doctor._id,
