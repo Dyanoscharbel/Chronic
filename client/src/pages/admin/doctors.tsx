@@ -27,8 +27,11 @@ export default function AdminDoctorsPage() {
   const deleteMutation = useMutation({
     mutationFn: (doctorId: string) => apiRequest('DELETE', `/api/admin/doctors/${doctorId}`),
     onSuccess: () => {
+      // Invalider les requêtes pour rafraîchir les données
       queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-stats'] });
       setIsDeleteDialogOpen(false);
+      setSelectedDoctor(null);
       toast({
         title: 'Médecin supprimé avec succès'
       });
