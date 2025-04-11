@@ -961,8 +961,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Facteur ethnie (pour patients noirs)
         dfg *= 1.212;
 
-        // Arrondir à l'entier le plus proche
-        dfg = Math.max(0, Math.round(dfg)); // Garder uniquement la limite minimum de 0
+        // Limiter le DFG entre 0 et 200
+        dfg = Math.max(0, Math.min(200, Math.round(dfg))); // Garder les limites min et max
 
         console.log(`DFG calculé pour le patient ${patientId}:`, dfg);
 
