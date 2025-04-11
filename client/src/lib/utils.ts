@@ -106,6 +106,8 @@ export function getAlertBgColor(type: string): string {
       return 'bg-orange-100';
     case 'info':
       return 'bg-yellow-100';
+    case 'dfg':
+      return 'bg-purple-100';
     default:
       return 'bg-gray-100';
   }
