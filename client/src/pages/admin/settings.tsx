@@ -51,7 +51,7 @@ export default function AdminSettingsPage() {
   const onEmailSubmit = async (data: z.infer<typeof emailSchema>) => {
     try {
       setIsEmailLoading(true);
-      await apiRequest('PUT', '/api/user/profile', { email: data.email });
+      await apiRequest('PUT', '/api/admin/profile', { email: data.email });
       toast({
         title: 'Email mis à jour',
         description: 'Votre email a été mis à jour avec succès'
@@ -70,7 +70,7 @@ export default function AdminSettingsPage() {
   const onPasswordSubmit = async (data: z.infer<typeof passwordSchema>) => {
     try {
       setIsPasswordLoading(true);
-      await apiRequest('POST', '/api/user/change-password', {
+      await apiRequest('POST', '/api/admin/change-password', {
         currentPassword: data.currentPassword,
         newPassword: data.newPassword
       });
