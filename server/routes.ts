@@ -872,20 +872,16 @@ console.error('----------------------------------------');
             const birthDate = new Date(patient.birthDate);
             const age = new Date().getFullYear() - birthDate.getFullYear();
 
-            // Calculer le DFG avec la formule MDRD (tous les patients sont considérés comme noirs)
+            // Calculer le DFG avec la formule MDRD
             const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
-            console.log('DFG calculé:', dfg);
 
             // Déterminer le nouveau stade CKD
             const newStage = determineCKDStage(dfg);
-            console.log('Nouveau stade:', newStage);
 
-            // Mettre à jour le DFG et le stade du patient
-            patient.dfg = dfg;
+            // Mettre à jour le stade du patient si changé
             if (patient.ckdStage !== newStage) {
               patient.ckdStage = newStage;
-            }
-            await patient.save();
+              await patient.save();
 
               // Créer une notification pour le changement de stade
               const notification = new Notification({
@@ -911,7 +907,6 @@ console.error('----------------------------------------');
             }
           }
         }
-        res.status(201).json(newResult);
 
 
         // Template d'email pour le docteur
@@ -933,7 +928,7 @@ console.error('----------------------------------------');
             </div>
             <div style="font-size: 12px; color: #6b7280; text-align: center; margin-top: 20px;">
               <p>Ce message a été envoyé automatiquement par le Système de Suivi CKD.</p>
-              <p>Ne pas répondreà cet email.</p>
+              <p>Ne pas répondre à cet email.</p>
             </div>
           </div>
         `;
