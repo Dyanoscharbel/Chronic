@@ -59,17 +59,13 @@ cd chonic
 
 
 2. Backend :
-
-cd backend
 npm install
-npm start
+npm run dev
 
 
 3. Frontend :
-
-cd frontend
 npm install
-npm start
+npm run dev
 
 
 
