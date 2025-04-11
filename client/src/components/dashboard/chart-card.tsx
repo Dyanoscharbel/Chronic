@@ -14,7 +14,16 @@ interface ChartCardProps {
   onPeriodValidate?: () => void;
 }
 
-export function ChartCard({ title, type, data, className, height = 'h-64', period, onPeriodChange, onPeriodValidate }: ChartCardProps) {
+export function ChartCard({ 
+  title, 
+  type, 
+  data, 
+  className, 
+  height = 'h-64', 
+  period, 
+  onPeriodChange, 
+  onPeriodValidate 
+}: ChartCardProps) {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstance = useRef<Chart | null>(null);
 
@@ -142,12 +151,14 @@ export function ChartCard({ title, type, data, className, height = 'h-64', perio
                     onChange={(e) => onPeriodChange?.({ startDate: period?.startDate, endDate: e.target.value })}
                   />
                 </div>
-                <button
-                  className="ml-2 rounded-md bg-primary px-3 py-2 text-sm text-white hover:bg-primary/90"
-                  onClick={onPeriodValidate}
-                >
-                  Valider
-                </button>
+                {onPeriodValidate && (
+                  <button
+                    className="ml-2 rounded-md bg-primary px-3 py-2 text-sm text-white hover:bg-primary/90"
+                    onClick={onPeriodValidate}
+                  >
+                    Valider
+                  </button>
+                )}
               </div>
             )}
           </div>
