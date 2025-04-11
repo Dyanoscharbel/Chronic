@@ -1052,6 +1052,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
 
             // Sauvegarder le DFG comme résultat séparé
+            // Déterminer le nouveau stade CKD basé sur le DFG
+            const newStage = determineCKDStage(dfg);
+            
+            // Mettre à jour le stade du patient si nécessaire
+            if (patient.ckdStage !== newStage) {
+              await Patient.findByIdAndUpdate(patientId, { ckdStage: newStage });
+              
+              // Créer une notification pour le changement de stade
+              const notification = new Notification({
+                patientId: patient._id,
+                doctorId: doctor._id,
+                labTest: egfrTest._id,
+                message: `Le stade CKD du patient ${patient.user.firstName} ${patient.user.lastName} a changé: ${newStage} (DFG: ${dfg} mL/min/1.73m²)`,
+                severity: "warning",
+                isRead: false,
+                createdAt: new Date()
+              });
+              await notification.save();
+            }
+
+            // Sauvegarder le résultat DFG
             const egfrTest = await LabTest.findOne({ testName: "DFG" });
             if (egfrTest) {
               await PatientLabResult.create({
