@@ -18,6 +18,7 @@ const patientSchema = new mongoose.Schema({
   gender: { type: String, enum: ['M', 'F', 'Autre'], required: true },
   address: String,
   phone: String,
+  dfg: { type: Number },
   ckdStage: { type: String, enum: ['Stage 1', 'Stage 2', 'Stage 3A', 'Stage 3B', 'Stage 4', 'Stage 5'] }
 });
 

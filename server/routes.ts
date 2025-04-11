@@ -872,16 +872,20 @@ console.error('----------------------------------------');
             const birthDate = new Date(patient.birthDate);
             const age = new Date().getFullYear() - birthDate.getFullYear();
 
-            // Calculer le DFG avec la formule MDRD
+            // Calculer le DFG avec la formule MDRD (tous les patients sont considérés comme noirs)
             const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
+            console.log('DFG calculé:', dfg);
 
             // Déterminer le nouveau stade CKD
             const newStage = determineCKDStage(dfg);
+            console.log('Nouveau stade:', newStage);
 
-            // Mettre à jour le stade du patient si changé
+            // Mettre à jour le DFG et le stade du patient
+            patient.dfg = dfg;
             if (patient.ckdStage !== newStage) {
               patient.ckdStage = newStage;
-              await patient.save();
+            }
+            await patient.save();
 
               // Créer une notification pour le changement de stade
               const notification = new Notification({
