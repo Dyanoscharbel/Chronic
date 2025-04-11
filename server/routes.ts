@@ -1087,8 +1087,8 @@ console.error('----------------------------------------');
             <p style="color: #374151;"><strong>Date:</strong> ${new Date(appointmentDateTime).toLocaleDateString()}</p>
             <p style="color: #374151;"><strong>Heure:</strong> ${new Date(appointmentDateTime).toLocaleTimeString()}</p>
             <p style="color: #374151;"><strong>Motif:</strong> ${purpose}</p>
-            <p style="color: #374151;"><strong>Médecin:</strong> Dr. ${doctor.user.firstName} ${doctor.user.lastName}</p>
-            <p style="color: #374151;"><strong>Lieu:</strong> ${doctor.hospital}</p>
+            <p style="color: #374151;"><strong>Médecin:</strong> Dr. ${doctorWithUser.user.firstName} ${doctorWithUser.user.lastName}</p>
+            <p style="color: #374151;"><strong>Lieu:</strong> ${doctorWithUser.hospital}</p>
           </div>
         </div>
       `;
