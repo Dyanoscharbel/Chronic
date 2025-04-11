@@ -840,33 +840,41 @@ console.error('----------------------------------------');
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
 
+        // Convertir la créatinine en μmol/L si nécessaire (multiplier par 88.4)
+        const creatinineMicromol = resultValue * 88.4;
+
         // Calculer le DFG avec la formule MDRD pour patients noirs
-        const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
+        let dfg = 175 * Math.pow(creatinineMicromol/88.4, -1.154) * Math.pow(age, -0.203);
+        if (patient.gender === 'F') {
+          dfg *= 0.742;
+        }
+        dfg *= 1.212; // Facteur pour patients noirs
+        dfg = Math.round(dfg); // Arrondir le résultat
+
+        console.log(`DFG calculé pour le patient ${patientId}:`, dfg);
 
         // Chercher le test DFG dans la base de données
         const dfgTest = await LabTest.findOne({ testName: 'DFG' });
         if (dfgTest) {
-          // Chercher s'il existe déjà un résultat DFG pour ce patient
-          const existingDfg = await PatientLabResult.findOne({
-            patient: patientId,
-            labTest: dfgTest._id
-          });
-
-          if (existingDfg) {
-            // Mettre à jour le résultat existant
-            existingDfg.resultValue = dfg;
-            existingDfg.resultDate = resultDate;
-            await existingDfg.save();
-          } else {
-            // Créer un nouveau résultat DFG
-            await PatientLabResult.create({
+          // Mettre à jour ou créer le résultat DFG
+          await PatientLabResult.findOneAndUpdate(
+            {
               patient: patientId,
-              doctor: doctor._id,
               labTest: dfgTest._id,
-              resultValue: dfg,
-              resultDate
-            });
-          }
+              resultDate: resultDate
+            },
+            {
+              $set: {
+                resultValue: dfg,
+                doctor: doctor._id
+              }
+            },
+            {
+              upsert: true,
+              new: true
+            }
+          );
+          console.log('DFG mis à jour avec succès');
         }
       }
 
@@ -950,7 +958,7 @@ console.error('----------------------------------------');
         const doctorEmailTemplate = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
             <div style="text-align: center; margin-bottom: 20px;">
-              <h1 style="color: #2563eb;">Système de Suivi CKD</h1>
+              <<h1 style="color: #2563eb;">Système de Suivi CKD</h1>
               <hr style="border: 1px solid #eee;">
             </div>
             <div style="background-color: #f8fafc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
@@ -1724,8 +1732,7 @@ console.error('----------------------------------------');
 
       res.json(enhancedAppointments);
     } catch (error) {
-      res.status(500).json({ message: 'Server error' });
-    }
+      res.status(500).json({ message: 'Server error' });    }
   });
 
   // Recent alerts for dashboard
