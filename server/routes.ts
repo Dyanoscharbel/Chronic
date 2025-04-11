@@ -929,6 +929,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
 
+        console.log("Valeur brute de créatinine reçue:", resultValue);
         // Valider la créatinine (doit être > 0)
         if (resultValue <= 0) {
           console.error("Valeur de créatinine invalide:", resultValue);
