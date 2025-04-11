@@ -11,6 +11,7 @@ interface ChartCardProps {
   height?: string;
   period?: { startDate?: string; endDate?: string };
   onPeriodChange?: (period: { startDate?: string; endDate?: string }) => void;
+  onPeriodValidate?: () => void;
 }
 
 export function ChartCard({ 
@@ -150,6 +151,14 @@ export function ChartCard({
                     onChange={(e) => onPeriodChange?.({ startDate: period?.startDate, endDate: e.target.value })}
                   />
                 </div>
+                {onPeriodValidate && (
+                  <button
+                    className="ml-2 rounded-md bg-primary px-3 py-2 text-sm text-white hover:bg-primary/90"
+                    onClick={onPeriodValidate}
+                  >
+                    Valider
+                  </button>
+                )}
               </div>
             )}
           </div>

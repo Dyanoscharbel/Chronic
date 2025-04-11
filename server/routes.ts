@@ -1423,46 +1423,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Patient Report Email route
-  apiRouter.post("/patient-report/send-email", authenticate, async (req, res) => {
-    try {
-      const { patientId, pdfData } = req.body;
-
-      // Récupérer les informations du patient
-      const patient = await Patient.findById(patientId).populate("user");
-      if (!patient || !patient.user) {
-        return res.status(404).json({ message: "Patient not found" });
-      }
-
-      // Template d'email pour le patient
-      const emailTemplate = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1>Votre rapport médical</h1>
-          <p>Cher(e) ${patient.user.firstName} ${patient.user.lastName},</p>
-          <p>Veuillez trouver ci-joint votre rapport médical.</p>
-          <p>Cordialement,<br>Votre équipe médicale</p>
-        </div>
-      `;
-
-      // Envoyer l'email avec le PDF en pièce jointe
-      await notificationService.sendEmail(
-        patient.user.email,
-        "Votre rapport médical",
-        emailTemplate,
-        [{
-          filename: `rapport-medical-${patient.id}.pdf`,
-          content: pdfData.split(',')[1],
-          encoding: 'base64'
-        }]
-      );
-
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error sending report email:", error);
-      res.status(500).json({ message: "Failed to send report email" });
-    }
-  });
-
   // Notifications routes
   apiRouter.get("/notifications", authenticate, async (req, res) => {
     try {

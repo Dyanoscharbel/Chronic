@@ -20,7 +20,6 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
 
 interface GenerateReportProps {
   patient: Patient;
@@ -30,7 +29,6 @@ interface GenerateReportProps {
 export function GenerateReport({ patient, trigger }: GenerateReportProps) {
   const [open, setOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const { toast } = useToast();
   const [reportSections, setReportSections] = useState<ReportSection[]>([
     { id: "personalInfo", name: "Informations personnelles", enabled: true },
     { id: "medicalHistory", name: "Historique médical", enabled: true },
@@ -456,36 +454,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
         doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')}`, 105, doc.internal.pageSize.height - 8, { align: 'center' });
       }
 
-      // Convertir le PDF en base64
-      const pdfData = doc.output('datauristring');
-      
-      // Envoyer le PDF par email
-      try {
-        await fetch('/api/patient-report/send-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            patientId: patient.id,
-            pdfData: pdfData
-          })
-        });
-
-        toast({
-          title: 'Rapport envoyé',
-          description: 'Le rapport a été envoyé par email au patient'
-        });
-      } catch (emailError) {
-        console.error('Error sending report by email:', emailError);
-        toast({
-          title: 'Erreur',
-          description: "Erreur lors de l'envoi du rapport par email",
-          variant: 'destructive'
-        });
-      }
-
-      // Sauvegarder localement
+      // Save the PDF
       doc.save(`patient-report-${patient.id}.pdf`);
       setReportGenerated(true);
     } catch (error) {
