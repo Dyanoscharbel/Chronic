@@ -92,10 +92,13 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
       doc.setFontSize(24);
       doc.text('Rapport Médical Patient', 105, 20, { align: 'center' });
 
-      // Date de génération
+      // Informations du médecin
       doc.setFontSize(12);
       doc.setFont("helvetica", "normal");
-      doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 105, 30, { align: 'center' });
+      doc.text(`Dr. ${patient.doctor?.user?.firstName} ${patient.doctor?.user?.lastName}`, 105, 28, { align: 'center' });
+
+      // Date de génération
+      doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 105, 36, { align: 'center' });
 
       // Réinitialiser les couleurs pour le contenu
       doc.setTextColor(0, 0, 0);
