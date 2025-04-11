@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useMobile } from '@/hooks/use-mobile';
 import { PageLoader } from '@/components/ui/loader';
 import { useLocation } from 'wouter';
+import { Menu } from 'lucide-react';
 
 
 interface AppLayoutProps {
