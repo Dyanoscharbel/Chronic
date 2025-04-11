@@ -835,38 +835,46 @@ console.error('----------------------------------------');
 
       // Si c'est un test de créatinine, calculer et sauvegarder le DFG
       if (labTest?.testName.toLowerCase().includes('créatinine')) {
-        // Calculer l'âge du patient
-        const birthDate = new Date(patient.birthDate);
-        const today = new Date();
-        const age = today.getFullYear() - birthDate.getFullYear();
+        try {
+          // Calculer l'âge du patient
+          const birthDate = new Date(patient.birthDate);
+          const today = new Date();
+          const age = today.getFullYear() - birthDate.getFullYear();
 
-        // Calculer le DFG avec la formule MDRD pour patients noirs
-        const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
+          // Calculer le DFG avec la formule MDRD adaptée pour patients noirs
+          const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
+          console.log(`DFG calculé pour le patient ${patientId}: ${dfg}`);
 
-        // Chercher le test DFG dans la base de données
-        const dfgTest = await LabTest.findOne({ testName: 'DFG' });
-        if (dfgTest) {
-          // Chercher s'il existe déjà un résultat DFG pour ce patient
-          const existingDfg = await PatientLabResult.findOne({
-            patient: patientId,
-            labTest: dfgTest._id
-          });
-
-          if (existingDfg) {
-            // Mettre à jour le résultat existant
-            existingDfg.resultValue = dfg;
-            existingDfg.resultDate = resultDate;
-            await existingDfg.save();
-          } else {
-            // Créer un nouveau résultat DFG
-            await PatientLabResult.create({
-              patient: patientId,
-              doctor: doctor._id,
-              labTest: dfgTest._id,
-              resultValue: dfg,
-              resultDate
-            });
+          // Chercher le test DFG dans la base de données
+          const dfgTest = await LabTest.findOne({ testName: 'DFG' });
+          if (!dfgTest) {
+            console.error('Test DFG non trouvé dans la base de données');
+            return;
           }
+
+          // Mise à jour avec upsert (créer si n'existe pas, mettre à jour si existe)
+          const updateResult = await PatientLabResult.findOneAndUpdate(
+            {
+              patient: patientId,
+              labTest: dfgTest._id
+            },
+            {
+              $set: {
+                resultValue: dfg,
+                resultDate: resultDate,
+                doctor: doctor._id
+              }
+            },
+            {
+              upsert: true,
+              new: true
+            }
+          );
+
+          console.log(`DFG ${updateResult.isNew ? 'créé' : 'mis à jour'} avec succès`);
+
+        } catch (error) {
+          console.error('Erreur lors du calcul/enregistrement du DFG:', error);
         }
       }
 
