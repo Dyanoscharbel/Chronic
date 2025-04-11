@@ -218,7 +218,8 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
         doc.setTextColor(0, 0, 0);
 
         doc.text(patient.ckdStage || 'Non défini', leftCol + 25, yPos);
-        doc.text(patient.lastEgfrValue ? `${patient.lastEgfrValue} mL/min/1.73m²` : 'Non mesuré', leftCol + 25, yPos + lineHeight);
+        const lastDfg = labResults?.find(r => r.labTest.testName.toLowerCase().includes('dfg'))?.resultValue;
+        doc.text(lastDfg ? `${lastDfg} mL/min/1.73m²` : (patient.lastEgfrValue ? `${patient.lastEgfrValue} mL/min/1.73m²` : 'Non mesuré'), leftCol + 25, yPos + lineHeight);
 
 
         yPos += 50;
