@@ -652,6 +652,14 @@ class MemStorage implements IStorage {
       normalMax: 120
     });
 
+    this.createLabTest({
+      testName: "DFG",
+      description: "Débit de Filtration Glomérulaire",
+      unit: "mL/min/1.73m²",
+      normalMin: 90,
+      normalMax: 120
+    });
+
     // Create sample doctor
     await this.createDoctor(
       { 
