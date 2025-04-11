@@ -1743,7 +1743,7 @@ console.error('----------------------------------------');
       // Vérifier le docteur
       const doctor = await Doctor.findOne({ user: userId });
       if (!doctor) {
-        return res.status(403).json { message: 'Doctor not found' });
+        return res.status(403).json({ message: 'Doctor not found' });
       }
 
       // Trouver et mettre à jour le workflow
