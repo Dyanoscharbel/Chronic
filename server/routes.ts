@@ -997,7 +997,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const newNotification = new Notification({
           patientId: patient._id,
           doctorId: doctor._id,
-          labTest: newResult.labTest, // Using the lab test reference from the new result
+          labTest: labTestId, // Use the lab test ID directly from the request
           message: `Patient ${patient.user.firstName} ${patient.user.lastName}: ${message}`,
           severity: deviation > 0.3 ? "error" : isAbnormal ? "warning" : "info",
           isRead: false,
