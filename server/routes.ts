@@ -858,24 +858,26 @@ console.error('----------------------------------------');
             return;
           }
 
-          // Vérifier si un résultat DFG existe déjà pour cette date
-          const existingResult = await PatientLabResult.findOne({
-            patient: patientId,
-            labTest: dfgTest._id,
-            resultDate: resultDate
-          });
-
-          if (!existingResult) {
-            // Créer uniquement si aucun résultat n'existe pour cette date
-            const newResult = await PatientLabResult.create({
+          // Mettre à jour ou créer le résultat DFG
+          const updateResult = await PatientLabResult.findOneAndUpdate(
+            {
               patient: patientId,
-              doctor: doctor._id,
               labTest: dfgTest._id,
-              resultValue: dfg,
               resultDate: resultDate
-            });
-            console.log('DFG créé avec succès');
-          }
+            },
+            {
+              $set: {
+                resultValue: dfg,
+                doctor: doctor._id
+              }
+            },
+            {
+              upsert: true,
+              new: true
+            }
+          );
+
+          console.log('DFG mis à jour avec succès');
 
         } catch (error) {
           console.error('Erreur lors du calcul/enregistrement du DFG:', error);
