@@ -1061,9 +1061,6 @@ console.error('----------------------------------------');
 
       await newAppointment.save();
 
-      // Récupérer le patient avec ses informations
-      const patient = await Patient.findById(patientId).populate('user');
-      
       // Template d'email pour le patient
       const emailTemplate = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
