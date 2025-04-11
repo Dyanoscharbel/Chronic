@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/hooks/use-toast';
 
 interface GenerateReportProps {
   patient: Patient;
@@ -29,6 +30,7 @@ interface GenerateReportProps {
 export function GenerateReport({ patient, trigger }: GenerateReportProps) {
   const [open, setOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const { toast } = useToast();
   const [reportSections, setReportSections] = useState<ReportSection[]>([
     { id: "personalInfo", name: "Informations personnelles", enabled: true },
     { id: "medicalHistory", name: "Historique médical", enabled: true },
