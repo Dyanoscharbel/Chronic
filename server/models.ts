@@ -40,7 +40,7 @@ const patientLabResultSchema = new mongoose.Schema({
   patient: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
   doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
   labTest: { type: mongoose.Schema.Types.ObjectId, ref: 'LabTest', required: true },
-  resultValue: { type: Number, required: true, get: v => parseFloat(v.toFixed(3)) },
+  resultValue: { type: Number, required: true },
   resultDate: { type: Date, required: true }
 });
 
