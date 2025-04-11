@@ -114,20 +114,13 @@ export function ChartCard({ title, type, data, className, height = 'h-64', perio
           <CardTitle className="text-lg font-medium text-gray-900">{title}</CardTitle>
           <div className="flex items-center gap-2">
             {type === 'line' && onPeriodChange && (
-              <Select
-                value={period}
-                onValueChange={onPeriodChange}
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Sélectionner période" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1M">1 mois</SelectItem>
-                  <SelectItem value="3M">3 mois</SelectItem>
-                  <SelectItem value="6M">6 mois</SelectItem>
-                  <SelectItem value="1Y">1 an</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-2">
+                <input
+                  type="date"
+                  className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  onChange={(e) => onPeriodChange(`${e.target.value}`)}
+                />
+              </div>
             )}
           </div>
         </div>

@@ -45,12 +45,13 @@ export default function Dashboard() {
       result.labTest?.testName?.toLowerCase().includes('dfg')
     );
 
-    const periodInMonths = period === '1M' ? 1 : period === '3M' ? 3 : period === '6M' ? 6 : 12;
-    const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - periodInMonths);
-
+    const selectedDate = period ? new Date(period) : new Date();
+    
     const filteredResults = dfgResults
-      .filter(result => new Date(result.resultDate) >= startDate)
+      .filter(result => {
+        const resultDate = new Date(result.resultDate);
+        return resultDate.toISOString().split('T')[0] === selectedDate.toISOString().split('T')[0];
+      })
       .sort((a, b) => new Date(a.resultDate).getTime() - new Date(b.resultDate).getTime());
 
     return filteredResults.map(result => ({
