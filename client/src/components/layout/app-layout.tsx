@@ -61,7 +61,16 @@ export function AppLayout({ children, isAdmin = false }: AppLayoutProps) {
       )}
 
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        {!isAdmin && (
+        {isAdmin ? (
+          <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow md:hidden">
+            <button 
+              className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600"
+              onClick={toggleSidebar}
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
+        ) : (
           <Header 
             toggleSidebar={toggleSidebar}
             user={user}
