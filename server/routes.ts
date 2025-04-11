@@ -897,8 +897,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   apiRouter.post("/patient-lab-results", authenticate, async (req, res) => {
     try {
-      const { patientId, labTestId, resultValue, resultDate } = req.body;
+      const { patientId, labTestId, resultDate } = req.body;
+      let { resultValue } = req.body;
       const userId = req.session.user?.id;
+
+      // Convertir la valeur en nombre et remplacer la virgule par un point si nécessaire
+      if (typeof resultValue === 'string') {
+        resultValue = parseFloat(resultValue.replace(',', '.'));
+      }
+
+      // Vérifier si la valeur est un nombre valide
+      if (isNaN(resultValue)) {
+        return res.status(400).json({ message: "La valeur du résultat doit être un nombre valide" });
+      }
 
       // Trouver le docteur correspondant à l'utilisateur connecté
       const doctor = await Doctor.findOne({ user: userId });
