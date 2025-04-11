@@ -33,12 +33,18 @@ const formSchema = z.object({
   address: z.string().optional(),
   phone: z.string().optional(),
   ckdStage: z.enum(['Stage 1', 'Stage 2', 'Stage 3A', 'Stage 3B', 'Stage 4', 'Stage 5'], { required_error: 'Please select a CKD stage' }),
+  doctorId: z.string({ required_error: 'Please select a doctor' }),
 });
 
 export default function AdminPatientDialog({ isOpen, onClose, patient }: AdminPatientDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isEditing = !!patient;
+
+  const { data: doctors } = useQuery({
+    queryKey: ['admin-doctors'],
+    queryFn: () => apiRequest('GET', '/api/admin/doctors').then(res => res.json())
+  });
 
   const form = useForm<PatientFormData>({
     resolver: zodResolver(formSchema),
@@ -307,6 +313,34 @@ export default function AdminPatientDialog({ isOpen, onClose, patient }: AdminPa
                   )}
                 />
               </div>
+
+              <FormField
+                control={form.control}
+                name="doctorId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Médecin Traitant</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner un médecin" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {doctors?.map((doctor) => (
+                          <SelectItem key={doctor._id} value={doctor._id}>
+                            Dr. {doctor.user.firstName} {doctor.user.lastName} - {doctor.specialty}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <DialogFooter>
