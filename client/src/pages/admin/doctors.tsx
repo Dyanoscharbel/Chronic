@@ -21,7 +21,7 @@ export default function AdminDoctorsPage() {
 
   const { data: doctors, isLoading } = useQuery({
     queryKey: ['admin-doctors'],
-    queryFn: () => apiRequest('GET', '/api/admin/doctors').then(res => res.data)
+    queryFn: () => apiRequest('GET', '/api/admin/doctors').then(res => res.json())
   });
 
   const deleteMutation = useMutation({
