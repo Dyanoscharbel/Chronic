@@ -54,8 +54,8 @@ Installation
 
 1. Cloner le dépôt :
 
-git clone https://github.com/ton-utilisateur/ton-depot.git
-cd ton-depot
+git clone https://github.com/Dyanoscharbel/Chronic.git
+cd chonic
 
 
 2. Backend :
