@@ -116,10 +116,8 @@ export default function LoginPage() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center text-gray-500">
-            Don't have an account?{' '}
-            <Link href="/register" className="font-medium text-primary hover:text-primary-dark">
-              Register here
-            </Link>
+        Welcome to ckd
+         
           </div>
         </CardFooter>
       </Card>
