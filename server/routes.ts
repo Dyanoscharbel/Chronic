@@ -939,11 +939,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Calculer le DFG avec la formule MDRD pour patients noirs
         // Créatinine doit être en mg/dL
         let dfg = 186; // Constante de base
-        
-        // Vérifier que la créatinine est dans une plage raisonnable (0.1 à 20 mg/dL)
-        const validCreatinine = Math.min(Math.max(0.1, resultValue), 20);
-        
-        dfg *= Math.pow(validCreatinine, -1.154); // Facteur créatinine
+        dfg *= Math.pow(resultValue, -1.154); // Facteur créatinine
         dfg *= Math.pow(age, -0.203); // Facteur âge
 
         // Facteur genre
@@ -954,8 +950,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Facteur ethnie (pour patients noirs)
         dfg *= 1.212;
 
-        // Limiter le DFG à des valeurs physiologiquement possibles (0-200 mL/min/1.73m²)
-        dfg = Math.min(200, Math.max(0, Math.round(dfg)));
+        // Arrondir à l'entier le plus proche
+        dfg = Math.max(0, Math.round(dfg)); // Garder uniquement la limite minimum de 0
 
         console.log(`DFG calculé pour le patient ${patientId}:`, dfg);
 
