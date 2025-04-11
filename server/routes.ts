@@ -909,10 +909,9 @@ console.error('----------------------------------------');
                 resultDate
               });
             }
-          } finally {
-            res.status(201).json(newResult);
           }
         }
+        res.status(201).json(newResult);
 
 
         // Template d'email pour le docteur
