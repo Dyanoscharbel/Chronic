@@ -1061,11 +1061,18 @@ console.error('----------------------------------------');
 
       await newAppointment.save();
 
-      // Get patient with email
+      // Get patient and doctor with email
       const patientWithEmail = await Patient.findById(patientId).populate('user');
+      const doctorWithUser = await Doctor.findById(doctor._id).populate('user');
+      
       if (!patientWithEmail?.user?.email) {
         console.error('Patient email not found');
         return res.status(400).json({ message: 'Patient email not found' });
+      }
+
+      if (!doctorWithUser?.user) {
+        console.error('Doctor user info not found');
+        return res.status(400).json({ message: 'Doctor information incomplete' });
       }
 
       // Template d'email pour le patient
