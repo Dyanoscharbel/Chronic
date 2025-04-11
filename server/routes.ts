@@ -833,6 +833,43 @@ console.error('----------------------------------------');
       const labTest = await LabTest.findById(labTestId);
       const patient = await Patient.findById(patientId).populate('user');
 
+      // Si c'est un test de créatinine, calculer et sauvegarder le DFG
+      if (labTest?.testName.toLowerCase().includes('créatinine')) {
+        // Calculer l'âge du patient
+        const birthDate = new Date(patient.birthDate);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+
+        // Calculer le DFG avec la formule MDRD pour patients noirs
+        const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
+
+        // Chercher le test DFG dans la base de données
+        const dfgTest = await LabTest.findOne({ testName: 'DFG' });
+        if (dfgTest) {
+          // Chercher s'il existe déjà un résultat DFG pour ce patient
+          const existingDfg = await PatientLabResult.findOne({
+            patient: patientId,
+            labTest: dfgTest._id
+          });
+
+          if (existingDfg) {
+            // Mettre à jour le résultat existant
+            existingDfg.resultValue = dfg;
+            existingDfg.resultDate = resultDate;
+            await existingDfg.save();
+          } else {
+            // Créer un nouveau résultat DFG
+            await PatientLabResult.create({
+              patient: patientId,
+              doctor: doctor._id,
+              labTest: dfgTest._id,
+              resultValue: dfg,
+              resultDate
+            });
+          }
+        }
+      }
+
       if (patient && labTest) {
         // Calculer l'écart par rapport à la normale
         const normalValue = (labTest.normalMax + labTest.normalMin) / 2;
