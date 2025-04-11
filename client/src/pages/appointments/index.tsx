@@ -211,9 +211,7 @@ export default function AppointmentsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Tous les statuts</SelectItem>
-                    <SelectItem value="pending">En attente</SelectItem>
-                    <SelectItem value="confirmed">Confirmé</SelectItem>
-                    <SelectItem value="cancelled">Annulé</SelectItem>
+                    <SelectItem value="pending">En cours</SelectItem>
                     <SelectItem value="completed">Terminé</SelectItem>
                   </SelectContent>
                 </Select>
