@@ -115,6 +115,14 @@ class MemStorage implements IStorage {
 
     await LabTest.create([
       {
+        testName: "DFG",
+        description: "Débit de Filtration Glomérulaire",
+        unit: "mL/min/1.73m²",
+        normalMin: 90,
+        normalMax: 120,
+        category: "Sanguin"
+      },
+      {
         testName: "Créatinine sanguine",
         description: "Mesure de la fonction rénale",
         unit: "mg/dL",
