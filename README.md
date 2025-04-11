@@ -96,7 +96,14 @@ Intégration de modèles prédictifs basés sur l’IA.
 
 Tableau de bord médical avec KPIs et visualisations.
 
+compte  ADMIN de l'application
+admin@admin.com
+admin2024
 
+
+compte d'un mmedecin
+sannicharbel@gmail.com 
+1234567
 Auteurs
 
 SANNI Charbel
