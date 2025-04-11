@@ -45,15 +45,17 @@ export default function Dashboard() {
       new Date().toISOString().split('T')[0]
     );
 
-    const dfgTrendData = useMemo(() => {
-    if (!labResults || !startDate || !endDate) return [];
+    const [selectedPeriod, setSelectedPeriod] = useState({ startDate, endDate });
+
+const dfgTrendData = useMemo(() => {
+    if (!labResults || !selectedPeriod.startDate || !selectedPeriod.endDate) return [];
 
     const dfgResults = labResults.filter(result => 
       result.labTest?.testName?.toLowerCase().includes('dfg')
     );
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    const start = new Date(selectedPeriod.startDate);
+    const end = new Date(selectedPeriod.endDate);
 
     // Filtrer les résultats par période
     const filteredResults = dfgResults
@@ -67,7 +69,16 @@ export default function Dashboard() {
       month: new Date(result.resultDate).toLocaleDateString(),
       value: result.resultValue
     }));
-  }, [labResults, period]);
+  }, [labResults, selectedPeriod]);
+
+const handlePeriodChange = (period: { startDate?: string; endDate?: string }) => {
+  setStartDate(period.startDate || startDate);
+  setEndDate(period.endDate || endDate);
+};
+
+const handlePeriodValidation = () => {
+  setSelectedPeriod({ startDate, endDate });
+};
 
   if (statsLoading || appointmentsLoading || notificationsLoading) {
     return (
@@ -148,6 +159,9 @@ export default function Dashboard() {
           title="Tendance moyenne du DFG"
           type="line"
           data={dfgTrendData}
+          period={{ startDate, endDate }}
+          onPeriodChange={handlePeriodChange}
+          onPeriodValidate={handlePeriodValidation}
         />
       </div>
 
