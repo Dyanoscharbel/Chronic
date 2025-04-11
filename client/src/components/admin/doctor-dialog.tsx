@@ -63,10 +63,10 @@ export default function DoctorDialog({ isOpen, onClose, doctor }: DoctorDialogPr
       onClose();
       form.reset();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast({
         title: 'Erreur',
-        description: 'Une erreur est survenue',
+        description: error?.response?.data?.message || 'Une erreur est survenue lors de la création du médecin',
         variant: 'destructive'
       });
     }
