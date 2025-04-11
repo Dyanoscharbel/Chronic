@@ -52,12 +52,18 @@ adminRouter.post('/doctors', requireAdmin, async (req, res) => {
   try {
     const { email, password, firstName, lastName, specialty, hospital } = req.body;
 
+    // Vérifier si l'utilisateur existe déjà
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Un utilisateur avec cet email existe déjà' });
+    }
+
     const user = await User.create({
       email,
-      password: await bcrypt.hash(password, 10),
+      passwordHash: await bcrypt.hash(password, 10),
       firstName,
       lastName,
-      role: 'doctor'
+      role: 'medecin'
     });
 
     const doctor = await Doctor.create({
@@ -66,8 +72,10 @@ adminRouter.post('/doctors', requireAdmin, async (req, res) => {
       hospital
     });
 
-    res.status(201).json(await doctor.populate('user'));
+    const populatedDoctor = await doctor.populate('user');
+    res.status(201).json(populatedDoctor);
   } catch (error) {
+    console.error('Erreur création médecin:', error);
     res.status(500).json({ message: 'Erreur lors de la création du médecin' });
   }
 });
