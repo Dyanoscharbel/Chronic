@@ -498,7 +498,7 @@ console.error('----------------------------------------');
       // Fetch the complete patient data with user information
       const patientWithUser = await Patient.findById(newPatient._id).populate('user');
 
-      res.status(201).json({
+      res.json({
         ...patientWithUser.toObject(),
         user: { ...patientWithUser.user.toObject(), passwordHash: undefined }
       });
@@ -943,7 +943,23 @@ console.error('----------------------------------------');
       }
 
       // Get appointments for this doctor only
-      const appointments = await Appointment.find({ doctor: doctor._id })
+      const appointments = await Appointment.find({ doctor: doctor._id });
+
+      // Mettre à jour le statut des rendez-vous passés
+      const now = new Date();
+      const updatedAppointments = await Promise.all(appointments.map(async (appointment) => {
+        if (new Date(appointment.appointmentDate) < now && 
+            appointment.doctorStatus === 'confirmed' && 
+            appointment.patientStatus === 'confirmed') {
+          appointment.doctorStatus = 'completed';
+          appointment.patientStatus = 'completed';
+          await appointment.save();
+        }
+        return appointment;
+      }));
+
+      // Récupérer les rendez-vous avec les informations complètes
+      const populatedAppointments = await Appointment.find({ doctor: doctor._id })
         .populate({
           path: 'patient',
           populate: {
@@ -962,21 +978,9 @@ console.error('----------------------------------------');
         .sort({ appointmentDate: 1 });
 
       // Log for debugging with complete data
-      console.log('Appointments found:', JSON.stringify(appointments, null, 2));
+      console.log('Appointments found:', JSON.stringify(populatedAppointments, null, 2));
 
-      // Check and update status for past appointments
-      const now = new Date();
-      const updatedAppointments = await Promise.all(appointments.map(async (appointment) => {
-        if (appointment.doctorStatus === 'confirmed' && appointment.patientStatus === 'confirmed' && 
-            new Date(appointment.appointmentDate) < now) {
-          appointment.doctorStatus = 'completed';
-          appointment.patientStatus = 'completed';
-          await appointment.save();
-        }
-        return appointment;
-      }));
-
-      res.json(updatedAppointments);
+      res.json(populatedAppointments);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
     }
