@@ -278,41 +278,35 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
           const max = result.labTest.normalMax ? parseFloat(result.labTest.normalMax.toString()) : undefined;
 
           let message = '';
-          if (test && patient) {
-            // Si c'est un test DFG, afficher la dernière valeur estimée
-            if (test.testName.toLowerCase().includes('dfg')) {
-              message = `DFG estimé: ${patient.lastEgfrValue || 'Non mesuré'} mL/min/1.73m²`;
-            } else {
-              let status = 'Normal';
-              if (min !== undefined && max !== undefined) {
-                if (value < min) status = 'Below Normal';
-                else if (value > max) status = 'Above Normal';
-              }
-              const range = (min !== undefined && max !== undefined)
-                ? `${min} - ${max} ${unit}`
-                : 'Not specified';
-              message = `${value} ${unit} (${range}, ${status})`;
-            }
+          let status = 'Normal';
+          if (min !== undefined && max !== undefined) {
+            if (value < min) status = 'Below Normal';
+            else if (value > max) status = 'Above Normal';
           }
-
+          const range = (min !== undefined && max !== undefined)
+            ? `${min} - ${max} ${unit}`
+            : 'Not specified';
 
           return [
+            formatDate(result.resultDate),
             result.labTest.testName || `Test #${result.labTest._id}`,
-            message,
-            formatDate(result.resultDate)
+            value,
+            unit,
+            range,
+            status
           ];
         });
 
-        // Ajouter un tableau stylisé pour les résultats
+        // Add table with lab results
         autoTable(doc, {
-          head: [['Test', 'Résultat', 'Date']],
+          head: [['Date', 'Test', 'Valeur', 'Unité', 'Plage Normale', 'Statut']],
           body: tableData,
           startY: yPos,
           theme: 'grid',
           styles: {
             font: 'helvetica',
-            fontSize: 10,
-            cellPadding: 5,
+            fontSize: 9,
+            cellPadding: 4,
           },
           headStyles: {
             fillColor: [0, 71, 65],
@@ -321,9 +315,12 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
             halign: 'center'
           },
           columnStyles: {
-            0: { fontStyle: 'bold' },
-            1: { fontSize: 9 },
-            2: { halign: 'center' }
+            0: { halign: 'center' },
+            1: { fontStyle: 'bold' },
+            2: { halign: 'right' },
+            3: { halign: 'center' },
+            4: { halign: 'center' },
+            5: { halign: 'center' }
           },
           alternateRowStyles: {
             fillColor: [240, 245, 245]
