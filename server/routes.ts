@@ -1841,7 +1841,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         res.json(enhancedPatients);
       } catch (error) {
-        console.error"Dashboard recent patients error:", error);
+        console.error("Dashboard recent patients error:", error);
         res.status(500).json({ message: "Server error" });
       }
     },
