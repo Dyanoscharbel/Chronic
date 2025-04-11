@@ -929,13 +929,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
 
+        // Valider la créatinine (doit être > 0)
+        if (resultValue <= 0) {
+          console.error("Valeur de créatinine invalide:", resultValue);
+          return res.status(400).json({ message: "Valeur de créatinine invalide" });
+        }
+
         // Calculer le DFG avec la formule MDRD pour patients noirs
-        let dfg = 175 * Math.pow(resultValue, -1.154) * Math.pow(age, -0.203);
+        // Créatinine doit être en mg/dL
+        let dfg = 186; // Constante de base
+        dfg *= Math.pow(resultValue, -1.154); // Facteur créatinine
+        dfg *= Math.pow(age, -0.203); // Facteur âge
+
+        // Facteur genre
         if (patient.gender === "F") {
           dfg *= 0.742;
         }
-        dfg *= 1.212; // Facteur pour patients noirs
-        dfg = Math.max(0, Math.round(dfg)); // Empêcher les valeurs négatives ou Infinity
+
+        // Facteur ethnie (pour patients noirs)
+        dfg *= 1.212;
+
+        // Arrondir et limiter les valeurs
+        dfg = Math.min(200, Math.max(0, Math.round(dfg))); // Limiter entre 0 et 200
 
         console.log(`DFG calculé pour le patient ${patientId}:`, dfg);
 
@@ -1826,7 +1841,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         res.json(enhancedPatients);
       } catch (error) {
-        console.error("Dashboard recent patients error:", error);
+        console.error"Dashboard recent patients error:", error);
         res.status(500).json({ message: "Server error" });
       }
     },
