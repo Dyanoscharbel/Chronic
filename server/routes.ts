@@ -1092,7 +1092,7 @@ console.error('----------------------------------------');
         'Confirmation de votre rendez-vous médical',
         emailTemplate
       );
-        
+
 
       // Récupérer le rendez-vous avec les informations complètes
       const savedAppointment = await Appointment.findById(newAppointment._id)
