@@ -1061,6 +1061,13 @@ console.error('----------------------------------------');
 
       await newAppointment.save();
 
+      // Get patient email
+      const patient = await Patient.findById(patientId).populate('user');
+      if (!patient?.user?.email) {
+        console.error('Patient email not found');
+        return res.status(400).json({ message: 'Patient email not found' });
+      }
+
       // Template d'email pour le patient
       const emailTemplate = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
