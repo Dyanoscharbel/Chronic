@@ -14,10 +14,19 @@ interface Message {
 
 export default function ChatbotPage() {
   const [input, setInput] = useState('');
+  const { isAuthenticated } = useAuth();
   const [messages, setMessages] = useState<Message[]>(() => {
     const savedMessages = localStorage.getItem('chatMessages');
     return savedMessages ? JSON.parse(savedMessages) : [];
   });
+
+  // Effacer l'historique quand l'utilisateur se déconnecte
+  useEffect(() => {
+    if (!isAuthenticated) {
+      localStorage.removeItem('chatMessages');
+      setMessages([]);
+    }
+  }, [isAuthenticated]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Sauvegarder les messages quand ils changent
