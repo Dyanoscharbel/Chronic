@@ -1,0 +1,15 @@
+[vite] connecting...
+[vite] connected.
+Error generating PDF report: 
+TypeError {}
+message: "Cannot read properties of null (reading 'toString')"
+stack: "TypeError: Cannot read properties of null (reading 'toString')↵ at https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/src/components/patient-report/generate-report.tsx:211:55↵ at Array.map (<anonymous>)↵ at generatePDF (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/src/components/patient-report/generate-report.tsx:209:38)↵ at HTMLUnknownElement.callCallback2 (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=75c7ab53:3674:22)↵ at Object.invokeGuardedCallbackDev (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=75c7ab53:3699:24)↵ at invokeGuardedCallback (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=75c7ab53:3733:39)↵ at invokeGuardedCallbackAndCatchFirstError (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=75c7ab53:3736:33)↵ at executeDispatch (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=75c7ab53:7014:11)↵ at processDispatchQueueItemsInOrder (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=75c7ab53:7034:15)↵ at processDispatchQueue (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=75c7ab53:7043:13)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+at t.value (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fb47f8a9-2052-4f7e-9b82-d7c24c510b99-00-2bmdg9uy9c41h.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
