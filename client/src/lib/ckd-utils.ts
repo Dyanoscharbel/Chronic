@@ -68,8 +68,30 @@ export function generateProteinuriaValue(proteinuriaLevel: string): number {
  * @param isBlack Boolean indicating if patient is of African descent
  * @returns Approximated serum creatinine in mg/dL
  */
-export function calculateCreatinine(egfr: number, age: number = 50, isFemale: boolean = false, isBlack: boolean = false): number {
-  // Very simplified approximation based on MDRD formula
+export function calculateMDRD(creatinine: number, age: number, isFemale: boolean): number {
+  // Formule MDRD pour les patients noirs
+  let dfg = 175 * Math.pow(creatinine, -1.154) * Math.pow(age, -0.203);
+  
+  // Facteur de correction pour le genre
+  if (isFemale) dfg *= 0.742;
+  
+  // Facteur de correction pour la race noire
+  dfg *= 1.212;
+  
+  return Math.round(dfg * 100) / 100;
+}
+
+export function determineCKDStage(dfg: number): string {
+  if (dfg >= 90) return 'Stage 1';
+  if (dfg >= 60) return 'Stage 2';
+  if (dfg >= 45) return 'Stage 3A';
+  if (dfg >= 30) return 'Stage 3B';
+  if (dfg >= 15) return 'Stage 4';
+  return 'Stage 5';
+}
+
+export function calculateCreatinine(egfr: number, age: number = 50, isFemale: boolean = false): number {
+  // Reverse calculation from MDRD formula
   let creatinine = 175 * Math.pow(egfr, -1.154) * Math.pow(age, -0.203);
   
   // Apply gender and race corrections

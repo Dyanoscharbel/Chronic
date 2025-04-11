@@ -863,6 +863,52 @@ console.error('----------------------------------------');
 
         await newNotification.save();
 
+        // Vérifier si c'est un test de créatinine
+        if (labTest?.testName.toLowerCase().includes('créatinine')) {
+          // Récupérer les informations du patient
+          const patient = await Patient.findById(patientId).populate('user');
+          if (patient) {
+            // Calculer l'âge
+            const birthDate = new Date(patient.birthDate);
+            const age = new Date().getFullYear() - birthDate.getFullYear();
+
+            // Calculer le DFG avec la formule MDRD
+            const dfg = calculateMDRD(resultValue, age, patient.gender === 'F');
+
+            // Déterminer le nouveau stade CKD
+            const newStage = determineCKDStage(dfg);
+
+            // Mettre à jour le stade du patient si changé
+            if (patient.ckdStage !== newStage) {
+              patient.ckdStage = newStage;
+              await patient.save();
+
+              // Créer une notification pour le changement de stade
+              const notification = new Notification({
+                patientId: patient._id,
+                doctorId: patient.doctor,
+                message: `Le stade MRC de ${patient.user.firstName} ${patient.user.lastName} a changé: ${newStage} (DFG: ${dfg} mL/min/1.73m²)`,
+                severity: 'warning',
+                isRead: false
+              });
+              await notification.save();
+            }
+
+            // Sauvegarder le DFG comme résultat séparé
+            const egfrTest = await LabTest.findOne({ testName: 'DFG' });
+            if (egfrTest) {
+              await PatientLabResult.create({
+                patient: patientId,
+                doctor: patient.doctor,
+                labTest: egfrTest._id,
+                resultValue: dfg,
+                resultDate
+              });
+            }
+          }
+        }
+
+
         // Template d'email pour le docteur
         const doctorEmailTemplate = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
@@ -1812,4 +1858,27 @@ console.error('----------------------------------------');
   const httpServer = createServer(app);
 
   return httpServer;
+}
+
+// Add functions to calculate MDRD and determine CKD stage
+function calculateMDRD(creatinine: number, age: number, isFemale: boolean): number {
+  // Implement MDRD formula for Black patients here.  This is a placeholder.
+  // Consider using a more accurate and updated formula if available.
+  // This formula is simplified and may not be clinically accurate.
+  let dfg = 186 * Math.pow(creatinine, -1.154) * Math.pow(age, -0.203);
+  if (isFemale) {
+    dfg *= 0.742;
+  }
+  return Math.round(dfg);
+}
+
+function determineCKDStage(dfg: number): string {
+  // Implement CKD staging based on DFG value here. This is a placeholder.
+  //  Replace with actual CKD staging guidelines.
+  if (dfg >= 90) return 'Stage 1';
+  if (dfg >= 60) return 'Stage 2';
+  if (dfg >= 45) return 'Stage 3A';
+  if (dfg >= 30) return 'Stage 3B';
+  if (dfg >= 15) return 'Stage 4';
+  return 'Stage 5';
 }
