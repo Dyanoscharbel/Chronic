@@ -72,12 +72,11 @@ const dfgTrendData = useMemo(() => {
   }, [labResults, selectedPeriod]);
 
 const handlePeriodChange = (period: { startDate?: string; endDate?: string }) => {
-  setStartDate(period.startDate || startDate);
-  setEndDate(period.endDate || endDate);
-};
-
-const handlePeriodValidation = () => {
-  setSelectedPeriod({ startDate, endDate });
+  const newStartDate = period.startDate || startDate;
+  const newEndDate = period.endDate || endDate;
+  setStartDate(newStartDate);
+  setEndDate(newEndDate);
+  setSelectedPeriod({ startDate: newStartDate, endDate: newEndDate });
 };
 
   if (statsLoading || appointmentsLoading || notificationsLoading) {
@@ -161,7 +160,6 @@ const handlePeriodValidation = () => {
           data={dfgTrendData}
           period={{ startDate, endDate }}
           onPeriodChange={handlePeriodChange}
-          onPeriodValidate={handlePeriodValidation}
         />
       </div>
 
