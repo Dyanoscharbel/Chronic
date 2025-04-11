@@ -1061,14 +1061,37 @@ console.error('----------------------------------------');
 
       await newAppointment.save();
 
-      // Get patient email
-      if (!patient?.user?.email) {
+      // Get patient with email
+      const patientWithEmail = await Patient.findById(patientId).populate('user');
+      if (!patientWithEmail?.user?.email) {
         console.error('Patient email not found');
         return res.status(400).json({ message: 'Patient email not found' });
       }
 
       // Template d'email pour le patient
       const emailTemplate = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #2563eb;">Confirmation de Rendez-vous</h1>
+            <hr style="border: 1px solid #eee;">
+          </div>
+          <div style="background-color: #f8fafc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <h2 style="color: #1e40af; margin-bottom: 15px;">Détails du Rendez-vous</h2>
+            <p style="color: #374151;"><strong>Date:</strong> ${new Date(appointmentDateTime).toLocaleDateString()}</p>
+            <p style="color: #374151;"><strong>Heure:</strong> ${new Date(appointmentDateTime).toLocaleTimeString()}</p>
+            <p style="color: #374151;"><strong>Motif:</strong> ${purpose}</p>
+            <p style="color: #374151;"><strong>Médecin:</strong> Dr. ${doctor.user.firstName} ${doctor.user.lastName}</p>
+            <p style="color: #374151;"><strong>Lieu:</strong> ${doctor.hospital}</p>
+          </div>
+        </div>
+      `;
+
+      // Envoyer l'email au patient
+      await notificationService.sendEmail(
+        patientWithEmail.user.email,
+        'Confirmation de votre rendez-vous médical',
+        emailTemplate
+      );
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
           <div style="text-align: center; margin-bottom: 20px;">
             <h1 style="color: #2563eb;">Nouveau Rendez-vous Médical</h1>
