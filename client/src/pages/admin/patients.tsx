@@ -11,10 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { apiRequest } from '@/lib/queryClient';
 import { PlusCircle, Trash2, Edit, Search } from 'lucide-react';
 
-// Placeholder for the new admin patient dialog component.  This needs to be implemented separately.
-const AdminPatientDialog = ({isOpen, onClose, patient}) => {
-    return <div>Admin Patient Dialog (Implementation needed)</div>
-}
+import AdminPatientDialog from '@/components/admin/patient-dialog';
 
 
 export default function AdminPatientsPage() {
