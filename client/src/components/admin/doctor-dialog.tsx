@@ -27,14 +27,26 @@ export default function DoctorDialog({ isOpen, onClose, doctor }: DoctorDialogPr
 
   const form = useForm({
     defaultValues: {
-      firstName: doctor?.user?.firstName || '',
-      lastName: doctor?.user?.lastName || '',
-      email: doctor?.user?.email || '',
+      firstName: '',
+      lastName: '',
+      email: '',
       password: '',
-      specialty: doctor?.specialty || '',
-      hospital: doctor?.hospital || ''
+      specialty: '',
+      hospital: ''
     }
   });
+
+  useEffect(() => {
+    if (doctor && isEditing) {
+      form.reset({
+        firstName: doctor.user.firstName,
+        lastName: doctor.user.lastName,
+        email: doctor.user.email,
+        specialty: doctor.specialty,
+        hospital: doctor.hospital
+      });
+    }
+  }, [doctor, isEditing, form]);
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
