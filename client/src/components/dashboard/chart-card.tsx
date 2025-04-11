@@ -14,7 +14,7 @@ interface ChartCardProps {
   onPeriodValidate?: () => void;
 }
 
-export function ChartCard({ title, type, data, className, height = 'h-64', period, onPeriodChange }: ChartCardProps) {
+export function ChartCard({ title, type, data, className, height = 'h-64', period, onPeriodChange, onPeriodValidate }: ChartCardProps) {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstance = useRef<Chart | null>(null);
 
