@@ -909,6 +909,8 @@ console.error('----------------------------------------');
                 resultDate
               });
             }
+          } finally {
+            res.status(201).json(newResult);
           }
         }
 
@@ -932,7 +934,7 @@ console.error('----------------------------------------');
             </div>
             <div style="font-size: 12px; color: #6b7280; text-align: center; margin-top: 20px;">
               <p>Ce message a été envoyé automatiquement par le Système de Suivi CKD.</p>
-              <p>Ne pas répondre à cet email.</p>
+              <p>Ne pas répondreà cet email.</p>
             </div>
           </div>
         `;
