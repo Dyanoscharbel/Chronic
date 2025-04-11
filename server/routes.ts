@@ -840,7 +840,6 @@ console.error('----------------------------------------');
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
 
-        // La valeur est déjà en mg/dL, pas besoin de conversion
         // Calculer le DFG avec la formule MDRD pour patients noirs
         let dfg = 175 * Math.pow(resultValue, -1.154) * Math.pow(age, -0.203);
         if (patient.gender === 'F') {
@@ -851,28 +850,22 @@ console.error('----------------------------------------');
 
         console.log(`DFG calculé pour le patient ${patientId}:`, dfg);
 
-        // Chercher le test DFG dans la base de données
-        const dfgTest = await LabTest.findOne({ testName: 'DFG' });
-        if (dfgTest) {
-          // Mettre à jour ou créer le résultat DFG
-          await PatientLabResult.findOneAndUpdate(
-            {
+        try {
+          // Chercher le test DFG dans la base de données
+          const dfgTest = await LabTest.findOne({ testName: 'DFG' });
+          if (dfgTest) {
+            // Créer un nouveau résultat DFG
+            const dfgResult = await PatientLabResult.create({
               patient: patientId,
+              doctor: doctor._id,
               labTest: dfgTest._id,
+              resultValue: dfg,
               resultDate: resultDate
-            },
-            {
-              $set: {
-                resultValue: dfg,
-                doctor: doctor._id
-              }
-            },
-            {
-              upsert: true,
-              new: true
-            }
-          );
-          console.log('DFG mis à jour avec succès');
+            });
+            console.log('DFG enregistré avec succès:', dfgResult);
+          }
+        } catch (error) {
+          console.error('Erreur lors de l\'enregistrement du DFG:', error);
         }
       }
 
