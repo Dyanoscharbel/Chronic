@@ -9,9 +9,11 @@ interface ChartCardProps {
   data: any;
   className?: string;
   height?: string;
+  period?: string;
+  onPeriodChange?: (period: string) => void;
 }
 
-export function ChartCard({ title, type, data, className, height = 'h-64' }: ChartCardProps) {
+export function ChartCard({ title, type, data, className, height = 'h-64', period, onPeriodChange }: ChartCardProps) {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstance = useRef<Chart | null>(null);
 
@@ -110,10 +112,23 @@ export function ChartCard({ title, type, data, className, height = 'h-64' }: Cha
       <CardHeader className="p-0 mb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-medium text-gray-900">{title}</CardTitle>
-          <div className="flex items-center">
-            <button className="text-sm text-gray-500 hover:text-gray-700">
-              <Filter className="h-5 w-5" />
-            </button>
+          <div className="flex items-center gap-2">
+            {type === 'line' && onPeriodChange && (
+              <Select
+                value={period}
+                onValueChange={onPeriodChange}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Sélectionner période" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1M">1 mois</SelectItem>
+                  <SelectItem value="3M">3 mois</SelectItem>
+                  <SelectItem value="6M">6 mois</SelectItem>
+                  <SelectItem value="1Y">1 an</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
       </CardHeader>

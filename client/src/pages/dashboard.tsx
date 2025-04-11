@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { User, Users, Calendar, FileText, AlertTriangle, Settings, Plus } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/stats-card';
@@ -12,9 +12,9 @@ import { Loader } from '@/components/ui/loader';
 import { DashboardStats, Patient, Appointment, Alert } from '@/lib/types';
 
 export default function Dashboard() {
-  
   const [workflowModalOpen, setWorkflowModalOpen] = useState(false);
-  
+  const [period, setPeriod] = useState('3M');
+
   const { data: dashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
     queryKey: ['/api/dashboard/stats'],
     refetchInterval: 5000, // Rafraîchit toutes les 5 secondes
@@ -24,7 +24,7 @@ export default function Dashboard() {
     queryKey: ['/api/notifications'],
     refetchInterval: 5000,
   });
-  
+
   const { data: upcomingAppointments, isLoading: appointmentsLoading, error: appointmentsError } = useQuery<Appointment[]>({
     queryKey: ['/api/dashboard/upcoming-appointments'],
     refetchInterval: 5000,
@@ -36,7 +36,29 @@ export default function Dashboard() {
     queryKey: ['/api/patient-lab-results'],
     refetchInterval: 5000,
   });
-  
+
+  // Calculer les données de tendance DFG
+  const dfgTrendData = useMemo(() => {
+    if (!labResults) return [];
+
+    const dfgResults = labResults.filter(result => 
+      result.labTest?.testName?.toLowerCase().includes('dfg')
+    );
+
+    const periodInMonths = period === '1M' ? 1 : period === '3M' ? 3 : period === '6M' ? 6 : 12;
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - periodInMonths);
+
+    const filteredResults = dfgResults
+      .filter(result => new Date(result.resultDate) >= startDate)
+      .sort((a, b) => new Date(a.resultDate).getTime() - new Date(b.resultDate).getTime());
+
+    return filteredResults.map(result => ({
+      month: new Date(result.resultDate).toLocaleDateString(),
+      value: result.resultValue
+    }));
+  }, [labResults, period]);
+
   if (statsLoading || appointmentsLoading || notificationsLoading) {
     return (
       <div className="flex flex-col space-y-4">
@@ -47,7 +69,7 @@ export default function Dashboard() {
       </div>
     );
   }
-  
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
@@ -60,7 +82,7 @@ export default function Dashboard() {
           <span>Créer un Workflow</span>
         </Button>
       </div>
-      
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
@@ -72,7 +94,7 @@ export default function Dashboard() {
           footerText="Voir tous les patients"
           footerLinkColor="text-primary hover:text-primary-dark"
         />
-        
+
         <StatsCard
           icon={<Calendar className="h-6 w-6 text-white" />}
           iconBgColor="bg-indigo-500"
@@ -82,7 +104,7 @@ export default function Dashboard() {
           footerText="Voir tous les rendez-vous"
           footerLinkColor="text-indigo-600 hover:text-indigo-500"
         />
-        
+
         <StatsCard
           icon={<AlertTriangle className="h-6 w-6 text-white" />}
           iconBgColor="bg-yellow-500"
@@ -92,7 +114,7 @@ export default function Dashboard() {
           footerText="Voir toutes les alertes"
           footerLinkColor="text-yellow-600 hover:text-yellow-500"
         />
-        
+
         <StatsCard
           icon={<FileText className="h-6 w-6 text-white" />}
           iconBgColor="bg-green-500"
@@ -103,7 +125,7 @@ export default function Dashboard() {
           footerLinkColor="text-green-600 hover:text-green-500"
         />
       </div>
-      
+
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ChartCard
@@ -111,22 +133,22 @@ export default function Dashboard() {
           type="pie"
           data={dashboardStats?.stageDistribution || {}}
         />
-        
+
         <ChartCard
-          title="Tendance moyenne du DFG (6 derniers mois)"
+          title="Tendance moyenne du DFG"
           type="line"
-          data={dashboardStats?.egfrTrend || []}
+          data={dfgTrendData}
         />
       </div>
-      
-      
-      
+
+
+
       {/* Appointments and Alerts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <LabResultsList />
         <AlertsList notifications={notificationsData?.notifications?.slice(0, 5) || []} />
       </div>
-      
+
       {/* Workflow Modal */}
       <WorkflowModal 
         isOpen={workflowModalOpen} 
