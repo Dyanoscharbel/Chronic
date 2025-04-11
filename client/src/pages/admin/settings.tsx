@@ -47,7 +47,7 @@ export default function AdminSettingsPage() {
     }
   });
 
-  const onEmailSubmit = async (data) => {
+  const onEmailSubmit = async (data: z.infer<typeof emailSchema>) => {
     try {
       setIsEmailLoading(true);
       await apiRequest('PUT', '/api/admin/profile', { email: data.email });
@@ -67,7 +67,7 @@ export default function AdminSettingsPage() {
     }
   };
 
-  const onPasswordSubmit = async (data) => {
+  const onPasswordSubmit = async (data: z.infer<typeof passwordSchema>) => {
     try {
       setIsPasswordLoading(true);
       await apiRequest('POST', '/api/admin/change-password', {
@@ -165,7 +165,7 @@ export default function AdminSettingsPage() {
               />
               <FormField
                 control={passwordForm.control}
-                name="confirmPassword"
+                name="confirmPassword" 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Confirmer le mot de passe</FormLabel>
