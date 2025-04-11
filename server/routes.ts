@@ -854,7 +854,7 @@ console.error('----------------------------------------');
         const newNotification = new Notification({
           patientId: patient._id,
           doctorId: doctor._id,
-          labTest: labTestId,
+          labTest: newResult.labTest, // Utiliser l'ID du test du résultat
           message: `Patient ${patient.user.firstName} ${patient.user.lastName}: ${message}`,
           severity: deviation > 0.3 ? 'error' : isAbnormal ? 'warning' : 'info',
           isRead: false,
