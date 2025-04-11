@@ -1912,14 +1912,21 @@ console.error('----------------------------------------');
 // Add functions to calculate MDRD and determine CKD stage
 function calculateMDRD(creatinine: number, age: number, isFemale: boolean): number {
   // MDRD formula for Black patients
-  if (creatinine <= 0 || age <= 0) {
-    return 0; // Prevent invalid values
+  if (!creatinine || !age || creatinine <= 0 || age <= 0) {
+    console.log('Invalid values for DFG calculation:', { creatinine, age });
+    return 0;
   }
-  let dfg = 175 * Math.pow(creatinine/88.4, -1.154) * Math.pow(age, -0.203);
+
+  // Convert creatinine from mg/dL to μmol/L if needed
+  const creatinineMicromol = creatinine * 88.4;
+
+  let dfg = 175 * Math.pow(creatinineMicromol/88.4, -1.154) * Math.pow(age, -0.203);
   if (isFemale) {
     dfg *= 0.742;
   }
   dfg *= 1.212; // Facteur pour patients noirs
+
+  console.log('DFG calculation:', { creatinine, age, isFemale, dfg });
 
   // Limit maximum value to prevent unrealistic results
   dfg = Math.min(dfg, 200);
