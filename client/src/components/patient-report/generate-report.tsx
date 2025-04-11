@@ -281,7 +281,7 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
           if (test && patient) {
             // Si c'est un test DFG, afficher la dernière valeur estimée
             if (test.testName.toLowerCase().includes('dfg')) {
-              message = `DFG estimé: ${patient.lastEgfrValue || 'Non disponible'} mL/min/1.73m²`;
+              message = `DFG estimé: ${patient.lastEgfrValue || 'Non mesuré'} mL/min/1.73m²`;
             } else {
               let status = 'Normal';
               if (min !== undefined && max !== undefined) {
