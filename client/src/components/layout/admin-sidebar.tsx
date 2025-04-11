@@ -33,11 +33,7 @@ export function AdminSidebar({ isMobile, isOpen, toggleSidebar }: AdminSidebarPr
       icon: <Users className="mr-3 h-6 w-6 text-white" />,
       href: '/admin/doctors'
     },
-    { 
-      label: 'Paramètres', 
-      icon: <Settings className="mr-3 h-6 w-6 text-white" />,
-      href: '/admin/settings'
-    }
+    
   ];
 
   return (
