@@ -1,22 +1,93 @@
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { apiRequest } from '@/lib/queryClient';
+import { useAuth } from '@/hooks/use-auth';
+import { Loader } from '@/components/ui/loader';
+import { Save } from 'lucide-react';
+
+const emailSchema = z.object({
+  email: z.string().email('Email invalide')
+});
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, 'Mot de passe actuel requis'),
+  newPassword: z.string().min(8, 'Le nouveau mot de passe doit contenir au moins 8 caractères'),
+  confirmPassword: z.string()
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Les mots de passe ne correspondent pas",
+  path: ["confirmPassword"],
+});
 
 export default function AdminSettingsPage() {
   const { toast } = useToast();
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [smsNotifications, setSmsNotifications] = useState(false);
+  const { user } = useAuth();
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
 
-  const handleSaveSettings = () => {
-    toast({
-      title: "Paramètres sauvegardés",
-      description: "Les paramètres ont été mis à jour avec succès.",
-    });
+  const emailForm = useForm<z.infer<typeof emailSchema>>({
+    resolver: zodResolver(emailSchema),
+    defaultValues: {
+      email: user?.email || ''
+    }
+  });
+
+  const passwordForm = useForm<z.infer<typeof passwordSchema>>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    }
+  });
+
+  const onEmailSubmit = async (data: z.infer<typeof emailSchema>) => {
+    try {
+      setIsEmailLoading(true);
+      await apiRequest('PUT', '/api/user/profile', { email: data.email });
+      toast({
+        title: 'Email mis à jour',
+        description: 'Votre email a été mis à jour avec succès'
+      });
+    } catch (error) {
+      toast({
+        title: 'Erreur',
+        description: 'Une erreur est survenue lors de la mise à jour de l\'email',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsEmailLoading(false);
+    }
+  };
+
+  const onPasswordSubmit = async (data: z.infer<typeof passwordSchema>) => {
+    try {
+      setIsPasswordLoading(true);
+      await apiRequest('POST', '/api/user/change-password', {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword
+      });
+      toast({
+        title: 'Mot de passe mis à jour',
+        description: 'Votre mot de passe a été mis à jour avec succès'
+      });
+      passwordForm.reset();
+    } catch (error) {
+      toast({
+        title: 'Erreur',
+        description: 'Une erreur est survenue lors de la mise à jour du mot de passe',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsPasswordLoading(false);
+    }
   };
 
   return (
@@ -26,56 +97,109 @@ export default function AdminSettingsPage() {
       <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Paramètres de Notification</CardTitle>
+            <CardTitle>Modifier l'email</CardTitle>
+            <CardDescription>
+              Mettez à jour l'adresse email de votre compte administrateur
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label>Notifications par Email</Label>
-                <p className="text-sm text-muted-foreground">
-                  Recevoir les notifications importantes par email
-                </p>
-              </div>
-              <Switch
-                checked={emailNotifications}
-                onCheckedChange={setEmailNotifications}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <Label>Notifications SMS</Label>
-                <p className="text-sm text-muted-foreground">
-                  Recevoir les notifications urgentes par SMS
-                </p>
-              </div>
-              <Switch
-                checked={smsNotifications}
-                onCheckedChange={setSmsNotifications}
-              />
-            </div>
+          <CardContent>
+            <Form {...emailForm}>
+              <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">
+                <FormField
+                  control={emailForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" disabled={isEmailLoading}>
+                  {isEmailLoading ? (
+                    <>
+                      <Loader size="sm" className="mr-2" />
+                      Mise à jour...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Mettre à jour l'email
+                    </>
+                  )}
+                </Button>
+              </form>
+            </Form>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Configuration du Système</CardTitle>
+            <CardTitle>Changer le mot de passe</CardTitle>
+            <CardDescription>
+              Mettez à jour le mot de passe de votre compte administrateur
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label>Nom de l'Hôpital</Label>
-              <Input defaultValue="Centre Hospitalier" />
-            </div>
-            <div>
-              <Label>Email de Contact</Label>
-              <Input type="email" defaultValue="contact@hopital.com" />
-            </div>
-            <div>
-              <Label>Numéro de Téléphone</Label>
-              <Input type="tel" defaultValue="+1234567890" />
-            </div>
-            <Button onClick={handleSaveSettings}>
-              Sauvegarder les paramètres
-            </Button>
+          <CardContent>
+            <Form {...passwordForm}>
+              <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
+                <FormField
+                  control={passwordForm.control}
+                  name="currentPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mot de passe actuel</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={passwordForm.control}
+                  name="newPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nouveau mot de passe</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={passwordForm.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirmer le mot de passe</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" disabled={isPasswordLoading}>
+                  {isPasswordLoading ? (
+                    <>
+                      <Loader size="sm" className="mr-2" />
+                      Mise à jour...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Mettre à jour le mot de passe
+                    </>
+                  )}
+                </Button>
+              </form>
+            </Form>
           </CardContent>
         </Card>
       </div>
