@@ -91,13 +91,13 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Paramètres Administrateur</h1>
+    <div className="container mx-auto p-6 max-w-2xl">
+      <h1 className="text-3xl font-bold mb-8 text-center">Paramètres Administrateur</h1>
 
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Modifier l'email</CardTitle>
+      <div className="space-y-6">
+        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl">Modifier l'email</CardTitle>
             <CardDescription>
               Mettez à jour l'adresse email de votre compte administrateur
             </CardDescription>
@@ -110,15 +110,19 @@ export default function AdminSettingsPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-base">Email</FormLabel>
                       <FormControl>
-                        <Input type="email" {...field} />
+                        <Input type="email" className="h-11" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" disabled={isEmailLoading}>
+                <Button 
+                  type="submit" 
+                  disabled={isEmailLoading}
+                  className="w-full h-11 text-base"
+                >
                   {isEmailLoading ? (
                     <>
                       <Loader size="sm" className="mr-2" />
@@ -126,7 +130,7 @@ export default function AdminSettingsPage() {
                     </>
                   ) : (
                     <>
-                      <Save className="mr-2 h-4 w-4" />
+                      <Save className="mr-2 h-5 w-5" />
                       Mettre à jour l'email
                     </>
                   )}
@@ -136,9 +140,9 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Changer le mot de passe</CardTitle>
+        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl">Changer le mot de passe</CardTitle>
             <CardDescription>
               Mettez à jour le mot de passe de votre compte administrateur
             </CardDescription>
@@ -151,9 +155,9 @@ export default function AdminSettingsPage() {
                   name="currentPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Mot de passe actuel</FormLabel>
+                      <FormLabel className="text-base">Mot de passe actuel</FormLabel>
                       <FormControl>
-                        <Input type="password" {...field} />
+                        <Input type="password" className="h-11" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -164,9 +168,9 @@ export default function AdminSettingsPage() {
                   name="newPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nouveau mot de passe</FormLabel>
+                      <FormLabel className="text-base">Nouveau mot de passe</FormLabel>
                       <FormControl>
-                        <Input type="password" {...field} />
+                        <Input type="password" className="h-11" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -177,15 +181,19 @@ export default function AdminSettingsPage() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirmer le mot de passe</FormLabel>
+                      <FormLabel className="text-base">Confirmer le mot de passe</FormLabel>
                       <FormControl>
-                        <Input type="password" {...field} />
+                        <Input type="password" className="h-11" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" disabled={isPasswordLoading}>
+                <Button 
+                  type="submit" 
+                  disabled={isPasswordLoading}
+                  className="w-full h-11 text-base"
+                >
                   {isPasswordLoading ? (
                     <>
                       <Loader size="sm" className="mr-2" />
@@ -193,7 +201,7 @@ export default function AdminSettingsPage() {
                     </>
                   ) : (
                     <>
-                      <Save className="mr-2 h-4 w-4" />
+                      <Save className="mr-2 h-5 w-5" />
                       Mettre à jour le mot de passe
                     </>
                   )}
