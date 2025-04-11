@@ -454,7 +454,36 @@ export function GenerateReport({ patient, trigger }: GenerateReportProps) {
         doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')}`, 105, doc.internal.pageSize.height - 8, { align: 'center' });
       }
 
-      // Save the PDF
+      // Convertir le PDF en base64
+      const pdfData = doc.output('datauristring');
+      
+      // Envoyer le PDF par email
+      try {
+        await fetch('/api/patient-report/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            patientId: patient.id,
+            pdfData: pdfData
+          })
+        });
+
+        toast({
+          title: 'Rapport envoyé',
+          description: 'Le rapport a été envoyé par email au patient'
+        });
+      } catch (emailError) {
+        console.error('Error sending report by email:', emailError);
+        toast({
+          title: 'Erreur',
+          description: "Erreur lors de l'envoi du rapport par email",
+          variant: 'destructive'
+        });
+      }
+
+      // Sauvegarder localement
       doc.save(`patient-report-${patient.id}.pdf`);
       setReportGenerated(true);
     } catch (error) {
