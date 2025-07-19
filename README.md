@@ -55,17 +55,13 @@ Installation
 1. Cloner le dépôt :
 
 git clone https://github.com/Dyanoscharbel/Chronic.git
-cd chonic
 
 
-2. Backend :
+
+2.cd chronic
 npm install
 npm run dev
 
-
-3. Frontend :
-npm install
-npm run dev
 
 
 
